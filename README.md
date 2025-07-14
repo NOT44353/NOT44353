@@ -24,7 +24,7 @@
 ## 🛠️ How to Use
 
 1. Clone or download this repository
-2. Open `index.html` in your browser
+2. Open `[index.html](https://not44353.github.io/NOT44353/)` in your browser
 3. (Optional) Deploy to GitHub Pages for a live online resume
 
 ---
