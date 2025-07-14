@@ -16,7 +16,7 @@
 ## 📸 Preview
 
 <p align="center">
-  <img src="Resume/Resume/profile2.jpg" alt="Resume Screenshot" width="300">
+  <img src="profile2.jpg" alt="Resume Screenshot" width="300">
 </p>
 
 ---
@@ -24,7 +24,7 @@
 ## 🛠️ How to Use
 
 1. Clone or download this repository
-2. Open `Resume/Resume/index.html` in your browser
+2. Open `index.html` in your browser
 3. (Optional) Deploy to GitHub Pages for a live online resume
 
 ---
