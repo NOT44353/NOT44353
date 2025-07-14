@@ -16,7 +16,7 @@
 ## 📸 Preview
 
 <p align="center">
-  <img src="Resume/profile2.jpg" alt="Resume Screenshot" width="300">
+  <img src="Resume/Resume/profile2.jpg" alt="Resume Screenshot" width="300">
 </p>
 
 ---
