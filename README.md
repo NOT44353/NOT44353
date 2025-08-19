@@ -58,7 +58,7 @@ Resume/
 
 ### Installation
 1. Clone or download the project files
-2. **Open the website**: [index.html](./index.html) or open `index.html` in your web browser
+2. **Open the website**: [index.html](https://not44353.github.io/NOT44353/) or open `index.html` in your web browser
 3. Or serve the files using a local web server:
    ```bash
    # Using Python
@@ -212,7 +212,7 @@ This project is open source and available under the [MIT License](LICENSE).
 ⭐ **Star this repository if you found it helpful!**
 
 ## 🌐 **Live Preview**
-**[🚀 Click here to view the live website](./index.html)**
+**[🚀 Click here to view the live website](https://not44353.github.io/NOT44353/)**
 
 ---
 
