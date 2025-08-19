@@ -43,7 +43,7 @@ A modern, responsive, and interactive portfolio website showcasing my skills, ex
 
 ```
 Resume/
-├── index.html          # Main HTML file
+├── [index.html](./index.html)          # Main HTML file - **Click to view website**
 ├── style.css          # Complete CSS styling
 ├── script.js          # JavaScript functionality
 ├── profile2.jpg       # Profile image
@@ -58,7 +58,7 @@ Resume/
 
 ### Installation
 1. Clone or download the project files
-2. Open `index.html` in your web browser
+2. **Open the website**: [index.html](./index.html) or open `index.html` in your web browser
 3. Or serve the files using a local web server:
    ```bash
    # Using Python
@@ -210,5 +210,10 @@ This project is open source and available under the [MIT License](LICENSE).
 ---
 
 ⭐ **Star this repository if you found it helpful!**
+
+## 🌐 **Live Preview**
+**[🚀 Click here to view the live website](./index.html)**
+
+---
 
 Made with ❤️ by Thanapat Pisawong 
