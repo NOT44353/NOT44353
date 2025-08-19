@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== SKILL BARS ANIMATION =====
 function animateSkillBars() {
   const bars = document.querySelectorAll('.progress');
-  bars.forEach(bar => {
+  bars.forEach((bar, index) => {
     const rect = bar.getBoundingClientRect();
     const isVisible = rect.top < window.innerHeight - 100;
     
@@ -28,22 +28,35 @@ function animateSkillBars() {
       
       // Get the target width from CSS classes
       let targetWidth = '0%';
-      if (bar.classList.contains('java')) targetWidth = '90%';
-      else if (bar.classList.contains('php')) targetWidth = '85%';
-      else if (bar.classList.contains('csharp')) targetWidth = '80%';
-      else if (bar.classList.contains('js')) targetWidth = '75%';
-      else if (bar.classList.contains('python')) targetWidth = '70%';
+      if (bar.classList.contains('csharp')) targetWidth = '95%';
+      else if (bar.classList.contains('js')) targetWidth = '92%';
+      else if (bar.classList.contains('react')) targetWidth = '90%';
+      else if (bar.classList.contains('node')) targetWidth = '88%';
+      else if (bar.classList.contains('go')) targetWidth = '85%';
+      else if (bar.classList.contains('php')) targetWidth = '88%';
+      else if (bar.classList.contains('java')) targetWidth = '80%';
+      else if (bar.classList.contains('python')) targetWidth = '75%';
       
-      // Set CSS custom property for animation
-      bar.style.setProperty('--target-width', targetWidth);
+      // Force set the width immediately and with CSS property
+      bar.style.width = targetWidth;
+      bar.style.setProperty('--progress-width', targetWidth);
       
-      // Trigger animation
+      // Also set a backup with !important via CSS class
       setTimeout(() => {
-        bar.style.width = targetWidth;
-      }, 100);
+        bar.style.cssText = `width: ${targetWidth} !important;`;
+      }, 50 + (index * 100));
     }
   });
 }
+
+// Force animation on load
+document.addEventListener('DOMContentLoaded', function() {
+  setTimeout(() => {
+    animateSkillBars();
+    // Force trigger again after a short delay
+    setTimeout(animateSkillBars, 500);
+  }, 100);
+});
 
 // ===== SCROLL REVEAL EFFECT =====
 function revealOnScroll() {
