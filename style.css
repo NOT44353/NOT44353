@@ -84,6 +84,14 @@ section {
   letter-spacing: 2px;
 }
 
+.hero-buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
 /* ===== BUTTONS ===== */
 .btn-main {
   display: inline-block;
@@ -773,6 +781,17 @@ footer a:hover {
   
   .hero h2 {
     font-size: 1.2rem;
+  }
+  
+  .hero-buttons {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .btn-main {
+    padding: 12px 30px;
+    font-size: 1rem;
   }
   
   h3 {
