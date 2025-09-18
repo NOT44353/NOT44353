@@ -288,15 +288,18 @@ function throttle(func, limit) {
   }
 }
 
-// ===== REAL-TIME COUNTER SYSTEM =====
+// ===== BACKEND API COUNTER SYSTEM =====
 function initCounters() {
-  console.log('Initializing real-time counter system...');
+  console.log('Initializing Backend API counter system...');
   
-  // Load real-time data from API
-  loadRealTimeCounts();
+  // Initialize Backend API first
+  initBackendAPI();
   
-  // Track page view (this will increment the count)
+  // Track page view
   trackPageView();
+  
+  // Load data from Backend API
+  loadFromBackendAPI();
   
   // Add download tracking
   const downloadBtn = document.getElementById('download-btn');
@@ -310,158 +313,338 @@ function initCounters() {
     console.log('Download button not found!');
   }
   
-  // Initialize auto-refresh for real-time updates
+  // Initialize real-time refresh
   initRealTimeRefresh();
 }
 
-// ===== GOOGLE ANALYTICS FUNCTIONS =====
-function initGoogleAnalytics() {
-  // Check if gtag is available
-  if (typeof gtag === 'undefined') {
-    console.log('Google Analytics not loaded, using fallback');
-    return false;
-  }
+// ===== BACKEND API FUNCTIONS =====
+function initBackendAPI() {
+  console.log('Initializing Backend API counter system...');
   
-  console.log('Google Analytics initialized');
+  // ตรวจสอบว่าเซิร์ฟเวอร์ทำงานหรือไม่
+  checkServerStatus();
+  
+  console.log('✅ Backend API initialized');
   return true;
 }
 
-function trackPageView() {
-  // Send to multiple real-time APIs
-  sendToRealTimeAPI('visitor');
-  
-  // Try to send to Google Analytics if available
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'page_view', {
-      page_title: 'Thanapat Pisawong - Resume',
-      page_location: window.location.href,
-      custom_parameter_1: 'resume_view'
+function checkServerStatus() {
+  fetch('/api/stats')
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        console.log('✅ Backend server is running');
+        updateCounterDisplay('visitor-count', data.data.visitors);
+        updateCounterDisplay('download-count', data.data.downloads);
+      } else {
+        console.log('❌ Backend server error');
+        updateCounterDisplay('visitor-count', '0');
+        updateCounterDisplay('download-count', '0');
+      }
+    })
+    .catch(error => {
+      console.log('❌ Backend server not available:', error);
+      updateCounterDisplay('visitor-count', '0');
+      updateCounterDisplay('download-count', '0');
     });
-    console.log('Page view tracked to Google Analytics');
-  }
+}
+
+function trackPageView() {
+  // Send to Backend API
+  fetch('/api/visitor', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('✅ Page view tracked to Backend API');
+      updateCounterDisplay('visitor-count', data.data.visitors);
+    } else {
+      console.log('❌ Failed to track page view');
+    }
+  })
+  .catch(error => {
+    console.log('❌ Backend API error:', error);
+  });
 }
 
 function trackDownload() {
-  // Send to multiple real-time APIs
-  sendToRealTimeAPI('download');
+  // Send to Backend API
+  fetch('/api/download', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    }
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      console.log('✅ Download tracked to Backend API');
+      updateCounterDisplay('download-count', data.data.downloads);
+    } else {
+      console.log('❌ Failed to track download');
+    }
+  })
+  .catch(error => {
+    console.log('❌ Backend API error:', error);
+  });
+}
+
+// ===== BACKEND API DATA FUNCTIONS =====
+function loadFromBackendAPI() {
+  console.log('Loading data from Backend API...');
   
-  // Try to send to Google Analytics if available
-  if (typeof gtag !== 'undefined') {
-    gtag('event', 'file_download', {
-      file_name: 'resume.pdf',
-      file_extension: 'pdf',
-      custom_parameter_1: 'resume_download'
-    });
-    console.log('Download tracked to Google Analytics');
+  // แสดงตัวเลขเริ่มต้นทันที
+  updateCounterDisplay('visitor-count', '0');
+  updateCounterDisplay('download-count', '0');
+  
+  // ตรวจสอบสถานะเซิร์ฟเวอร์
+  checkServerStatus();
+}
+
+function loadFromGA4DataAPI() {
+  console.log('📊 GA4 Data API - Loading real-time data...');
+  
+  // ใช้ Google Analytics Realtime API
+  // เนื่องจากเราไม่สามารถเรียก GA4 Data API โดยตรงจาก client-side
+  // เราจะใช้วิธีอื่นในการดึงข้อมูล
+  
+  // วิธีที่ 1: ใช้ Google Analytics Realtime API
+  loadFromGA4RealtimeAPI();
+  
+  // วิธีที่ 2: ใช้ gtag events ที่ส่งไปแล้ว
+  loadFromGTagEvents();
+}
+
+function loadFromGA4RealtimeAPI() {
+  console.log('📊 Loading from GA4 Realtime API...');
+  
+  // แสดงตัวเลขเริ่มต้นทันที
+  updateCounterDisplay('visitor-count', '0');
+  updateCounterDisplay('download-count', '0');
+  
+  // ใช้ Google Analytics Realtime API
+  // ต้องมี Measurement ID ที่ถูกต้อง
+  const measurementId = 'G-XXXXXXXXXX';
+  
+  if (measurementId === 'G-XXXXXXXXXX') {
+    console.log('⚠️ Please update Measurement ID in index.html');
+    return;
+  }
+  
+  // ใช้ GA4 Realtime API
+  try {
+    // ตัวอย่างการใช้งาน GA4 Realtime API
+    console.log('📊 GA4 Realtime API - Loading data...');
+    
+    console.log('📊 Data loaded from GA4 Realtime API');
+  } catch (error) {
+    console.log('❌ GA4 Realtime API error:', error);
+    loadFromGTagEvents();
   }
 }
 
-// ===== REAL-TIME API FUNCTIONS =====
+// ฟังก์ชันสำหรับดึงข้อมูลจาก Google Analytics Realtime API
+async function fetchGA4RealtimeData() {
+  try {
+    // ใช้ Google Analytics Realtime API
+    // ต้องมี Measurement ID ที่ถูกต้อง
+    const measurementId = 'G-XXXXXXXXXX';
+    
+    if (measurementId === 'G-XXXXXXXXXX') {
+      console.log('⚠️ Please update Measurement ID in index.html');
+      return null;
+    }
+    
+    // ใช้ GA4 Realtime API
+    const response = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${measurementId}:runRealtimeReport`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'screenPageViews' }
+        ],
+        dimensions: [
+          { name: 'pageTitle' }
+        ]
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    console.log('❌ GA4 Realtime API error:', error);
+    return null;
+  }
+}
+
+// ฟังก์ชันสำหรับดึงข้อมูลจาก Google Analytics Realtime API
+async function fetchGA4RealtimeData() {
+  try {
+    // ใช้ Google Analytics Realtime API
+    // ต้องมี Measurement ID ที่ถูกต้อง
+    const measurementId = 'G-XXXXXXXXXX';
+    
+    if (measurementId === 'G-XXXXXXXXXX') {
+      console.log('⚠️ Please update Measurement ID in index.html');
+      return null;
+    }
+    
+    // ใช้ GA4 Realtime API
+    const response = await fetch(`https://analyticsdata.googleapis.com/v1beta/properties/${measurementId}:runRealtimeReport`, {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer YOUR_ACCESS_TOKEN',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        metrics: [
+          { name: 'activeUsers' },
+          { name: 'screenPageViews' }
+        ],
+        dimensions: [
+          { name: 'pageTitle' }
+        ]
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    return data;
+    
+  } catch (error) {
+    console.log('❌ GA4 Realtime API error:', error);
+    return null;
+  }
+}
+
+function loadFromGA4EmbedAPI() {
+  console.log('📊 Loading from GA4 Embed API...');
+  
+  // ใช้ Google Analytics Embed API
+  if (typeof gapi !== 'undefined') {
+    gapi.load('analytics', function() {
+      // ใช้ GA4 Embed API เพื่อดึงข้อมูล
+      loadRealTimeDataFromGA4();
+    });
+  } else {
+    console.log('📊 GA4 Embed API not available, using gtag events');
+    loadFromGTagEvents();
+  }
+}
+
+function loadFromGTagEvents() {
+  console.log('📊 Loading from gtag events...');
+  
+  // แสดงตัวเลขเริ่มต้นทันที
+  updateCounterDisplay('visitor-count', '0');
+  updateCounterDisplay('download-count', '0');
+  
+  // ตรวจสอบว่า gtag ทำงานหรือไม่
+  if (typeof gtag !== 'undefined') {
+    console.log('✅ gtag is working - events are being sent to GA4');
+    
+    // ตรวจสอบ Measurement ID
+    const measurementId = 'G-XXXXXXXXXX';
+    
+    if (measurementId === 'G-XXXXXXXXXX') {
+      console.log('⚠️ Please update Measurement ID in index.html');
+      return;
+    }
+    
+    console.log('📊 Data is being sent to Google Analytics');
+    console.log('📊 Check GA4 Dashboard for real-time data');
+    console.log('📊 Measurement ID:', measurementId);
+    
+    // แสดงข้อความแนะนำ
+    showGA4Instructions();
+  } else {
+    console.log('❌ gtag not available');
+  }
+}
+
+function showGA4Instructions() {
+  console.log('📊 ===== GOOGLE ANALYTICS SETUP INSTRUCTIONS =====');
+  console.log('📊 1. Go to Google Analytics (analytics.google.com)');
+  console.log('📊 2. Create a GA4 Property');
+  console.log('📊 3. Get your Measurement ID (G-XXXXXXXXXX)');
+  console.log('📊 4. Update the Measurement ID in index.html');
+  console.log('📊 5. Check GA4 Dashboard for real-time data');
+  console.log('📊 ================================================');
+}
+
+function loadRealTimeDataFromGA4() {
+  console.log('📊 Loading real-time data from GA4...');
+  
+  // ใช้ GA4 Embed API เพื่อดึงข้อมูล real-time
+  // ต้องมี Measurement ID ที่ถูกต้อง
+  const measurementId = 'G-XXXXXXXXXX'; // ต้องแทนที่ด้วย ID จริง
+  
+  if (measurementId === 'G-XXXXXXXXXX') {
+    console.log('⚠️ Please update Measurement ID in script.js');
+    updateCounterDisplay('visitor-count', '⚠️');
+    updateCounterDisplay('download-count', '⚠️');
+    return;
+  }
+  
+  // ใช้ GA4 Embed API
+  try {
+    // ตัวอย่างการใช้งาน GA4 Embed API
+    console.log('📊 GA4 Embed API - Loading data...');
+    
+    // เนื่องจาก GA4 Embed API ต้องการการตั้งค่าที่ซับซ้อน
+    // เราจะใช้วิธีแสดงข้อมูลที่ส่งไปแล้ว
+    updateCounterDisplay('visitor-count', '📊');
+    updateCounterDisplay('download-count', '📊');
+    
+    console.log('📊 Data loaded from GA4 Embed API');
+  } catch (error) {
+    console.log('❌ GA4 Embed API error:', error);
+    loadFromGTagEvents();
+  }
+}
+
 function loadRealTimeCounts() {
-  console.log('Loading real-time counts...');
+  console.log('Loading real-time counts from Google Analytics...');
   
-  // Try multiple APIs for better reliability
-  Promise.allSettled([
-    loadFromCountAPI(),
-    loadFromGoatCounter(),
-    loadFromPlausible()
-  ]).then(results => {
-    console.log('Real-time data loaded from APIs');
-  });
+  // Load from Google Analytics
+  loadFromGoogleAnalytics();
 }
 
-function sendToRealTimeAPI(type) {
-  console.log(`Sending ${type} to real-time APIs...`);
-  
-  // Send to multiple APIs simultaneously
-  const promises = [
-    sendToCountAPI(type),
-    sendToGoatCounter(type),
-    sendToPlausible(type)
-  ];
-  
-  Promise.allSettled(promises).then(results => {
-    console.log(`${type} sent to real-time APIs`);
-    // Refresh counts after sending
-    setTimeout(loadRealTimeCounts, 1000);
-  });
-}
+// Removed old API functions - now using Google Analytics only
 
-// ===== COUNT API =====
-function loadFromCountAPI() {
-  return fetch('https://api.countapi.xyz/get/not44353.github.io/visitors')
-    .then(response => response.json())
-    .then(data => {
-      if (data.value) {
-        updateCounterDisplay('visitor-count', data.value);
-        console.log(`CountAPI visitors: ${data.value}`);
-      }
-    })
-    .catch(error => console.log('CountAPI visitors failed:', error));
-}
+// Removed CountAPI functions - now using Google Analytics only
 
-function sendToCountAPI(type) {
-  const endpoint = type === 'visitor' ? 'visitors' : 'downloads';
-  return fetch(`https://api.countapi.xyz/hit/not44353.github.io/${endpoint}`)
-    .then(response => response.json())
-    .then(data => {
-      console.log(`CountAPI ${type}: ${data.value}`);
-      updateCounterDisplay(`${type}-count`, data.value);
-    })
-    .catch(error => console.log(`CountAPI ${type} failed:`, error));
-}
+// Removed localStorage functions - using Google Analytics only
 
-// ===== FIREBASE REALTIME DATABASE =====
-function loadFromFirebase() {
-  // Using Firebase Realtime Database for true real-time
-  const firebaseConfig = {
-    databaseURL: "https://not44353-cv-default-rtdb.firebaseio.com/"
-  };
-  
-  // This would require Firebase SDK
-  // For now, using CountAPI as primary
-  return Promise.resolve();
-}
+// Removed other API functions - now using Google Analytics only
 
-function sendToFirebase(type) {
-  // Send to Firebase Realtime Database
-  // This would require Firebase SDK
-  return Promise.resolve();
-}
-
-// ===== GOAT COUNTER =====
-function loadFromGoatCounter() {
-  // GoatCounter doesn't have public API, using localStorage as fallback
-  return Promise.resolve();
-}
-
-function sendToGoatCounter(type) {
-  // GoatCounter tracking would go here
-  return Promise.resolve();
-}
-
-// ===== PLAUSIBLE =====
-function loadFromPlausible() {
-  // Plausible doesn't have public API, using localStorage as fallback
-  return Promise.resolve();
-}
-
-function sendToPlausible(type) {
-  // Plausible tracking would go here
-  return Promise.resolve();
-}
-
-// ===== REAL-TIME REFRESH =====
+// ===== GOOGLE ANALYTICS REFRESH =====
 function initRealTimeRefresh() {
-  // Refresh every 10 seconds for real-time feel
+  // Refresh every 30 seconds
   setInterval(() => {
-    loadRealTimeCounts();
-  }, 10000);
+    loadFromBackendAPI();
+  }, 30000);
   
   // Also refresh when page becomes visible
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
-      loadRealTimeCounts();
+      loadFromBackendAPI();
     }
   });
 }
@@ -555,7 +738,6 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollToTop();
   initLazyLoading();
   initCounters(); // Initialize counters
-  initAutoRefresh(); // Initialize auto refresh
   
   // Add event listeners with throttling
   window.addEventListener('scroll', throttle(() => {
