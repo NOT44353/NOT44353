@@ -315,7 +315,7 @@ function loadRealTimeData() {
   // You can replace this with your preferred service
   
   // Load visitor count
-  fetch('https://api.countapi.xyz/get/not44353-cv/visitors')
+  fetch('https://api.countapi.xyz/get/not44353.github.io/visitors')
     .then(response => response.json())
     .then(data => {
       if (data.value) {
@@ -327,7 +327,7 @@ function loadRealTimeData() {
     });
   
   // Load download count
-  fetch('https://api.countapi.xyz/get/not44353-cv/downloads')
+  fetch('https://api.countapi.xyz/get/not44353.github.io/downloads')
     .then(response => response.json())
     .then(data => {
       if (data.value) {
@@ -399,7 +399,7 @@ function isNewVisitor() {
 
 function sendVisitorData() {
   // Send visitor count to CountAPI
-  fetch('https://api.countapi.xyz/hit/not44353-cv/visitors')
+  fetch('https://api.countapi.xyz/hit/not44353.github.io/visitors')
     .then(response => response.json())
     .then(data => {
       console.log('Visitor count updated:', data.value);
@@ -413,7 +413,7 @@ function sendVisitorData() {
 
 function sendDownloadData() {
   // Send download count to CountAPI
-  fetch('https://api.countapi.xyz/hit/not44353-cv/downloads')
+  fetch('https://api.countapi.xyz/hit/not44353.github.io/downloads')
     .then(response => response.json())
     .then(data => {
       console.log('Download count updated:', data.value);
