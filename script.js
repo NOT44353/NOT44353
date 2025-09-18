@@ -299,10 +299,10 @@ function initCounters() {
   const now = new Date().getTime();
   const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
   
-  if (!lastVisit || (now - parseInt(lastVisit)) > oneHour) {
+  // Use advanced visitor tracking
+  if (isNewVisitor()) {
     visitorCount++;
     localStorage.setItem('visitorCount', visitorCount.toString());
-    localStorage.setItem('lastVisit', now.toString());
     
     // Send visitor count to external API
     sendVisitorData(visitorCount);
@@ -356,6 +356,49 @@ function loadRealTimeData() {
     .catch(error => {
       console.log('Using local data for download count');
     });
+}
+
+// ===== ADVANCED VISITOR TRACKING =====
+function getVisitorFingerprint() {
+  // Create a unique fingerprint for each visitor
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  ctx.textBaseline = 'top';
+  ctx.font = '14px Arial';
+  ctx.fillText('Visitor fingerprint', 2, 2);
+  
+  const fingerprint = {
+    screen: `${screen.width}x${screen.height}`,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    language: navigator.language,
+    platform: navigator.platform,
+    userAgent: navigator.userAgent.substring(0, 50),
+    canvas: canvas.toDataURL(),
+    timestamp: Date.now()
+  };
+  
+  return btoa(JSON.stringify(fingerprint));
+}
+
+function isNewVisitor() {
+  const fingerprint = getVisitorFingerprint();
+  const storedFingerprint = localStorage.getItem('visitorFingerprint');
+  const lastVisit = localStorage.getItem('lastVisit');
+  const now = new Date().getTime();
+  const oneDay = 24 * 60 * 60 * 1000; // 24 hours
+  
+  // Check if it's a new visitor or after 24 hours
+  if (!storedFingerprint || 
+      fingerprint !== storedFingerprint || 
+      !lastVisit || 
+      (now - parseInt(lastVisit)) > oneDay) {
+    
+    localStorage.setItem('visitorFingerprint', fingerprint);
+    localStorage.setItem('lastVisit', now.toString());
+    return true;
+  }
+  
+  return false;
 }
 
 function sendVisitorData(count) {
