@@ -288,6 +288,130 @@ function throttle(func, limit) {
   }
 }
 
+// ===== VISITOR & DOWNLOAD COUNTER =====
+function initCounters() {
+  // Get current counts from localStorage
+  let visitorCount = parseInt(localStorage.getItem('visitorCount')) || 0;
+  let downloadCount = parseInt(localStorage.getItem('downloadCount')) || 0;
+  
+  // Check if this is a new visitor (not a page refresh)
+  const lastVisit = localStorage.getItem('lastVisit');
+  const now = new Date().getTime();
+  const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
+  
+  if (!lastVisit || (now - parseInt(lastVisit)) > oneHour) {
+    visitorCount++;
+    localStorage.setItem('visitorCount', visitorCount.toString());
+    localStorage.setItem('lastVisit', now.toString());
+    
+    // Send visitor count to external API
+    sendVisitorData(visitorCount);
+  }
+  
+  // Load real-time data from API
+  loadRealTimeData();
+  
+  // Update display
+  updateCounterDisplay('visitor-count', visitorCount);
+  updateCounterDisplay('download-count', downloadCount);
+  
+  // Add download tracking
+  const downloadBtn = document.getElementById('download-btn');
+  if (downloadBtn) {
+    downloadBtn.addEventListener('click', function() {
+      downloadCount++;
+      localStorage.setItem('downloadCount', downloadCount.toString());
+      updateCounterDisplay('download-count', downloadCount);
+      
+      // Send download count to external API
+      sendDownloadData(downloadCount);
+    });
+  }
+}
+
+// ===== REAL-TIME DATA FUNCTIONS =====
+function loadRealTimeData() {
+  // Using a free API service for visitor counting
+  // You can replace this with your preferred service
+  
+  // Option 1: Using CountAPI (Free)
+  fetch('https://api.countapi.xyz/get/not44353-cv/visitors')
+    .then(response => response.json())
+    .then(data => {
+      if (data.value) {
+        updateCounterDisplay('visitor-count', data.value);
+      }
+    })
+    .catch(error => {
+      console.log('Using local data for visitor count');
+    });
+  
+  fetch('https://api.countapi.xyz/get/not44353-cv/downloads')
+    .then(response => response.json())
+    .then(data => {
+      if (data.value) {
+        updateCounterDisplay('download-count', data.value);
+      }
+    })
+    .catch(error => {
+      console.log('Using local data for download count');
+    });
+}
+
+function sendVisitorData(count) {
+  // Send visitor count to CountAPI
+  fetch('https://api.countapi.xyz/hit/not44353-cv/visitors')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Visitor count updated:', data.value);
+    })
+    .catch(error => {
+      console.log('Failed to update visitor count:', error);
+    });
+}
+
+function sendDownloadData(count) {
+  // Send download count to CountAPI
+  fetch('https://api.countapi.xyz/hit/not44353-cv/downloads')
+    .then(response => response.json())
+    .then(data => {
+      console.log('Download count updated:', data.value);
+    })
+    .catch(error => {
+      console.log('Failed to update download count:', error);
+    });
+}
+
+function updateCounterDisplay(elementId, count) {
+  const element = document.getElementById(elementId);
+  if (element) {
+    // Animate counter
+    animateCounter(element, parseInt(element.textContent) || 0, count);
+  }
+}
+
+function animateCounter(element, start, end) {
+  const duration = 1000; // 1 second
+  const startTime = performance.now();
+  
+  function updateCounter(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    
+    // Easing function for smooth animation
+    const easeOutQuart = 1 - Math.pow(1 - progress, 4);
+    const current = Math.floor(start + (end - start) * easeOutQuart);
+    
+    element.textContent = current.toLocaleString('th-TH');
+    
+    if (progress < 1) {
+      requestAnimationFrame(updateCounter);
+    }
+  }
+  
+  requestAnimationFrame(updateCounter);
+}
+
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize all functions
@@ -297,6 +421,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initTypingEffect();
   initScrollToTop();
   initLazyLoading();
+  initCounters(); // Initialize counters
   
   // Add event listeners with throttling
   window.addEventListener('scroll', throttle(() => {
