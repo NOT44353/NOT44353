@@ -290,41 +290,21 @@ function throttle(func, limit) {
 
 // ===== VISITOR & DOWNLOAD COUNTER =====
 function initCounters() {
-  // Get current counts from localStorage
-  let visitorCount = parseInt(localStorage.getItem('visitorCount')) || 0;
-  let downloadCount = parseInt(localStorage.getItem('downloadCount')) || 0;
-  
-  // Check if this is a new visitor (not a page refresh)
-  const lastVisit = localStorage.getItem('lastVisit');
-  const now = new Date().getTime();
-  const oneHour = 60 * 60 * 1000; // 1 hour in milliseconds
-  
-  // Use advanced visitor tracking
+  // Check if this is a new visitor
   if (isNewVisitor()) {
-    visitorCount++;
-    localStorage.setItem('visitorCount', visitorCount.toString());
-    
     // Send visitor count to external API
-    sendVisitorData(visitorCount);
+    sendVisitorData();
   }
   
-  // Load real-time data from API
+  // Load real-time data from API (this will show global counts)
   loadRealTimeData();
-  
-  // Update display
-  updateCounterDisplay('visitor-count', visitorCount);
-  updateCounterDisplay('download-count', downloadCount);
   
   // Add download tracking
   const downloadBtn = document.getElementById('download-btn');
   if (downloadBtn) {
     downloadBtn.addEventListener('click', function() {
-      downloadCount++;
-      localStorage.setItem('downloadCount', downloadCount.toString());
-      updateCounterDisplay('download-count', downloadCount);
-      
       // Send download count to external API
-      sendDownloadData(downloadCount);
+      sendDownloadData();
     });
   }
 }
@@ -334,7 +314,7 @@ function loadRealTimeData() {
   // Using a free API service for visitor counting
   // You can replace this with your preferred service
   
-  // Option 1: Using CountAPI (Free)
+  // Load visitor count
   fetch('https://api.countapi.xyz/get/not44353-cv/visitors')
     .then(response => response.json())
     .then(data => {
@@ -343,9 +323,10 @@ function loadRealTimeData() {
       }
     })
     .catch(error => {
-      console.log('Using local data for visitor count');
+      console.log('Failed to load visitor count:', error);
     });
   
+  // Load download count
   fetch('https://api.countapi.xyz/get/not44353-cv/downloads')
     .then(response => response.json())
     .then(data => {
@@ -354,8 +335,23 @@ function loadRealTimeData() {
       }
     })
     .catch(error => {
-      console.log('Using local data for download count');
+      console.log('Failed to load download count:', error);
     });
+}
+
+// ===== AUTO REFRESH COUNTERS =====
+function initAutoRefresh() {
+  // Refresh counters every 30 seconds
+  setInterval(() => {
+    loadRealTimeData();
+  }, 30000);
+  
+  // Also refresh when page becomes visible
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      loadRealTimeData();
+    }
+  });
 }
 
 // ===== ADVANCED VISITOR TRACKING =====
@@ -401,24 +397,28 @@ function isNewVisitor() {
   return false;
 }
 
-function sendVisitorData(count) {
+function sendVisitorData() {
   // Send visitor count to CountAPI
   fetch('https://api.countapi.xyz/hit/not44353-cv/visitors')
     .then(response => response.json())
     .then(data => {
       console.log('Visitor count updated:', data.value);
+      // Update display with new count
+      updateCounterDisplay('visitor-count', data.value);
     })
     .catch(error => {
       console.log('Failed to update visitor count:', error);
     });
 }
 
-function sendDownloadData(count) {
+function sendDownloadData() {
   // Send download count to CountAPI
   fetch('https://api.countapi.xyz/hit/not44353-cv/downloads')
     .then(response => response.json())
     .then(data => {
       console.log('Download count updated:', data.value);
+      // Update display with new count
+      updateCounterDisplay('download-count', data.value);
     })
     .catch(error => {
       console.log('Failed to update download count:', error);
@@ -465,6 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
   initScrollToTop();
   initLazyLoading();
   initCounters(); // Initialize counters
+  initAutoRefresh(); // Initialize auto refresh
   
   // Add event listeners with throttling
   window.addEventListener('scroll', throttle(() => {
