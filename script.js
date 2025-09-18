@@ -288,68 +288,111 @@ function throttle(func, limit) {
   }
 }
 
-// ===== VISITOR & DOWNLOAD COUNTER =====
+// ===== GOOGLE ANALYTICS COUNTER =====
 function initCounters() {
-  // Check if this is a new visitor
-  if (isNewVisitor()) {
-    // Send visitor count to external API
-    sendVisitorData();
-  }
+  console.log('Initializing Google Analytics counters...');
   
-  // Load real-time data from API (this will show global counts)
-  loadRealTimeData();
+  // Initialize Google Analytics
+  initGoogleAnalytics();
+  
+  // Track page view
+  trackPageView();
+  
+  // Load visitor count from GA
+  loadVisitorCount();
   
   // Add download tracking
   const downloadBtn = document.getElementById('download-btn');
   if (downloadBtn) {
+    console.log('Download button found, adding event listener');
     downloadBtn.addEventListener('click', function() {
-      // Send download count to external API
-      sendDownloadData();
+      console.log('Download button clicked!');
+      trackDownload();
     });
+  } else {
+    console.log('Download button not found!');
   }
 }
 
-// ===== REAL-TIME DATA FUNCTIONS =====
-function loadRealTimeData() {
-  // Using a free API service for visitor counting
-  // You can replace this with your preferred service
+// ===== GOOGLE ANALYTICS FUNCTIONS =====
+function initGoogleAnalytics() {
+  // Check if gtag is available
+  if (typeof gtag === 'undefined') {
+    console.log('Google Analytics not loaded, using fallback');
+    return false;
+  }
   
-  // Load visitor count
-  fetch('https://api.countapi.xyz/get/not44353.github.io/visitors')
-    .then(response => response.json())
-    .then(data => {
-      if (data.value) {
-        updateCounterDisplay('visitor-count', data.value);
-      }
-    })
-    .catch(error => {
-      console.log('Failed to load visitor count:', error);
+  console.log('Google Analytics initialized');
+  return true;
+}
+
+function trackPageView() {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'page_view', {
+      page_title: 'Thanapat Pisawong - Resume',
+      page_location: window.location.href,
+      custom_parameter_1: 'resume_view'
     });
+    console.log('Page view tracked');
+  }
   
-  // Load download count
-  fetch('https://api.countapi.xyz/get/not44353.github.io/downloads')
-    .then(response => response.json())
-    .then(data => {
-      if (data.value) {
-        updateCounterDisplay('download-count', data.value);
-      }
-    })
-    .catch(error => {
-      console.log('Failed to load download count:', error);
+  // Fallback: Update local counter
+  updateLocalVisitorCount();
+}
+
+function trackDownload() {
+  if (typeof gtag !== 'undefined') {
+    gtag('event', 'file_download', {
+      file_name: 'resume.pdf',
+      file_extension: 'pdf',
+      custom_parameter_1: 'resume_download'
     });
+    console.log('Download tracked');
+  }
+  
+  // Fallback: Update local counter
+  updateLocalDownloadCount();
+}
+
+function loadVisitorCount() {
+  // For now, use local storage as fallback
+  // In production, you would use GA4 Data API
+  let visitorCount = parseInt(localStorage.getItem('ga_visitor_count')) || 0;
+  let downloadCount = parseInt(localStorage.getItem('ga_download_count')) || 0;
+  
+  updateCounterDisplay('visitor-count', visitorCount);
+  updateCounterDisplay('download-count', downloadCount);
+  
+  console.log(`Loaded counts - Visitors: ${visitorCount}, Downloads: ${downloadCount}`);
+}
+
+function updateLocalVisitorCount() {
+  let count = parseInt(localStorage.getItem('ga_visitor_count')) || 0;
+  count++;
+  localStorage.setItem('ga_visitor_count', count.toString());
+  updateCounterDisplay('visitor-count', count);
+  console.log(`Visitor count updated: ${count}`);
+}
+
+function updateLocalDownloadCount() {
+  let count = parseInt(localStorage.getItem('ga_download_count')) || 0;
+  count++;
+  localStorage.setItem('ga_download_count', count.toString());
+  updateCounterDisplay('download-count', count);
+  console.log(`Download count updated: ${count}`);
 }
 
 // ===== AUTO REFRESH COUNTERS =====
 function initAutoRefresh() {
   // Refresh counters every 30 seconds
   setInterval(() => {
-    loadRealTimeData();
+    loadVisitorCount();
   }, 30000);
   
   // Also refresh when page becomes visible
   document.addEventListener('visibilitychange', () => {
     if (!document.hidden) {
-      loadRealTimeData();
+      loadVisitorCount();
     }
   });
 }
@@ -397,33 +440,7 @@ function isNewVisitor() {
   return false;
 }
 
-function sendVisitorData() {
-  // Send visitor count to CountAPI
-  fetch('https://api.countapi.xyz/hit/not44353.github.io/visitors')
-    .then(response => response.json())
-    .then(data => {
-      console.log('Visitor count updated:', data.value);
-      // Update display with new count
-      updateCounterDisplay('visitor-count', data.value);
-    })
-    .catch(error => {
-      console.log('Failed to update visitor count:', error);
-    });
-}
-
-function sendDownloadData() {
-  // Send download count to CountAPI
-  fetch('https://api.countapi.xyz/hit/not44353.github.io/downloads')
-    .then(response => response.json())
-    .then(data => {
-      console.log('Download count updated:', data.value);
-      // Update display with new count
-      updateCounterDisplay('download-count', data.value);
-    })
-    .catch(error => {
-      console.log('Failed to update download count:', error);
-    });
-}
+// Removed old API functions - now using Google Analytics
 
 function updateCounterDisplay(elementId, count) {
   const element = document.getElementById(elementId);
