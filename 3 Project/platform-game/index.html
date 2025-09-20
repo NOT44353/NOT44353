@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Platform Game - Space Adventure</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Game UI -->
+        <div class="game-ui">
+            <div class="game-header">
+                <div class="score-display">
+                    <i class="fas fa-star"></i>
+                    <span id="score">0</span>
+                </div>
+                <div class="lives-display">
+                    <i class="fas fa-heart"></i>
+                    <span id="lives">3</span>
+                </div>
+                <div class="level-display">
+                    <i class="fas fa-flag"></i>
+                    <span id="level">1</span>
+                </div>
+            </div>
+            
+            <div class="game-controls">
+                <button class="control-btn" id="leftBtn">
+                    <i class="fas fa-arrow-left"></i>
+                </button>
+                <button class="control-btn" id="jumpBtn">
+                    <i class="fas fa-arrow-up"></i>
+                </button>
+                <button class="control-btn" id="rightBtn">
+                    <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Canvas -->
+        <canvas id="gameCanvas"></canvas>
+
+        <!-- Game Overlay -->
+        <div class="game-overlay" id="gameOverlay">
+            <div class="overlay-content">
+                <h1 class="game-title">Space Adventure</h1>
+                <p class="game-subtitle">Navigate through the 3D world and collect stars!</p>
+                <div class="game-instructions">
+                    <div class="instruction">
+                        <i class="fas fa-arrow-left"></i>
+                        <span>Move Left</span>
+                    </div>
+                    <div class="instruction">
+                        <i class="fas fa-arrow-right"></i>
+                        <span>Move Right</span>
+                    </div>
+                    <div class="instruction">
+                        <i class="fas fa-arrow-up"></i>
+                        <span>Jump</span>
+                    </div>
+                </div>
+                <button class="start-btn" onclick="startGame()">
+                    <i class="fas fa-play"></i>
+                    Start Game
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Over Modal -->
+        <div class="game-over-modal" id="gameOverModal">
+            <div class="modal-content">
+                <h2>Game Over!</h2>
+                <div class="final-score">
+                    <i class="fas fa-trophy"></i>
+                    <span>Final Score: <span id="finalScore">0</span></span>
+                </div>
+                <div class="modal-buttons">
+                    <button class="restart-btn" onclick="restartGame()">
+                        <i class="fas fa-redo"></i>
+                        Play Again
+                    </button>
+                    <button class="back-btn" onclick="goBack()">
+                        <i class="fas fa-home"></i>
+                        Back to Portfolio
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div class="pause-menu" id="pauseMenu">
+            <div class="pause-content">
+                <h3>Game Paused</h3>
+                <div class="pause-buttons">
+                    <button class="resume-btn" onclick="resumeGame()">
+                        <i class="fas fa-play"></i>
+                        Resume
+                    </button>
+                    <button class="restart-btn" onclick="restartGame()">
+                        <i class="fas fa-redo"></i>
+                        Restart
+                    </button>
+                    <button class="back-btn" onclick="goBack()">
+                        <i class="fas fa-home"></i>
+                        Back to Portfolio
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

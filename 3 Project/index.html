@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Skills Showcase - 3D Experience</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Navigation -->
+        <nav class="nav">
+            <div class="nav-brand">
+                <i class="fas fa-code"></i>
+                <span>DevShowcase</span>
+            </div>
+            <div class="nav-menu">
+                <a href="#home" class="nav-link active">Home</a>
+                <a href="#skills" class="nav-link">Skills</a>
+                <a href="#games" class="nav-link">Games</a>
+                <a href="#projects" class="nav-link">Projects</a>
+            </div>
+        </nav>
+
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">
+                        <span class="text-gradient">Interactive</span>
+                        <span class="text-gradient">Developer</span>
+                        <span class="text-gradient">Showcase</span>
+                    </h1>
+                    <p class="hero-subtitle">Explore my skills through interactive experiences</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="startExperience()">
+                            <i class="fas fa-play"></i>
+                            Start Experience
+                        </button>
+                        <button class="btn btn-secondary" onclick="scrollToSection('skills')">
+                            <i class="fas fa-arrow-down"></i>
+                            View Skills
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="floating-cube">
+                        <div class="cube-face front"></div>
+                        <div class="cube-face back"></div>
+                        <div class="cube-face right"></div>
+                        <div class="cube-face left"></div>
+                        <div class="cube-face top"></div>
+                        <div class="cube-face bottom"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Section -->
+        <section id="skills" class="section">
+            <div class="container">
+                <h2 class="section-title">Interactive Skills</h2>
+                <div class="skills-grid">
+                    <div class="skill-card" data-skill="javascript">
+                        <div class="skill-icon">
+                            <i class="fab fa-js-square"></i>
+                        </div>
+                        <h3>JavaScript</h3>
+                        <div class="skill-level">
+                            <div class="level-bar">
+                                <div class="level-fill" data-level="95"></div>
+                            </div>
+                            <span class="level-text">95%</span>
+                        </div>
+                        <button class="skill-btn" onclick="playSkillGame('javascript')">
+                            Play Game
+                        </button>
+                    </div>
+
+                    <div class="skill-card" data-skill="react">
+                        <div class="skill-icon">
+                            <i class="fab fa-react"></i>
+                        </div>
+                        <h3>React</h3>
+                        <div class="skill-level">
+                            <div class="level-bar">
+                                <div class="level-fill" data-level="90"></div>
+                            </div>
+                            <span class="level-text">90%</span>
+                        </div>
+                        <button class="skill-btn" onclick="playSkillGame('react')">
+                            Play Game
+                        </button>
+                    </div>
+
+                    <div class="skill-card" data-skill="python">
+                        <div class="skill-icon">
+                            <i class="fab fa-python"></i>
+                        </div>
+                        <h3>Python</h3>
+                        <div class="skill-level">
+                            <div class="level-bar">
+                                <div class="level-fill" data-level="88"></div>
+                            </div>
+                            <span class="level-text">88%</span>
+                        </div>
+                        <button class="skill-btn" onclick="playSkillGame('python')">
+                            Play Game
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Games Section -->
+        <section id="games" class="section">
+            <div class="container">
+                <h2 class="section-title">Mini Games</h2>
+                <div class="games-grid">
+                    <div class="game-card" onclick="startGame('typing')">
+                        <div class="game-icon">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <h3>Code Typing Challenge</h3>
+                        <p>Test your coding speed and accuracy</p>
+                    </div>
+
+                    <div class="game-card" onclick="startGame('memory')">
+                        <div class="game-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3>Memory Card Game</h3>
+                        <p>Match programming concepts</p>
+                    </div>
+
+                    <div class="game-card" onclick="startGame('puzzle')">
+                        <div class="game-icon">
+                            <i class="fas fa-puzzle-piece"></i>
+                        </div>
+                        <h3>Code Puzzle</h3>
+                        <p>Arrange code blocks correctly</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section id="projects" class="section">
+            <div class="container">
+                <h2 class="section-title">Featured Projects</h2>
+                <div class="projects-grid">
+                    <div class="project-card" onclick="openEcommerce()">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3>E-Commerce Platform</h3>
+                            <p>Full-stack e-commerce solution with modern UI/UX and shopping cart functionality</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">HTML5</span>
+                                <span class="tech-tag">CSS3</span>
+                                <span class="tech-tag">JavaScript</span>
+                            </div>
+                            <div class="project-links">
+                                <span class="project-link">View Project <i class="fas fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="openPlatformGame()">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <i class="fas fa-gamepad"></i>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3>3D Platform Game</h3>
+                            <p>Space Adventure - 3D platformer game with physics, enemies, and collectibles</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Canvas 2D</span>
+                                <span class="tech-tag">Physics</span>
+                                <span class="tech-tag">3D Effects</span>
+                            </div>
+                            <div class="project-links">
+                                <span class="project-link">Play Game <i class="fas fa-play"></i></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card" onclick="openMobileApp()">
+                        <div class="project-image">
+                            <div class="project-placeholder">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                        </div>
+                        <div class="project-content">
+                            <h3>HealthTracker Pro</h3>
+                            <p>Mobile health tracking app with real-time data, charts, and workout logging</p>
+                            <div class="project-tech">
+                                <span class="tech-tag">PWA</span>
+                                <span class="tech-tag">Charts</span>
+                                <span class="tech-tag">Mobile UI</span>
+                            </div>
+                            <div class="project-links">
+                                <span class="project-link">View App <i class="fas fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Game Modal -->
+    <div id="gameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="gameTitle">Game Title</h3>
+                <button class="close-btn" onclick="closeGame()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="gameArea"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Particle System -->
+    <div id="particles"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

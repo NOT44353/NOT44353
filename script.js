@@ -288,12 +288,34 @@ function throttle(func, limit) {
   }
 }
 
+// ===== PROJECTS MODAL FUNCTIONS =====
+function openProjectsModal() {
+  const modal = document.getElementById('projectsModal');
+  if (modal) {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+    
+    // Add escape key listener
+    document.addEventListener('keydown', handleEscapeKey);
+  }
+}
 
+function closeProjectsModal() {
+  const modal = document.getElementById('projectsModal');
+  if (modal) {
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+    
+    // Remove escape key listener
+    document.removeEventListener('keydown', handleEscapeKey);
+  }
+}
 
-
-
-
-
+function handleEscapeKey(event) {
+  if (event.key === 'Escape') {
+    closeProjectsModal();
+  }
+}
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
@@ -304,6 +326,8 @@ document.addEventListener('DOMContentLoaded', function() {
   initTypingEffect();
   initScrollToTop();
   initLazyLoading();
+  
+  // Profile click event removed - now using button instead
   
   // Add event listeners with throttling
   window.addEventListener('scroll', throttle(() => {

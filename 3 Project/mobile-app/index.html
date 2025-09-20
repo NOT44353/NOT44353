@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HealthTracker Pro - Mobile App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Mobile Frame -->
+        <div class="mobile-frame">
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div class="time">9:41</div>
+                <div class="status-icons">
+                    <i class="fas fa-signal"></i>
+                    <i class="fas fa-wifi"></i>
+                    <i class="fas fa-battery-three-quarters"></i>
+                </div>
+            </div>
+
+            <!-- App Header -->
+            <header class="app-header">
+                <div class="header-content">
+                    <div class="user-info">
+                        <div class="avatar">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="user-details">
+                            <h2>Good Morning!</h2>
+                            <p>Ready to track your health?</p>
+                        </div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge">3</span>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="app-content">
+                <!-- Health Stats Cards -->
+                <section class="stats-section">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-heartbeat"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Heart Rate</h3>
+                                <div class="stat-value">72 <span>bpm</span></div>
+                                <div class="stat-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+5%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Calories</h3>
+                                <div class="stat-value">1,250 <span>kcal</span></div>
+                                <div class="stat-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+12%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Steps</h3>
+                                <div class="stat-value">8,432 <span>steps</span></div>
+                                <div class="stat-trend up">
+                                    <i class="fas fa-arrow-up"></i>
+                                    <span>+8%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stat-card">
+                            <div class="stat-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h3>Sleep</h3>
+                                <div class="stat-value">7.5 <span>hrs</span></div>
+                                <div class="stat-trend down">
+                                    <i class="fas fa-arrow-down"></i>
+                                    <span>-2%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Actions -->
+                <section class="quick-actions">
+                    <h3>Quick Actions</h3>
+                    <div class="actions-grid">
+                        <button class="action-btn" onclick="startWorkout()">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Start Workout</span>
+                        </button>
+                        <button class="action-btn" onclick="logMeal()">
+                            <i class="fas fa-utensils"></i>
+                            <span>Log Meal</span>
+                        </button>
+                        <button class="action-btn" onclick="meditate()">
+                            <i class="fas fa-leaf"></i>
+                            <span>Meditate</span>
+                        </button>
+                        <button class="action-btn" onclick="checkWater()">
+                            <i class="fas fa-tint"></i>
+                            <span>Water Intake</span>
+                        </button>
+                    </div>
+                </section>
+
+                <!-- Health Chart -->
+                <section class="chart-section">
+                    <h3>Health Progress</h3>
+                    <div class="chart-container">
+                        <canvas id="healthChart"></canvas>
+                    </div>
+                </section>
+
+                <!-- Recent Activities -->
+                <section class="activities-section">
+                    <h3>Recent Activities</h3>
+                    <div class="activities-list">
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-running"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4>Morning Run</h4>
+                                <p>30 minutes • 5.2 km</p>
+                                <span class="activity-time">2 hours ago</span>
+                            </div>
+                            <div class="activity-calories">+320 cal</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4>Healthy Breakfast</h4>
+                                <p>Oatmeal with fruits</p>
+                                <span class="activity-time">4 hours ago</span>
+                            </div>
+                            <div class="activity-calories">+280 cal</div>
+                        </div>
+
+                        <div class="activity-item">
+                            <div class="activity-icon">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <div class="activity-info">
+                                <h4>Sleep Session</h4>
+                                <p>7 hours 30 minutes</p>
+                                <span class="activity-time">Yesterday</span>
+                            </div>
+                            <div class="activity-calories">Quality: 85%</div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- Bottom Navigation -->
+            <nav class="bottom-nav">
+                <a href="#" class="nav-item active">
+                    <i class="fas fa-home"></i>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-plus-circle"></i>
+                    <span>Add</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- Modals -->
+        <div class="modal" id="workoutModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Start Workout</h3>
+                    <button class="close-btn" onclick="closeModal('workoutModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="workout-options">
+                        <button class="workout-option" onclick="startWorkoutType('cardio')">
+                            <i class="fas fa-heartbeat"></i>
+                            <span>Cardio</span>
+                        </button>
+                        <button class="workout-option" onclick="startWorkoutType('strength')">
+                            <i class="fas fa-dumbbell"></i>
+                            <span>Strength</span>
+                        </button>
+                        <button class="workout-option" onclick="startWorkoutType('yoga')">
+                            <i class="fas fa-leaf"></i>
+                            <span>Yoga</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="mealModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Log Meal</h3>
+                    <button class="close-btn" onclick="closeModal('mealModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="meal-options">
+                        <button class="meal-option" onclick="logMealType('breakfast')">
+                            <i class="fas fa-sun"></i>
+                            <span>Breakfast</span>
+                        </button>
+                        <button class="meal-option" onclick="logMealType('lunch')">
+                            <i class="fas fa-sun"></i>
+                            <span>Lunch</span>
+                        </button>
+                        <button class="meal-option" onclick="logMealType('dinner')">
+                            <i class="fas fa-moon"></i>
+                            <span>Dinner</span>
+                        </button>
+                        <button class="meal-option" onclick="logMealType('snack')">
+                            <i class="fas fa-cookie-bite"></i>
+                            <span>Snack</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="waterModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Water Intake</h3>
+                    <button class="close-btn" onclick="closeModal('waterModal')">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="water-tracker">
+                        <div class="water-goal">
+                            <h4>Today's Goal: 8 glasses</h4>
+                            <div class="water-progress">
+                                <div class="water-fill" style="width: 62.5%"></div>
+                            </div>
+                            <p>5 of 8 glasses completed</p>
+                        </div>
+                        <div class="water-actions">
+                            <button class="water-btn" onclick="addWater(1)">
+                                <i class="fas fa-plus"></i>
+                                <span>+1 Glass</span>
+                            </button>
+                            <button class="water-btn" onclick="addWater(2)">
+                                <i class="fas fa-plus"></i>
+                                <span>+2 Glasses</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

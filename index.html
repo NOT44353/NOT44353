@@ -39,8 +39,14 @@
   <!-- Hero Section -->
   <section class="hero" id="hero">
     <div class="hero-content">
-      <div class="profile-frame">
-        <img src="profile2.jpg" alt="Profile" class="profile-img" />
+      <div class="profile-container">
+        <div class="profile-frame">
+          <img src="profile2.jpg" alt="Profile" class="profile-img" />
+        </div>
+        <button class="projects-btn" onclick="openProjectsModal()">
+          <i class="fas fa-code"></i>
+          <span>View My MiniProjects</span>
+        </button>
       </div>
       <h1>THANAPAT PISAWONG</h1>
       <h2>FULL STACK DEVELOPER & SOFTWARE ENGINEER</h2>
@@ -427,6 +433,22 @@
   <footer>
     <p>&copy; 2024 Thanapat Pisawong | <a href="https://github.com/NOT44353" target="_blank"><i class="fab fa-github"></i> GitHub</a></p>
   </footer>
+
+  <!-- Projects Modal -->
+  <div id="projectsModal" class="projects-modal">
+    <div class="modal-overlay" onclick="closeProjectsModal()"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>My Interactive Projects</h3>
+        <button class="close-btn" onclick="closeProjectsModal()">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <iframe id="projectsFrame" src="3 Project/index.html" frameborder="0"></iframe>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
