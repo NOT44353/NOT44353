@@ -119,15 +119,21 @@ class EcommerceApp {
         });
 
         // Search
-        document.getElementById('searchInput').addEventListener('input', (e) => {
-            this.handleSearch(e.target.value);
-        });
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                this.handleSearch(e.target.value);
+            });
+        }
 
         // Checkout form
-        document.getElementById('checkoutForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            this.handleCheckout();
-        });
+        const checkoutForm = document.getElementById('checkoutForm');
+        if (checkoutForm) {
+            checkoutForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                this.handleCheckout();
+            });
+        }
 
         // Close modals when clicking outside
         document.addEventListener('click', (e) => {
@@ -161,7 +167,8 @@ class EcommerceApp {
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.classList.remove('active');
         });
-        document.querySelector(`[data-category="${category}"]`).classList.add('active');
+        const activeBtn = document.querySelector(`[data-category="${category}"]`);
+        if (activeBtn) activeBtn.classList.add('active');
 
         this.renderProducts();
     }
@@ -185,6 +192,7 @@ class EcommerceApp {
         });
 
         const productsGrid = document.getElementById('productsGrid');
+        if (!productsGrid) return;
         productsGrid.innerHTML = '';
 
         products.forEach(product => {
@@ -377,7 +385,7 @@ class EcommerceApp {
             position: fixed;
             top: 100px;
             right: 20px;
-            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#2563eb'};
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#2ca7e0'};
             color: white;
             padding: 1rem 1.5rem;
             border-radius: 8px;

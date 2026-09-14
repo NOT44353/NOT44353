@@ -154,8 +154,191 @@ function initParticles() {
   });
 }
 
+// ===== 3D PROFILE PLAYGROUND =====
+function initProfile3D() {
+  const scene = document.getElementById('profile3d');
+  const stage = document.getElementById('profile3dStage');
+  const shine = document.getElementById('profileShine');
+  const canvas = document.getElementById('profileSparkCanvas');
+  if (!scene || !stage) return;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) {
+    scene.classList.remove('is-idle');
+    return;
+  }
+
+  let rafId = 0;
+  let targetX = -12;
+  let targetY = 8;
+  let currentX = -12;
+  let currentY = 8;
+  let lift = 0;
+  let targetLift = 0;
+  let active = false;
+  let flipping = false;
+  let idleTimer = null;
+
+  const setVars = () => {
+    scene.style.setProperty('--ry', `${currentX.toFixed(2)}deg`);
+    scene.style.setProperty('--rx', `${currentY.toFixed(2)}deg`);
+    scene.style.setProperty('--lift', `${lift.toFixed(2)}px`);
+  };
+
+  const render = () => {
+    currentX += (targetX - currentX) * 0.14;
+    currentY += (targetY - currentY) * 0.14;
+    lift += (targetLift - lift) * 0.12;
+    setVars();
+
+    const settling =
+      Math.abs(targetX - currentX) > 0.04 ||
+      Math.abs(targetY - currentY) > 0.04 ||
+      Math.abs(targetLift - lift) > 0.2;
+
+    if (active || settling) {
+      rafId = requestAnimationFrame(render);
+    } else {
+      rafId = 0;
+    }
+  };
+
+  const startRender = () => {
+    if (!rafId) rafId = requestAnimationFrame(render);
+  };
+
+  const goIdle = () => {
+    scene.classList.add('is-idle');
+    scene.classList.remove('is-tilting');
+    stage.style.transform = '';
+  };
+
+  const wake = () => {
+    scene.classList.remove('is-idle');
+    scene.classList.add('is-tilting');
+    clearTimeout(idleTimer);
+  };
+
+  scene.classList.add('is-idle');
+
+  scene.addEventListener('pointerenter', () => {
+    wake();
+    targetLift = -8;
+    startRender();
+  });
+
+  scene.addEventListener('pointermove', (e) => {
+    const rect = scene.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width;
+    const y = (e.clientY - rect.top) / rect.height;
+    targetX = (x - 0.5) * 42;
+    targetY = (0.5 - y) * 32;
+    targetLift = -10;
+    active = true;
+    wake();
+    startRender();
+
+    if (shine) {
+      shine.style.setProperty('--shine-x', `${(x * 100).toFixed(1)}%`);
+      shine.style.setProperty('--shine-y', `${(y * 100).toFixed(1)}%`);
+    }
+  });
+
+  scene.addEventListener('pointerleave', () => {
+    targetX = -12;
+    targetY = 8;
+    targetLift = 0;
+    active = false;
+    startRender();
+    idleTimer = setTimeout(goIdle, 450);
+  });
+
+  // Spark particles around profile
+  let burstSparks = () => {};
+  if (canvas) {
+  const ctx = canvas.getContext('2d');
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let sparks = [];
+
+  const resizeCanvas = () => {
+    const rect = scene.getBoundingClientRect();
+    canvas.width = Math.floor(rect.width * dpr);
+    canvas.height = Math.floor(rect.height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  };
+
+  const makeSpark = (burst = false) => {
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    const angle = Math.random() * Math.PI * 2;
+    const radius = burst ? 40 + Math.random() * 70 : 90 + Math.random() * 50;
+    return {
+      x: w / 2 + Math.cos(angle) * radius,
+      y: h / 2 + Math.sin(angle) * radius * 0.75,
+      vx: (Math.random() - 0.5) * (burst ? 3.2 : 0.6),
+      vy: (Math.random() - 0.5) * (burst ? 3.2 : 0.6) - (burst ? 0.8 : 0),
+      life: burst ? 1 : 0.35 + Math.random() * 0.65,
+      decay: burst ? 0.02 + Math.random() * 0.02 : 0.003 + Math.random() * 0.004,
+      size: burst ? 2 + Math.random() * 3 : 1 + Math.random() * 2
+    };
+  };
+
+  burstSparks = () => {
+    for (let i = 0; i < 28; i++) sparks.push(makeSpark(true));
+  };
+
+  const drawSparks = () => {
+    const w = canvas.width / dpr;
+    const h = canvas.height / dpr;
+    ctx.clearRect(0, 0, w, h);
+
+    if (sparks.length < 26) sparks.push(makeSpark(false));
+
+    sparks = sparks.filter((s) => s.life > 0);
+    sparks.forEach((s) => {
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life -= s.decay;
+      ctx.beginPath();
+      ctx.fillStyle = `rgba(94, 200, 245, ${Math.max(s.life, 0)})`;
+      ctx.shadowColor = 'rgba(44, 167, 224, 0.8)';
+      ctx.shadowBlur = 8;
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(drawSparks);
+  };
+
+  resizeCanvas();
+  for (let i = 0; i < 20; i++) sparks.push(makeSpark(false));
+  drawSparks();
+  window.addEventListener('resize', resizeCanvas);
+  }
+
+  scene.addEventListener('click', () => {
+    if (flipping) return;
+    flipping = true;
+    scene.classList.add('is-flipping');
+    targetLift = -18;
+    startRender();
+    burstSparks();
+
+    setTimeout(() => {
+      scene.classList.remove('is-flipping');
+      flipping = false;
+      targetLift = active ? -10 : 0;
+    }, 900);
+  });
+}
+
 // ===== GLASS CARD HOVER EFFECT =====
 function initGlassCardEffects() {
+  // Disabled when hi-tech reveal/motion layer is active to avoid transform conflicts
+  if (document.getElementById('bootIntro') || document.body.classList.contains('boot-done')) {
+    return;
+  }
+
   const glassCards = document.querySelectorAll('.glass-card');
   
   glassCards.forEach(card => {
@@ -194,23 +377,32 @@ function initParallax() {
 
 // ===== TYPING EFFECT =====
 function initTypingEffect() {
-  const text = "FULL STACK DEVELOPER";
   const element = document.querySelector('.hero h2');
   if (!element) return;
-  
-  let index = 0;
+
   const originalText = element.textContent;
-  element.textContent = '';
-  
-  function typeChar() {
-    if (index < originalText.length) {
-      element.textContent += originalText.charAt(index);
-      index++;
-      setTimeout(typeChar, 100);
-    }
+  let started = false;
+
+  const run = () => {
+    if (started) return;
+    started = true;
+    let index = 0;
+    element.textContent = '';
+    const typeChar = () => {
+      if (index < originalText.length) {
+        element.textContent += originalText.charAt(index);
+        index++;
+        setTimeout(typeChar, 70);
+      }
+    };
+    typeChar();
+  };
+
+  if (document.body.classList.contains('boot-done')) {
+    setTimeout(run, 200);
+  } else {
+    window.addEventListener('portfolio:ready', () => setTimeout(run, 200), { once: true });
   }
-  
-  setTimeout(typeChar, 1000);
 }
 
 // ===== SCROLL TO TOP BUTTON =====
@@ -291,43 +483,96 @@ function throttle(func, limit) {
 // ===== PROJECTS MODAL FUNCTIONS =====
 function openProjectsModal() {
   const modal = document.getElementById('projectsModal');
-  if (modal) {
-    modal.classList.add('active');
-    document.body.style.overflow = 'hidden';
-    
-    // Add escape key listener
-    document.addEventListener('keydown', handleEscapeKey);
+  const frame = document.getElementById('projectsFrame');
+  const loader = document.getElementById('projectsLoader');
+  if (!modal) return;
+
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+  document.addEventListener('keydown', handleEscapeKey);
+
+  if (frame) {
+    if (loader) loader.hidden = false;
+    frame.hidden = true;
+
+    const loadTimeout = setTimeout(() => {
+      if (loader && !loader.hidden) {
+        loader.textContent = 'Failed to load. Click X and try again.';
+      }
+    }, 10000);
+
+    frame.onload = () => {
+      clearTimeout(loadTimeout);
+      frame.hidden = false;
+      if (loader) loader.hidden = true;
+    };
+
+    frame.onerror = () => {
+      clearTimeout(loadTimeout);
+      if (loader) loader.textContent = 'Failed to load. Click X and try again.';
+    };
+
+    frame.src = `/mini-projects/?t=${Date.now()}`;
   }
 }
 
 function closeProjectsModal() {
   const modal = document.getElementById('projectsModal');
-  if (modal) {
-    modal.classList.remove('active');
-    document.body.style.overflow = 'auto';
-    
-    // Remove escape key listener
-    document.removeEventListener('keydown', handleEscapeKey);
+  const frame = document.getElementById('projectsFrame');
+  const loader = document.getElementById('projectsLoader');
+  if (!modal) return;
+
+  modal.classList.remove('active');
+  document.body.style.overflow = 'auto';
+  document.removeEventListener('keydown', handleEscapeKey);
+
+  if (frame) {
+    frame.onload = null;
+    frame.onerror = null;
+    frame.src = 'about:blank';
+    frame.hidden = true;
+  }
+  if (loader) {
+    loader.hidden = true;
+    loader.textContent = 'Loading Lab...';
   }
 }
 
 function handleEscapeKey(event) {
-  if (event.key === 'Escape') {
+  if (event.key !== 'Escape') return;
+  const frame = document.getElementById('projectsFrame');
+  const modal = document.getElementById('projectsModal');
+  if (!modal?.classList.contains('active')) return;
+
+  const frameReady = frame && !frame.hidden && frame.src && !frame.src.includes('about:blank');
+
+  if (frameReady && frame.contentWindow) {
+    frame.contentWindow.postMessage({ type: 'portfolio:escape-request' }, '*');
+    return;
+  }
+  closeProjectsModal();
+}
+
+window.addEventListener('message', (event) => {
+  if (event.origin !== window.location.origin) return;
+  if (event.data?.type === 'mini-projects:escape-pass') {
     closeProjectsModal();
   }
-}
+});
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', function() {
   // Initialize all functions
-  initParticles();
+  // Network particles handled by hi-tech.js when present
+  if (!document.getElementById('bootIntro')) {
+    initParticles();
+  }
+  initProfile3D();
   initGlassCardEffects();
   initParallax();
   initTypingEffect();
   initScrollToTop();
   initLazyLoading();
-  
-  // Profile click event removed - now using button instead
   
   // Add event listeners with throttling
   window.addEventListener('scroll', throttle(() => {
@@ -335,14 +580,51 @@ document.addEventListener('DOMContentLoaded', function() {
     revealOnScroll();
   }, 16)); // ~60fps
   
-  // Initial animations
-  setTimeout(() => {
-    animateCounters();
-  }, 1000);
-  
-  // Add loading animation
-  document.body.classList.add('loaded');
+  // Loaded state waits for hi-tech boot; counters start when visible
+  const startAfterBoot = () => {
+    document.body.classList.add('loaded');
+    initCountersOnView();
+  };
+
+  if (document.body.classList.contains('boot-done')) {
+    startAfterBoot();
+  } else {
+    window.addEventListener('portfolio:ready', startAfterBoot, { once: true });
+    // Fallback if hi-tech.js missing
+    setTimeout(() => {
+      if (!document.body.classList.contains('boot-done')) startAfterBoot();
+    }, 3500);
+  }
 });
+
+function initCountersOnView() {
+  const section = document.getElementById('counters');
+  if (!section) {
+    animateCounters();
+    return;
+  }
+
+  let ran = false;
+  const run = () => {
+    if (ran) return;
+    ran = true;
+    animateCounters();
+  };
+
+  if ('IntersectionObserver' in window) {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          run();
+          io.disconnect();
+        }
+      });
+    }, { threshold: 0.35 });
+    io.observe(section);
+  } else {
+    run();
+  }
+}
 
 // ===== UTILITY FUNCTIONS =====
 function debounce(func, wait) {
@@ -485,196 +767,53 @@ class ResumeNarrator {
   prepareNarrationScript() {
     this.scripts = {
       th: `
-        สวัสดีครับ ผม ธนาพัฒน์ พิษาวงศ์ นักพัฒนา Full Stack และ Software Engineer
+        สวัสดีครับ ผม ธนภัทร พิศวง (น๊อต) Senior Full Stack Developer และ Cloud Systems Engineer
         
-        ผมเป็นนักพัฒนาที่มีความหลงใหลในการพัฒนาตนเองอย่างต่อเนื่อง ทั้งในด้านส่วนตัวและวิชาชีพ 
-        ด้วยความอดทนภายใต้ความกดดัน ความกระหายในการเรียนรู้ และแรงขับเคลื่อนที่แข็งแกร่งในการเรียนรู้จากผู้ที่อยู่ข้างหน้า
+        ผมมีความเชี่ยวชาญในการออกแบบและพัฒนาระบบสถาปัตยกรรมระดับ Enterprise, ระบบโรงงานอุตสาหกรรมยาตามมาตรฐาน GMP, 
+        ระบบเชื่อมต่อ SAP Business One, ระบบควบคุมยานยนต์ Android Auto, และ Cloud Infrastructure บน AWS
         
-        เป้าหมายของผมคือการเป็น Full Stack Developer ที่สร้างระบบเปลี่ยนแปลงองค์กรและสังคม
-        คติของผมคือ ไม่หยุดพัฒนา ไม่หยุดเรียนรู้ ไม่หยุดสร้างสรรค์
+        ปัจจุบัน ผมปฏิบัติงานที่ บริษัท ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด ในตำแหน่ง Full Stack Developer และ Systems Engineer
+        รับผิดชอบการออกแบบและพัฒนาระบบ Electronic Batch Record หรือ EBR ด้วย Next.js 16, React 19, Bun, Prisma 7 และ PostgreSQL บน AWS ECS
+        พัฒนาระบบ ManHour สำหรับติดตามชั่วโมงทำงานและต้นทุนการผลิต ด้วย Laravel 12 และ PHP 8.4 พร้อม Sync ข้อมูลกับ SAP แบบ Real-time
+        พัฒนาระบบเอกสารกำกับยา E-Leaflet ด้วย .NET 8 Web API และสตรีมมิ่งผ่าน PdfProxy สำหรับการสแกน QR Code ของคนไข้
+        และวางโครงสร้างพื้นฐาน Cloud บน AWS ด้วย SAM และ GitHub Actions
         
-        ด้านการศึกษา ผมจบจากมหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี คณะบริหารธุรกิจ สาขาวิชาเทคโนโลยีสารสนเทศ 
-        ระหว่างเดือนกรกฎาคม 2563 ถึง มีนาคม 2567 ด้วยเกรดเฉลี่ย 3.09
+        นอกจากนี้ ผมยังได้พัฒนา Car Share Mirror แอพพลิเคชัน Native Android ด้วย Kotlin สำหรับส่งภาพขึ้นหน้าจอรถยนต์ MG S5 EV ผ่าน Android Auto ไร้สาย,
+        ระบบบันทึกและวิเคราะห์สถิติการเทรด TD Master เชื่อมต่อ MetaTrader 5 และ TradingView,
+        รวมถึง JARVIS AI Autonomous Engineer Dashboard
         
-        ด้านประสบการณ์การทำงาน ผมมีประสบการณ์มากกว่า 3 ปี
+        ด้านประสบการณ์ก่อนหน้านี้ ผมเคยพัฒนาแพลตฟอร์ม ANTS SMS Marketing ขนาดใหญ่ที่ Advance Network Technology,
+        พัฒนาระบบ Geofencing, KPI และ Payroll ให้กับข้าวหงษ์ทอง เจียเม้งมาร์เก็ตติ้ง,
+        และพัฒนาระบบชั่งน้ำหนักรถบรรทุกเชื่อมต่อ IoT ที่ Software & Scale Engineering
         
-        เริ่มจาก Advance Network Technology & Services Company Limited ระหว่างเดือนมิถุนายน 2568 ถึง สิงหาคม 2568 
-        ในตำแหน่ง Programmer รับผิดชอบการออกแบบและพัฒนาแอปพลิเคชันซอฟต์แวร์ตามความต้องการทางธุรกิจ
-        ใช้เครื่องมือต่างๆ เช่น Git, Azure DevOps, Fork, Virtual Machines, IIS และ FileZilla
-        ปัจจุบันทำงานเกี่ยวกับโซลูชันการตลาดผ่าน SMS
+        ผมสำเร็จการศึกษาจาก มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี สาขาวิชาเทคโนโลยีสารสนเทศ ด้วยเกรดเฉลี่ย 3.09
         
-        ต่อมาที่ บจก. เจียเม้งมาร์เก็ตติ้ง ระหว่างเดือนมีนาคม 2567 ถึง มิถุนายน 2568 
-        ในตำแหน่ง Fullstack Developer พัฒนาระบบ Back-office สำหรับการเข้างานของพนักงาน
-        ระบบ Geofencing การประเมิน KPI และการประมวลผลเงินเดือน
-        ออกแบบฐานข้อมูล SQL และจัดการการ Deploy ผ่าน FileZilla
-        
-        และที่ Software & Scale Engineering ระหว่างเดือนมกราคม 2566 ถึง ธันวาคม 2566 
-        ในตำแหน่ง Programmer และ Software Tester พัฒนาแอปพลิเคชัน C# Windows
-        สำหรับสแกนบัตรพนักงานและยานพาหนะ รวมถึงการเชื่อมต่ออุปกรณ์ IoT
-        
-        ด้านทักษะการเขียนโปรแกรม ผมมีความเชี่ยวชาญใน C# และ .NET Core ระดับ 95%
-        JavaScript และ TypeScript ระดับ 92% React, Vue.js และ Next.js ระดับ 90%
-        Node.js และ Express ระดับ 88% Go และ Echo Framework ระดับ 85%
-        PHP, HTML และ CSS ระดับ 88% Java ระดับ 80% และ Python ระดับ 75%
-        
-        ด้านทักษะเทคนิค ผมมีความเชี่ยวชาญในฐานข้อมูล SQL Server, MySQL, PostgreSQL
-        MongoDB, Redis, Entity Framework, Dapper และ Prisma ORM
-        
-        ด้าน Cloud และ DevOps ผมมีประสบการณ์กับ Docker, Azure Cloud Services
-        Git, GitHub, CI/CD Pipelines และ FileZilla Deployment
-        
-        ด้าน Frameworks และ Tools ผมเชี่ยวชาญ ASP.NET Core, Web API
-        React, Next.js, Vue.js, Express.js, Node.js, Bootstrap, Tailwind CSS
-        และ JWT Authentication
-        
-        ด้าน Data และ Analytics ผมมีประสบการณ์การสร้าง Excel Report ด้วย EPPlus
-        Chart.js, Recharts, Data Processing, Batch Jobs, FTP Integration
-        และ Log4Net Logging
-        
-        ด้าน Frontend Technologies ผมเชี่ยวชาญ React, TypeScript, Ant Design
-        Material-UI, Framer Motion, Socket.IO และ HLS.js
-        
-        ด้าน Backend และ API ผมมีประสบการณ์การพัฒนา RESTful API
-        JWT Token Management, RabbitMQ, Payment Gateway Integration
-        และ Microservices Architecture
-        
-        ด้านทักษะพิเศษ ผมมีประสบการณ์การสนับสนุนระบบ 24 ชั่วโมง
-        การตรวจจับและแก้ไขบั๊ก, การออกแบบ System Architecture
-        การสร้าง Flowchart และ System Diagram, DevOps และ Deployment
-        การประมวลผลข้อมูล, Security และ Authentication
-        และ Responsive Design
-        
-        ด้าน Portfolio และโครงการ ผมได้พัฒนาโครงการสำคัญหลายโครงการ
-        เริ่มจาก ANTS SMS Platform ระบบส่ง SMS ขนาดใหญ่
-        Thai Luck Gaming Platform เว็บเกมลุ้นโชค
-        Anime Streaming Platform เว็บดูอนิเมะออนไลน์
-        Batch Processing Systems ระบบ Batch Jobs
-        Credit Balance Management ระบบจัดการเครดิต
-        Back-office Attendance & Payroll System ระบบจัดการพนักงาน
-        และ IoT Truck Weight System แอป C# เชื่อม IoT
-        
-        ด้านใบรับรองและรางวัล ผมได้รับ Microsoft Certified: Azure Fundamentals
-        และรางวัลชนะเลิศการแข่งขันพัฒนาโปรแกรมระดับคณะ
-        
-        ด้านข้อมูลส่วนตัว ผมชื่อเล่น น๊อต เกิดวันที่ 17 กรกฎาคม 2544
-        อาศัยอยู่ที่ 90/84 หมู่ 19 ตำบลคลองหนึ่ง อำเภอคลองหลวง จังหวัดปทุมธานี 12120
-        สถานะโสด นับถือพุทธศาสนา
-        
-        ด้านงานอดิเรก ผมชอบออกกำลังกายและฟิตเนส เล่นเกม ฟังเพลง
-        Coding และ Technology และท่องเที่ยวธรรมชาติ
-        
-        ด้านความสนใจพิเศษ ผมเคยแก้บั๊กข้ามวันข้ามคืนจนสำเร็จ
-        ชอบออกแบบ flowchart และ diagram มาก
-        เป็นสาย support เพื่อนร่วมงาน 24/7
-        และชอบเรียนรู้เทคโนโลยีใหม่ๆ เสมอ
-        
-        ภารกิจและวิสัยทัศน์ของผมคือ การสร้างระบบที่เปลี่ยนแปลงองค์กรและสังคม
-        ด้วยเทคโนโลยีที่มีประสิทธิภาพและยั่งยืน
-        เติบโตไปพร้อมกับทีมและไม่หยุดพัฒนาตนเอง
-        
-        ขอบคุณที่ให้เวลาฟังประวัติของผมครับ
-        หากสนใจสามารถติดต่อได้ที่ thanapatpisawong@gmail.com
-        หรือโทร 081-7356592
-        หรือดูผลงานเพิ่มเติมได้ที่ GitHub: NOT44353
-        
-        ขอบคุณครับ
+        เป้าหมายของผมคือการสร้างระบบซอฟต์แวร์ที่มีความปลอดภัย ประสิทธิภาพสูง และสร้างคุณค่าที่แท้จริงให้กับองค์กร
+        ขอบคุณที่ให้ความสนใจในผลงานของผมครับ
       `,
       en: `
-        Hello, I'm Thanapat Pisawong, a Full Stack Developer and Software Engineer.
+        Hello, I'm Thanapat Pisawong (Not), a Senior Full Stack Developer and Cloud Systems Engineer.
         
-        I'm a passionate developer who believes in continuous improvement, both personal and professional. 
-        With resilience under pressure, a hunger for knowledge, and a strong drive to learn from those ahead of me, 
-        I aim to become a force of positive change through technology.
+        I specialize in architecting mission-critical enterprise platforms, pharmaceutical GMP-grade manufacturing systems,
+        SAP Business One bidirectional integrations, Android Auto in-car automotive engineering, and AWS cloud infrastructure.
         
-        My goal is to be a Full Stack Developer who creates systems that transform organizations and society.
-        My motto is: Never stop developing, never stop learning, never stop creating.
+        Currently, I serve as Full Stack Developer & Systems Engineer at TP Drug Laboratories (1969) Co., Ltd.
+        I architect and develop the Electronic Batch Record (EBR) using Next.js 16, React 19, Bun, Prisma 7, and PostgreSQL on AWS ECS Fargate,
+        the ManHour Manufacturing Ecosystem with Laravel 12 and PHP 8.4 integrated real-time with SAP Business One,
+        the E-Leaflet Patient QR and drug registration platform with ASP.NET Core 8 Web API and PdfProxy streaming,
+        and enterprise Cloud Infrastructure using AWS SAM and GitHub Actions CI/CD.
         
-        In terms of education, I graduated from Rajamangala University of Technology Thanyaburi, 
-        Faculty of Business Administration, Department of Information Technology, 
-        from July 2020 to March 2024 with a GPA of 3.09.
+        My portfolio also features Car Share Mirror, a native Android Kotlin application projecting phone displays wirelessly to MG S5 EV 12.8" screens via Android Auto SDK,
+        TD Master, an automated quantitative trading journal integrated with MetaTrader 5 and TradingView,
+        and JARVIS AI, an autonomous engineering assistant dashboard.
         
-        In terms of work experience, I have over 3 years of experience.
+        My previous experience includes architecting the ANTS SMS marketing platform,
+        geofencing attendance, KPI and payroll engines for Hong Thong Rice,
+        and industrial IoT truck scale weight systems.
         
-        Starting with Advance Network Technology & Services Company Limited from June 2025 to August 2025 
-        as a Programmer, responsible for designing and developing software applications based on business requirements.
-        I use various tools such as Git, Azure DevOps, Fork, Virtual Machines, IIS, and FileZilla.
-        Currently working on SMS-based marketing solutions.
+        I graduated from Rajamangala University of Technology Thanyaburi in Information Technology with a GPA of 3.09.
         
-        Next at Jiameng Marketing Company Limited from March 2024 to June 2025 
-        as a Fullstack Developer, developing Back-office systems for employee attendance,
-        Geofencing, KPI evaluation, and payroll processing.
-        I designed SQL databases and managed deployment via FileZilla.
-        
-        And at Software & Scale Engineering from January 2023 to December 2023 
-        as a Programmer and Software Tester, developing C# Windows applications
-        for scanning employee and vehicle ID cards, including IoT device integration.
-        
-        In programming skills, I'm proficient in C# and .NET Core at 95%,
-        JavaScript and TypeScript at 92%, React, Vue.js and Next.js at 90%,
-        Node.js and Express at 88%, Go and Echo Framework at 85%,
-        PHP, HTML and CSS at 88%, Java at 80%, and Python at 75%.
-        
-        In technical skills, I'm proficient in databases: SQL Server, MySQL, PostgreSQL,
-        MongoDB, Redis, Entity Framework, Dapper, and Prisma ORM.
-        
-        In Cloud and DevOps, I have experience with Docker, Azure Cloud Services,
-        Git, GitHub, CI/CD Pipelines, and FileZilla Deployment.
-        
-        In Frameworks and Tools, I'm skilled in ASP.NET Core, Web API,
-        React, Next.js, Vue.js, Express.js, Node.js, Bootstrap, Tailwind CSS,
-        and JWT Authentication.
-        
-        In Data and Analytics, I have experience creating Excel Reports with EPPlus,
-        Chart.js, Recharts, Data Processing, Batch Jobs, FTP Integration,
-        and Log4Net Logging.
-        
-        In Frontend Technologies, I'm skilled in React, TypeScript, Ant Design,
-        Material-UI, Framer Motion, Socket.IO, and HLS.js.
-        
-        In Backend and API, I have experience developing RESTful APIs,
-        JWT Token Management, RabbitMQ, Payment Gateway Integration,
-        and Microservices Architecture.
-        
-        In special skills, I have experience in 24/7 system support,
-        bug detection and debugging, System Architecture design,
-        creating Flowcharts and System Diagrams, DevOps and Deployment,
-        data processing, Security and Authentication,
-        and Responsive Design.
-        
-        In Portfolio and projects, I've developed several important projects:
-        Starting with ANTS SMS Platform, a large-scale SMS system,
-        Thai Luck Gaming Platform, a luck-based gaming website,
-        Anime Streaming Platform, an online anime viewing website,
-        Batch Processing Systems for automated batch jobs,
-        Credit Balance Management system,
-        Back-office Attendance & Payroll System for employee management,
-        and IoT Truck Weight System, a C# app connecting to IoT devices.
-        
-        In certificates and awards, I received Microsoft Certified: Azure Fundamentals
-        and won first place in the faculty-level programming competition.
-        
-        In personal information, my nickname is Not, born on July 17, 2001,
-        living at 90/84 Moo 19, Khlong Nueng Subdistrict, Khlong Luang District, Pathum Thani 12120,
-        single status, Buddhist religion.
-        
-        In hobbies, I enjoy fitness and exercise, gaming, listening to music,
-        coding and technology, and nature travel.
-        
-        In special interests, I once debugged bugs across days and nights until success,
-        love designing flowcharts and diagrams,
-        am a 24/7 support person for colleagues,
-        and always love learning new technologies.
-        
-        My mission and vision are to create systems that transform organizations and society
-        with efficient and sustainable technology,
-        growing together with the team and never stopping self-development.
-        
-        Thank you for taking the time to listen to my background.
-        If interested, you can contact me at thanapatpisawong@gmail.com
-        or call 081-7356592
-        or view more work at GitHub: NOT44353
-        
-        Thank you.
+        Thank you for reviewing my portfolio and resume. Feel free to explore my system architectures or contact me directly.
       `
     };
   }
@@ -797,4 +936,431 @@ class ResumeNarrator {
 // Initialize narrator system when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
   new ResumeNarrator();
-}); 
+});
+
+// ===== PROJECT DETAILS DATA & MODAL SYSTEM =====
+const PROJECT_DETAILS = {
+  ebr: {
+    title: 'Electronic Batch Record (EBR)',
+    category: 'Pharma GMP & Digital Manufacturing',
+    tagline: 'ระบบบันทึกประวัติการผลิตยาแบบดิจิทัล (Digital Batch Record) ตามมาตรฐาน GMP / GxP Validation',
+    diagram: `[Operator / QA Web Client (React 19)]
+        │  (OIDC PKCE Authentication / Cognito)
+        ▼
+[Next.js 16 App Router + Bun 1.3 Container]
+        │  (Prisma 7 ORM / IAM Auth)
+        ▼
+[AWS Aurora PostgreSQL (Multi-AZ Serverless)]
+        │  (Form Schemas, Audit Trail, Signatures)
+        ▼
+[S3 Storage for Signed Batch PDFs & Attachments]`,
+    challenges: [
+      'โรงงานยาต้องปฏิบัติตามข้อกำหนด GMP / GxP อย่างเคร่งครัด ห้ามมีการแก้ไขข้อมูลย้อนหลังโดยไม่มี Audit Trail',
+      'ฟอร์มบันทึกข้อมูลในสายการผลิตยามีความซับซ้อนสูง (Dynamic Form Fields, Multi-step Approval, Formula Validation)',
+      'การรันระบบบน Cloud ต้องมีความปลอดภัยระดับสูงสุด ไม่มี Token รั่วไหลไปฝั่ง Client'
+    ],
+    solutions: [
+      'พัฒนาฟอร์มด้วย React 19 และ Next.js 16 พร้อมระบบ Drag-and-Drop Form Builder โดยใช้ @dnd-kit และ Zod Validation',
+      'ออกแบบ Audit Trail และระบบ Digital Signature ตรวจสอบย้อนกลับได้ทุกการกดบันทึกหรืออนุมัติขั้นตอน',
+      'ใช้ AWS Cognito ร่วมกับ AWS RDS IAM Signer เพื่อให้การเชื่อมต่อฐานข้อมูล Aurora ปลอดภัยสูงสุดโดยไม่ต้องใช้รหัสผ่านฝังในโค้ด'
+    ],
+    tech: ['Next.js 16', 'React 19', 'Bun 1.3', 'Prisma 7', 'PostgreSQL', 'Tailwind CSS 4', 'Radix UI', 'AWS ECS Fargate', 'AWS Cognito', 'Docker'],
+    metrics: [
+      'ลดระยะเวลาการรวบรวมและตรวจสอบเอกสาร Batch Record จากเดิม 3-5 วัน เหลือเพียงไม่กี่นาที',
+      'ขจัดความผิดพลาดจากการเขียนเอกสารด้วยมือ (Paperless 100%)',
+      'สอดคล้องตามมาตรฐานข้อกำหนดการผลิตยา GMP และข้อกำหนดด้านการตรวจสอบย้อนกลับ'
+    ]
+  },
+  manhour: {
+    title: 'ManHour Production Tracking & SAP Integration',
+    category: 'Enterprise Manufacturing & ERP Sync',
+    tagline: 'ระบบคำนวณชั่วโมงทำงาน ต้นทุนแรงงาน และการเชื่อมโยงข้อมูล 2 ทิศทางกับ SAP Business One',
+    diagram: `[SAP Business One (MSSQL)]
+        ▲  ▲
+        │  │ (Node.js ESM Sync via node-cron)
+        │  ▼
+[ManHour Backend API (Laravel 12 / PHP 8.4 / MySQL)]
+        ▲
+        │ (REST API / Sanctum Token / DataTables)
+        ▼
+[ManHour Frontend & Mobile Web (Blade + Vite 7 + Tailwind 4)]
+        ▲
+[Shop Floor Barcode / QR Scanners & Line Workers]`,
+    challenges: [
+      'ข้อมูล Production Order (OWOR) และ Route Stages ใน SAP มีขนาดใหญ่และต้องอัปเดตสถานะแบบ Real-time',
+      'พนักงานในไลน์ผลิตยาต้องการหน้าเว็บที่โหลดรวดเร็ว ใช้งานง่ายบนแท็บเล็ตและอุปกรณ์สแกนบาร์โค้ดหน้างาน',
+      'ข้อมูลชั่วโมงทำงานและผลผลิตต้องส่งกลับไปอัปเดตลงใน SAP โดยไม่ทำให้ฐานข้อมูลหลักเกิด Deadlock'
+    ],
+    solutions: [
+      'สร้างสคริปต์ Node.js ESM เชื่อมต่อ MSSQL และ MySQL ทำงานผ่าน Cron Job เพื่อ Sync ข้อมูลแบบ Idempotent',
+      'พัฒนา Backend API ด้วย Laravel 12 และ PHP 8.4 รองรับ Swagger OpenAPI, Queue Worker, และ Caching',
+      'ออกแบบหน้าจอ Shop Floor ด้วย Laravel Blade, Tailwind CSS 4, และ Vite 7 โหลดเร็วและรองรับหน้าจอสัมผัส'
+    ],
+    tech: ['PHP 8.4', 'Laravel 12', 'Blade', 'Vite 7', 'Tailwind CSS 4', 'MySQL', 'MSSQL (SAP)', 'Node.js', 'ASP.NET Core 8', 'Yajra DataTables', 'Sanctum'],
+    metrics: [
+      'อัปเดตสถานะคำสั่งผลิตตรงกับ SAP Business One ตลอด 24 ชั่วโมง',
+      'ลดเวลาในการบันทึกและคำนวณชั่วโมงแรงงานต่อกะลงมากกว่า 70%',
+      'ระบบทำงานแบบ High Availability ด้วย Production Uptime 99.9%'
+    ]
+  },
+  leaflet: {
+    title: 'E-Leaflet — Smart Drug Registration & Patient QR',
+    category: 'Healthcare Regulatory & PDF Streaming',
+    tagline: 'ระบบเอกสารกำกับยาอิเล็กทรอนิกส์ สแกน QR Code เปิดอ่าน PDF ความเร็วสูง และแจ้งเตือนยาหมดอายุ',
+    diagram: `[Patient / Doctor Mobile Scan] ──(QR Code)──▶ [Leaflet Mobile Web]
+                                                     │
+                                             (Range Requests)
+                                                     ▼
+[Leaflet Web API (.NET 8)] ◀──(EF Core 8)──▶ [PdfProxy Engine]
+        │                                            │
+  (Import SAP)                               (Stream PDF.js)
+        ▼                                            ▼
+[MySQL (leafletdb) & SAP SQL]              [Secure Patient Reader]`,
+    challenges: [
+      'ไฟล์เอกสารกำกับยา PDF มีขนาดใหญ่ หากโหลดทั้งไฟล์จะทำให้คนไข้หรือแพทย์บนมือถือรอนานและเปลืองแบนด์วิดท์',
+      'ทะเบียนยามีการอัปเดตและมีวันหมดอายุ หากปล่อยให้ยาหมดอายุในระบบจะผิดข้อบังคับของสำนักงานคณะกรรมการอาหารและยา (อย.)'
+    ],
+    solutions: [
+      'ออกแบบ PdfProxy ใน ASP.NET Core 8 รองรับ HTTP Range Requests ทำให้ PDF.js โหลดเฉพาะหน้าที่ผู้ใช้กำลังเปิดอ่านได้ทันที',
+      'พัฒนาระบบ Hosted Services ใน Background ตรวจสอบวันหมดอายุของทะเบียนยาและแจ้งเตือนผ่านอีเมล (SMTP) อัตโนมัติ',
+      'พัฒนา Web Portal ด้วย ASP.NET Core MVC (Razor) ให้ฝ่ายขึ้นทะเบียนยาจัดการไฟล์และ Permission ได้อย่างเป็นระบบ'
+    ],
+    tech: ['C# .NET 8', 'ASP.NET Core Web API & MVC', 'Entity Framework Core 8', 'Pomelo MySQL', 'PDF.js', 'JWT', 'ClosedXML', 'Bootstrap', 'Serilog'],
+    metrics: [
+      'เปิดอ่านเอกสารกำกับยาผ่าน QR Code ได้ภายในเสี้ยววินาที ไม่กระตุกแม้อยู่ในพื้นที่สัญญาณเน็ตต่ำ',
+      'ลดการใช้กระดาษพิมพ์ใบแทรกยาในกล่องยา และอัปเดตข้อมูลยาล่าสุดได้แบบ Real-time'
+    ]
+  },
+  carshare: {
+    title: 'Car Share Mirror — Automotive Screen Projection',
+    category: 'Automotive & Android Auto Engineering',
+    tagline: 'แอพพลิเคชัน Native Android สำหรับแชร์หน้าจอมือถือขึ้นจอรถยนต์ MG S5 EV 12.8" ผ่าน Android Auto ไร้สาย',
+    diagram: `[Android Smartphone (Kotlin App)]
+        │  (MediaProjection API captures screen frames)
+        ▼
+[CarMirrorService & MirrorCarScreen (Android Auto SDK)]
+        │  (Wireless Android Auto Channel / 5GHz Wi-Fi + BT)
+        ▼
+[MG S5 EV 12.8" Infotainment Display Unit]
+  - Smooth 60fps mirror display
+  - Continuous streaming while vehicle is driving
+  - No Browser or Hotspot connection required!`,
+    challenges: [
+      'รถยนต์ MG S5 EV ไม่มี Web Browser ในตัว และการเปิด Hotspot จากมือถือทำให้เครื่องร้อนและเปลืองแบตเตอรี่',
+      'Google จำกัดการทำงานของแอพพลิเคชันบุคคลที่สามบน Android Auto เพื่อความปลอดภัย'
+    ],
+    solutions: [
+      'พัฒนาด้วย Native Android (Kotlin) โดยเชื่อมต่อเข้ากับช่องสัญญาณ Android Auto SDK โดยตรง',
+      'สร้าง CarMirrorService และ MirrorCarScreen ใช้ MediaProjection API สตรีมเฟรมภาพแบบ Low-latency',
+      'ปรับแต่งให้ทำงานต่อเนื่องได้อย่างเสถียร ไม่สะดุด และไม่ต้องพึ่งพาเบราว์เซอร์หรือการปล่อย Wi-Fi Hotspot'
+    ],
+    tech: ['Kotlin', 'Android SDK', 'Android Auto SDK', 'MediaProjection', 'CarAppService', 'Gradle'],
+    metrics: [
+      'เชื่อมต่อและแสดงผลบนหน้าจอ 12.8 นิ้วของ MG S5 EV ได้ทันทีด้วยการกดเพียงปุ่มเดียว',
+      'Latency ต่ำ เฟรมเรตลื่นไหล ให้ประสบการณ์ความบันเทิงและนำทางระดับพรีเมียม'
+    ]
+  },
+  tdmaster: {
+    title: 'TD Master — Private Quant Trading Journal',
+    category: 'FinTech & Quantitative Trading',
+    tagline: 'ระบบบันทึกและวิเคราะห์สถิติการเทรดแบบ Quantitative วิเคราะห์ Equity Curve และ Chart Capture อัตโนมัติ',
+    diagram: `[MetaTrader 5 (MT5 Terminal)]
+        │  (MQL5 Expert Advisor hooks on trade execution)
+        ▼
+[Automated Ingestion API / PowerShell Scripts]
+        │  (Captures Chart Snapshot & Trade Metadata)
+        ▼
+[Supabase PostgreSQL & Storage Engine]
+        │  (Real-time subscription & Webhooks)
+        ▼
+[Next.js 14 Analytics Dashboard + Chart.js + TradingView MCP]`,
+    challenges: [
+      'การจดบันทึกการเทรดด้วยมือ (Manual Trading Journal) มักตกหล่น ไม่ทันท่วงที และขาดภาพถ่ายชาร์ตในจังหวะเข้าออเดอร์',
+      'การคำนวณ Drawdown, Risk-to-Reward, และ Win Rate จากหลายกลยุทธ์พร้อมกันต้องการระบบประมวลผลที่แม่นยำ'
+    ],
+    solutions: [
+      'สร้าง MT5 EA (MQL5) และสคริปต์ PowerShell บันทึกข้อมูลการเปิด-ปิดออเดอร์พร้อมแคปเจอร์ชาร์ตส่งเข้าฐานข้อมูลอัตโนมัติ',
+      'พัฒนา Dashboard ด้วย Next.js 14 และ Chart.js พล็อตกราฟ Equity Curve, Daily P&L, และสถิติประสิทธิภาพแบบ Real-time',
+      'ผสานรวม TradingView MCP สำหรับดึงข้อมูลอินดิเคเตอร์และโครงสร้างราคามาวิเคราะห์เชิงปริมาณ'
+    ],
+    tech: ['Next.js 14', 'Supabase', 'PostgreSQL', 'MetaTrader 5 (MQL5)', 'TradingView MCP', 'Chart.js', 'PowerShell'],
+    metrics: [
+      'บันทึกประวัติการเทรด 100% อัตโนมัติ ไม่มีตกหล่น พร้อมภาพหลักฐานทุกไม้',
+      'ช่วยให้นักเทรดเห็นจุดบกพร่องทางจิตวิทยาและปรับปรุงวินัยการเทรดอย่างเป็นรูปธรรม'
+    ]
+  },
+  jarvis: {
+    title: 'JARVIS AI — Autonomous Engineering Assistant',
+    category: 'Autonomous AI Agent & Developer Tools',
+    tagline: 'แดชบอร์ดผู้ช่วยวิศวกรสไตล์ Tony Stark ขับเคลื่อนด้วย Agentic AI รองรับคำสั่งเสียง/ข้อความ และรันคำสั่ง Shell อัตโนมัติ',
+    diagram: `[Voice / Natural Language Prompt (TH/EN)]
+        │
+        ▼
+[JARVIS Agent Core Engine (Next.js + LLM Models)]
+        │  (Agentic Loop: Plan -> Tool Call -> Execute -> Verify)
+        ├──▶ [File Tool: Read / Edit / Refactor Code]
+        ├──▶ [CLI Tool: Bash / PowerShell Execution]
+        └──▶ [Knowledge Retrieval & Memory (Supabase / Prisma)]
+        │
+        ▼
+[Cinematic Holographic HUD Interface (Orbitron & Cyber Glow)]`,
+    challenges: [
+      'AI Chatbot ทั่วไปมักทำได้แค่ตอบคำถาม แต่ไม่สามารถช่วยทำงานจริงกับระบบไฟล์และคำสั่งคอมมานด์ไลน์ได้',
+      'UI ส่วนใหญ่เป็นเพียงกล่องแชทธรรมดา ขาดความรู้สึกเป็นเครื่องมือวิศวกรที่ล้ำสมัยและแม่นยำ'
+    ],
+    solutions: [
+      'ออกแบบสถาปัตยกรรม Agentic Tool Calling ให้ JARVIS อ่านไฟล์ แก้ไขโค้ด และสั่งรันคำสั่งในระบบได้อย่างปลอดภัย',
+      'สร้างอินเทอร์เฟซสไตล์ Sci-Fi HUD ในโทนสี Cyan & Gold Holographic ตามแรงบันดาลใจจาก Stark Industries',
+      'รองรับคำสั่งเสียงสองภาษา (Thai/English) พร้อมระบบสังเคราะห์เสียงตอบสนองแบบ Real-time'
+    ],
+    tech: ['Next.js', 'Supabase', 'Prisma', 'LLM Agent Tools', 'Web Speech API', 'Cyberpunk CSS', 'Orbitron'],
+    metrics: [
+      'ช่วยเพิ่มความเร็วในการแก้บั๊กและการสำรวจโค้ดเบสขนาดใหญ่ขึ้นมากกว่า 50%',
+      'อินเทอร์เฟซระดับภาพยนตร์ที่ให้ประสบการณ์การเขียนโค้ดที่สนุกและตื่นตาตื่นใจ'
+    ]
+  },
+  crossmatch: {
+    title: 'CrossMatch Catalog & Multi-Branch POS',
+    category: 'Retail & Inventory Systems',
+    tagline: 'ระบบแคตตาล็อกอุปกรณ์เสริมมือถือพร้อม Cross-Device Compatibility Matrix และระบบ POS หลายสาขา',
+    diagram: `[Retail Staff Fast Search Bar]
+        │  (Normalized Fuzzy Search in < 5ms)
+        ▼
+[Cross-Device Matrix Engine (Next.js & Local Cache)]
+        │  (Finds compatible film/case models instantly)
+        ▼
+[Shelf Location & Stock Balance Display]
+        │
+        ▼
+[Multi-Branch POS & Daily Revenue Analytics (Chart.js)]`,
+    challenges: [
+      'พนักงานหน้าร้านต้องจำรุ่นมือถือและแท็บเล็ตหลายร้อยรุ่นว่าฟิล์มหรือเคสรุ่นไหนใส่ด้วยกันได้ ทำให้ตอบลูกค้าช้าและหยิบสินค้าผิด',
+      'การเปิดค้นหาในตาราง Excel ใช้เวลานานและไม่สะดวกเมื่อใช้งานบนมือถือหรือแท็บเล็ต'
+    ],
+    solutions: [
+      'สร้างระบบ Fuzzy Normalized Search พิมพ์ชื่อรุ่นสั้นๆ (เช่น Air 5, S23) ระบบจะแสดงรหัสสินค้าและรุ่นที่ใส่ด้วยกันได้ทั้งหมดทันที',
+      'มีฟังก์ชันเปรียบเทียบรุ่น (Compatibility Checker) สองรุ่นว่าตรงกันหรือไม่ พร้อมแสดงตำแหน่งตู้จัดเก็บสินค้าในร้าน',
+      'มีระบบ POS บันทึกยอดขาย รายรับ-รายจ่าย แยกตามสาขา พร้อมกราฟสรุปยอดและระบบป้องกันด้วย Admin PIN'
+    ],
+    tech: ['Next.js', 'Tailwind CSS', 'Fuzzy Matching Engine', 'Chart.js', 'CSV Importer/Exporter', 'Vercel'],
+    metrics: [
+      'ลดเวลาค้นหาและแนะนำอุปกรณ์เสริมให้ลูกค้าจากเดิม 2 นาที เหลือเพียง 3 วินาที',
+      'ลดอัตราการหยิบสินค้าผิดพลาดของพนักงานใหม่ลงเกือบ 100%'
+    ]
+  },
+  corporate: {
+    title: 'TP Drug Corporate Website & Employee Intranet',
+    category: 'Corporate Web & Identity Management',
+    tagline: 'เว็บไซต์ทางการและระบบอินทราเน็ตพนักงาน ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด พร้อม SSO และ Headless CMS',
+    diagram: `[Public Visitor Web] ──▶ [Next.js 16 Bun SSR App] ──▶ [Prisma CMS & i18n]
+                                       │
+[Staff Intranet Login] ──(PKCE OIDC)───┼──▶ [AWS Cognito User Pool]
+                                       │
+                                 (IAM S3 Client)
+                                       ▼
+                            [AWS S3 Document Vault]`,
+    challenges: [
+      'เว็บไซต์องค์กรต้องรองรับ 2 ภาษา (TH/EN) โหลดรวดเร็ว ติดอันดับ SEO และมีระบบจัดการเนื้อหา (CMS) ที่ปลอดภัย',
+      'ระบบอินทราเน็ตสำหรับพนักงานมีเอกสารลับขององค์กร ต้องมีระบบ Single Sign-On (SSO) ที่ไม่มี Token รั่วไหลไปที่ Browser'
+    ],
+    solutions: [
+      'ใช้ Next.js 16 บน Bun Runtime สร้างเว็บไซต์ที่ Render แบบ Server-Side รวดเร็วและใช้ Tailwind CSS 4',
+      'ออกแบบระบบล็อกอินหลังบ้าน /cms ด้วย AWS Cognito PKCE OIDC Server-side Auth เก็บ Session ใน HttpOnly Cookie ปลอดภัยสูงสุด',
+      'เชื่อมต่อ AWS S3 สำหรับจัดเก็บเอกสารและแบบฟอร์มภายในของบริษัทอย่างเป็นหมวดหมู่'
+    ],
+    tech: ['Next.js 16', 'React 19', 'Bun 1.3', 'Tailwind CSS 4', 'Prisma', 'AWS Cognito (PKCE OIDC)', 'AWS S3', 'Docker'],
+    metrics: [
+      'ความเร็วการเปิดหน้าเว็บระดับ Top-tier (Performance Score 95+)',
+      'ระบบล็อกอินและจัดการเอกสารมีความปลอดภัยสูงสุดตามมาตรฐานความปลอดภัยคลาวด์'
+    ]
+  },
+  aws: {
+    title: 'Enterprise AWS Cloud Infrastructure (IaC SAM)',
+    category: 'Cloud Architecture & DevOps Automation',
+    tagline: 'โครงสร้างพื้นฐาน Cloud สำหรับระบบทั้งหมดขององค์กร ออกแบบผ่าน SAM / CloudFormation พร้อม CI/CD OIDC',
+    diagram: `[GitHub Repo (Commit & Push)]
+        │  (GitHub Actions CI/CD via OIDC Role - No Stored Keys!)
+        ▼
+[AWS SAM / CloudFormation Engine]
+        ├──▶ [VPC, Public/Private Subnets, NAT Gateways]
+        ├──▶ [Application Load Balancer (ALB) & CloudFront CDN]
+        ├──▶ [Amazon ECS Fargate (Docker Container Tasks)]
+        ├──▶ [Amazon Aurora PostgreSQL Serverless (Multi-AZ)]
+        └──▶ [AWS Lambda (Python 3) for DB Bootstrap & Maintenance]`,
+    challenges: [
+      'การตั้งค่าระบบบน Cloud ด้วยการคลิกผ่าน Console มักเกิด Human Error และไม่สามารถทำซ้ำใน Environment Dev/UAT/Prod ได้เหมือนกัน',
+      'การเก็บ AWS Access Key ไว้ใน CI/CD มีความเสี่ยงต่อการถูกขโมยข้อมูลลับ'
+    ],
+    solutions: [
+      'เขียน Infrastructure as Code (IaC) ทั้งหมดด้วย AWS SAM และ CloudFormation ควบคุมเวอร์ชันผ่าน Git',
+      'ใช้ GitHub Actions OIDC Authentication สำหรับการ Deploy ขึ้น AWS โดยไม่ต้องเก็บ Secret Key ถาวรใน Repository',
+      'วางระบบเครือข่าย Multi-tier VPC แยก Database และ Application Tasks ไว้ใน Private Subnet มีเพียง ALB และ CloudFront ที่รับ Traffic ภายนอก'
+    ],
+    tech: ['AWS SAM', 'CloudFormation', 'AWS ECS Fargate', 'Amazon Aurora', 'AWS Cognito', 'CloudFront', 'Python 3 Lambda', 'GitHub Actions CI/CD'],
+    metrics: [
+      'สามารถ Deploy สภาพแวดล้อมใหม่ (Dev/UAT/Prod) ได้อย่างแม่นยำภายในเวลาไม่กี่นาที',
+      'ผ่านการประเมินความปลอดภัยตาม Best Practice สถาปัตยกรรม Well-Architected Framework'
+    ]
+  },
+  ants: {
+    title: 'ANTS Enterprise SMS Marketing Platform',
+    category: 'High-Concurrency Messaging & Web API',
+    tagline: 'แพลตฟอร์มส่ง SMS ทางการตลาดระดับ Enterprise รองรับทราฟฟิกมหาศาล พร้อมระบบคำนวณเครดิตและออกรายงาน',
+    diagram: `[Enterprise Client Portal (React)] ──▶ [ASP.NET Core Web API]
+                                                 │
+                                         (Batch Processing)
+                                                 ▼
+[High-Throughput SMS Gateways] ◀── [SQL Server & Queue Workers]`,
+    challenges: [
+      'ระบบต้องรองรับการยิงข้อความ SMS พร้อมกันเป็นแสนๆ ข้อความในช่วงแคมเปญการตลาดโดยระบบต้องไม่ล่ม',
+      'การตัดยอดเครดิตทางการเงินต้องมีความแม่นยำ 100% ป้องกันยอดติดลบหรือการส่งซ้ำ'
+    ],
+    solutions: [
+      'พัฒนาแกนกลางด้วย C# .NET Core และ SQL Server ออกแบบ Transaction ในระดับ Database ที่รัดกุม',
+      'ใช้ Queue Processing สำหรับการกระจายโหลดข้อความและการบันทึก Delivery Report จากผู้ให้บริการเครือข่าย',
+      'พัฒนา Dashboard ด้วย React สำหรับให้ลูกค้าตั้งเวลาส่งข้อความและตรวจสอบยอดเครดิตคงเหลือแบบ Real-time'
+    ],
+    tech: ['C# .NET Core', 'React', 'SQL Server', 'REST API', 'Batch Jobs', 'IIS', 'Azure DevOps'],
+    metrics: [
+      'รองรับการส่งข้อความหลายล้านข้อความต่อเดือนอย่างราบรื่น',
+      'ระบบเครดิตและ Billing มีความถูกต้องแม่นยำ ไม่พบข้อผิดพลาดทางการเงิน'
+    ]
+  },
+  hongthong: {
+    title: 'Geofencing Attendance & Payroll (ข้าวหงษ์ทอง)',
+    category: 'Enterprise HR & Financial Back-office',
+    tagline: 'ระบบลงเวลาทำงานด้วย Geofencing พิกัดดาวเทียม คำนวณ KPI และประมวลผลเงินเดือนพนักงานครบวงจร',
+    diagram: `[Employee Mobile Device] ──(GPS Geofence Verification)──▶ [Attendance Service]
+                                                                  │
+                                                        (Calculates Overtime & KPI)
+                                                                  ▼
+[Payroll Calculation Engine] ──▶ [SQL Database] ──▶ [Export Bank Text / Slip]`,
+    challenges: [
+      'พนักงานมีหลายสาขาและเดินทางไปทำงานนอกสถานที่ การเช็คชื่อด้วยเครื่องสแกนนิ้วมือเดิมไม่ตอบโจทย์',
+      'สูตรการคำนวณเงินเดือน เบี้ยขยัน ค่าล่วงเวลา (OT) และเกณฑ์ประเมิน KPI มีเงื่อนไขที่ซับซ้อนตามนโยบายองค์กร'
+    ],
+    solutions: [
+      'พัฒนาระบบ Geofencing ตรวจสอบตำแหน่ง GPS บนมือถือพนักงานว่าอยู่ในรัศมีที่กำหนดของแต่ละสาขาหรือไม่ก่อนอนุมัติการลงเวลา',
+      'สร้างระบบ Payroll Engine คำนวณเงินเดือน หักภาษี ประกันสังคม และเบี้ยเลี้ยงอัตโนมัติ พร้อมออกสลิปเงินเดือนและไฟล์ส่งธนาคาร',
+      'ออกแบบ Schema ฐานข้อมูล SQL ที่มีโครงสร้างยืดหยุ่น รองรับการเพิ่มเงื่อนไข KPI ประจำปี'
+    ],
+    tech: ['Fullstack Web', 'Geofencing GPS API', 'SQL Server / MySQL', 'Payroll Calculation Logic', 'KPI Engine', 'FileZilla'],
+    metrics: [
+      'ลดเวลาฝ่ายบุคคลในการรวบรวมเวลาทำงานและคิดเงินเดือนลงจาก 7 วัน เหลือเพียงครึ่งวัน',
+      'ป้องกันการเช็คชื่อแทนกันและการทุจริตเวลาทำงานได้อย่างสมบูรณ์'
+    ]
+  },
+  truckscale: {
+    title: 'Industrial IoT Truck Scale Weight System',
+    category: 'Industrial IoT & Hardware Automation',
+    tagline: 'ระบบชั่งน้ำหนักรถบรรทุกและสแกนบัตรในโรงงานอุตสาหกรรม บันทึกค่าน้ำหนักสุทธิก่อน-หลังขนถ่ายอัตโนมัติ',
+    diagram: `[Truck on Weight Bridge] ──▶ [Weight Indicator (RS-232 / Serial)]
+                                         │
+[Driver RFID Card Scan] ───────────────┼──▶ [C# Windows Desktop Application]
+                                         │
+                                   (Calculates Net Weight)
+                                         ▼
+                             [SQL Database & Auto Print Weigh Ticket]`,
+    challenges: [
+      'สภาพแวดล้อมหน้างานเป็นโรงงานอุตสาหกรรม มีสัญญาณรบกวนและฝุ่นละออง อุปกรณ์ฮาร์ดแวร์ต้องสื่อสารได้อย่างแม่นยำ',
+      'ต้องป้องกันการทุจริต เช่น การวนรถเข้าชั่งซ้ำ หรือการแอบนำสินค้าลงก่อนชั่งน้ำหนักรอบสอง'
+    ],
+    solutions: [
+      'พัฒนาโปรแกรม C# Windows Application เชื่อมต่อ Serial Port (RS-232) เพื่ออ่านค่าน้ำหนักจากหัวชั่งโดยตรงแบบ Real-time',
+      'ผสานเครื่องอ่านบัตร RFID สแกนบัตรคนขับและทะเบียนรถ เพื่อจับคู่รายการชั่งขาเข้าและขาออกอัตโนมัติ',
+      'ระบบคำนวณน้ำหนักสุทธิ (Gross - Tare = Net) และพิมพ์ใบชั่งน้ำหนักพร้อมเก็บประวัติลงฐานข้อมูลทันที'
+    ],
+    tech: ['C# .NET', 'Windows Forms', 'RS-232 Serial Port', 'RFID Barcode Scanners', 'Industrial Weigh Indicators', 'SQL Database'],
+    metrics: [
+      'ขจัดปัญหาการทุจริตน้ำหนักรถบรรทุกและข้อผิดพลาดจากการจดบันทึกด้วยมือ',
+      'กระบวนการชั่งน้ำหนักรถบรรทุกแต่ละคันใช้เวลาไม่เกิน 30 วินาที เพิ่มความเร็วการขนถ่ายสินค้าอย่างมีนัยสำคัญ'
+    ]
+  }
+};
+
+// Open Project Detail Modal
+function openProjectDetail(projectId) {
+  const data = PROJECT_DETAILS[projectId];
+  if (!data) return;
+
+  const contentEl = document.getElementById('projectDetailContent');
+  const modalEl = document.getElementById('projectDetailModal');
+  if (!contentEl || !modalEl) return;
+
+  const techBadges = data.tech.map(t => `<span class="badge">${t}</span>`).join(' ');
+  const challengeItems = data.challenges.map(c => `<li>${c}</li>`).join('');
+  const solutionItems = data.solutions.map(s => `<li>${s}</li>`).join('');
+  const metricItems = data.metrics.map(m => `<li><i class="fas fa-check" style="color:#22c55e;margin-right:6px"></i> ${m}</li>`).join('');
+
+  contentEl.innerHTML = `
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+      <span class="project-cat-badge" style="font-size:0.8rem; padding:4px 12px;">${data.category}</span>
+    </div>
+    <h2>${data.title}</h2>
+    <p class="modal-tagline">${data.tagline}</p>
+
+    <div class="modal-section-title"><i class="fas fa-sitemap"></i> SYSTEM ARCHITECTURE TOPOLOGY</div>
+    <div class="modal-diagram-box">${data.diagram}</div>
+
+    <div class="modal-section-title"><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> KEY ENGINEERING CHALLENGES</div>
+    <ul class="modal-bullet-list">${challengeItems}</ul>
+
+    <div class="modal-section-title"><i class="fas fa-lightbulb" style="color:#00e5ff;"></i> TECHNICAL SOLUTIONS &amp; IMPLEMENTATION</div>
+    <ul class="modal-bullet-list">${solutionItems}</ul>
+
+    <div class="modal-section-title"><i class="fas fa-chart-line" style="color:#22c55e;"></i> IMPACT &amp; VALIDATION RESULTS</div>
+    <ul class="modal-bullet-list" style="list-style:none; padding-left:0;">${metricItems}</ul>
+
+    <div class="modal-section-title"><i class="fas fa-code"></i> TECHNOLOGY STACK</div>
+    <div class="modal-tech-chips">${techBadges}</div>
+  `;
+
+  modalEl.classList.add('is-active');
+  modalEl.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+}
+
+// Close Project Detail Modal
+function closeProjectDetailModal() {
+  const modalEl = document.getElementById('projectDetailModal');
+  if (!modalEl) return;
+  modalEl.classList.remove('is-active');
+  modalEl.setAttribute('aria-hidden', 'true');
+  document.body.style.overflow = '';
+}
+
+// ESC Key listener for modal
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    closeProjectDetailModal();
+    if (typeof closeProjectsModal === 'function') closeProjectsModal();
+  }
+});
+
+// Category Filter Tabs
+document.addEventListener('DOMContentLoaded', function() {
+  const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
+  const projectItems = document.querySelectorAll('.portfolio-item');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', function() {
+      // Update active button
+      filterBtns.forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+
+      const filter = this.getAttribute('data-filter');
+
+      projectItems.forEach(item => {
+        const itemCategories = (item.getAttribute('data-category') || '').split(' ');
+        if (filter === 'all' || itemCategories.includes(filter)) {
+          item.classList.remove('is-hidden');
+          item.style.display = 'flex';
+        } else {
+          item.classList.add('is-hidden');
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+});
+ 

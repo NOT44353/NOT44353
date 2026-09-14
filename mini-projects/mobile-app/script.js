@@ -29,9 +29,12 @@ class HealthTrackerApp {
         });
 
         // Notification button
-        document.querySelector('.notification-btn').addEventListener('click', () => {
-            this.showNotification('No new notifications');
-        });
+        const notificationBtn = document.querySelector('.notification-btn');
+        if (notificationBtn) {
+            notificationBtn.addEventListener('click', () => {
+                this.showNotification('No new notifications');
+            });
+        }
     }
 
     handleNavigation(navItem) {
@@ -44,7 +47,8 @@ class HealthTrackerApp {
         navItem.classList.add('active');
 
         // Handle navigation logic
-        const navText = navItem.querySelector('span').textContent;
+        const navText = navItem.querySelector('span')?.textContent;
+        if (!navText) return;
         switch(navText) {
             case 'Home':
                 this.showNotification('Already on Home page');
@@ -73,14 +77,14 @@ class HealthTrackerApp {
     }
 
     updateStatsDisplay() {
-        document.querySelector('.stat-card:nth-child(1) .stat-value').innerHTML = 
-            `${this.healthData.heartRate} <span>bpm</span>`;
-        
-        document.querySelector('.stat-card:nth-child(2) .stat-value').innerHTML = 
-            `${this.healthData.calories.toLocaleString()} <span>kcal</span>`;
-        
-        document.querySelector('.stat-card:nth-child(3) .stat-value').innerHTML = 
-            `${this.healthData.steps.toLocaleString()} <span>steps</span>`;
+        const heartEl = document.querySelector('.stat-card:nth-child(1) .stat-value');
+        const caloriesEl = document.querySelector('.stat-card:nth-child(2) .stat-value');
+        const stepsEl = document.querySelector('.stat-card:nth-child(3) .stat-value');
+        if (!heartEl || !caloriesEl || !stepsEl) return;
+
+        heartEl.innerHTML = `${this.healthData.heartRate} <span>bpm</span>`;
+        caloriesEl.innerHTML = `${this.healthData.calories.toLocaleString()} <span>kcal</span>`;
+        stepsEl.innerHTML = `${this.healthData.steps.toLocaleString()} <span>steps</span>`;
     }
 
     animateStats() {
@@ -101,7 +105,9 @@ class HealthTrackerApp {
 
     createHealthChart() {
         const canvas = document.getElementById('healthChart');
+        if (!canvas) return;
         const ctx = canvas.getContext('2d');
+        if (!ctx) return;
         
         // Set canvas size
         canvas.width = canvas.offsetWidth;
@@ -139,7 +145,7 @@ class HealthTrackerApp {
         }
         
         // Draw data line
-        ctx.strokeStyle = '#667eea';
+        ctx.strokeStyle = '#2ca7e0';
         ctx.lineWidth = 3;
         ctx.beginPath();
         
@@ -161,7 +167,7 @@ class HealthTrackerApp {
         ctx.stroke();
         
         // Draw data points
-        ctx.fillStyle = '#667eea';
+        ctx.fillStyle = '#2ca7e0';
         data.forEach((value, index) => {
             const x = padding + (chartWidth / (data.length - 1)) * index;
             const y = padding + chartHeight - ((value - minValue) / valueRange) * chartHeight;

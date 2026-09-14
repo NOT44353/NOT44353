@@ -2,6 +2,10 @@
 class PlatformGame {
     constructor() {
         this.canvas = document.getElementById('gameCanvas');
+        if (!this.canvas) {
+            this.disabled = true;
+            return;
+        }
         this.ctx = this.canvas.getContext('2d');
         this.gameState = 'menu'; // menu, playing, paused, gameOver
         this.score = 0;
@@ -28,6 +32,7 @@ class PlatformGame {
     }
 
     init() {
+        if (this.disabled) return;
         this.setupCanvas();
         this.setupEventListeners();
         this.createPlayer();
@@ -526,20 +531,20 @@ class PlatformGame {
 
 // Global Functions
 function startGame() {
-    game.start();
+    game?.start();
 }
 
 function restartGame() {
-    game.restart();
+    game?.restart();
 }
 
 function resumeGame() {
-    game.resume();
+    game?.resume();
 }
 
 function goBack() {
-    window.close();
+    window.location.assign('/mini-projects/');
 }
 
 // Initialize Game
-const game = new PlatformGame();
+const game = document.getElementById('gameCanvas') ? new PlatformGame() : null;
