@@ -767,7 +767,7 @@ class ResumeNarrator {
   prepareNarrationScript() {
     this.scripts = {
       th: `
-        สวัสดีครับ ผม ธนภัทร พิศวง (น๊อต) Senior Full Stack Developer และ Cloud Systems Engineer
+        สวัสดีครับ ผม ธนภัทร พิศวงศ์ (น๊อต) Senior Full Stack Developer และ Cloud Systems Engineer
         
         ผมมีความเชี่ยวชาญในการออกแบบและพัฒนาระบบสถาปัตยกรรมระดับ Enterprise, ระบบโรงงานอุตสาหกรรมยาตามมาตรฐาน GMP, 
         ระบบเชื่อมต่อ SAP Business One, ระบบควบคุมยานยนต์ Android Auto, และ Cloud Infrastructure บน AWS

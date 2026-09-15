@@ -1,17 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
-        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
   <url>
     <loc>https://not44353.vercel.app/</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
     <xhtml:link rel="alternate" hreflang="th" href="https://not44353.vercel.app/" />
     <xhtml:link rel="alternate" hreflang="en" href="https://not44353.vercel.app/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://not44353.vercel.app/" />
+    <image:image>
+      <image:loc>https://not44353.vercel.app/profile2.jpg</image:loc>
+      <image:title>Thanapat Pisawong - Senior Full Stack Developer</image:title>
+      <image:caption>ธนภัทร พิศวงศ์ (NOT44353) Senior Full Stack Developer &amp; Systems Engineer</image:caption>
+    </image:image>
+  </url>
+  <url>
+    <loc>https://not44353.vercel.app/mini-projects/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://not44353.vercel.app/mini-projects/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://not44353.vercel.app/mini-projects/" />
+  </url>
+  <url>
+    <loc>https://not44353.vercel.app/mini-projects/ecommerce/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://not44353.vercel.app/mini-projects/ecommerce/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://not44353.vercel.app/mini-projects/ecommerce/" />
+  </url>
+  <url>
+    <loc>https://not44353.vercel.app/mini-projects/platform-game/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://not44353.vercel.app/mini-projects/platform-game/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://not44353.vercel.app/mini-projects/platform-game/" />
+  </url>
+  <url>
+    <loc>https://not44353.vercel.app/mini-projects/mobile-app/</loc>
+    <lastmod>2026-09-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.7</priority>
+    <xhtml:link rel="alternate" hreflang="th" href="https://not44353.vercel.app/mini-projects/mobile-app/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://not44353.vercel.app/mini-projects/mobile-app/" />
   </url>
   <url>
     <loc>https://not44353.vercel.app/resume.pdf</loc>
-    <lastmod>2026-08-11</lastmod>
+    <lastmod>2026-09-15</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>

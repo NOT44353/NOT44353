@@ -1,0 +1,22 @@
+{
+  "id": "/",
+  "name": "Thanapat Pisawong — Senior Full Stack Developer",
+  "short_name": "NOT44353",
+  "description": "Official Portfolio & Resume of Thanapat Pisawong (ธนภัทร พิศวงศ์) — Senior Full Stack Developer & Systems Engineer",
+  "lang": "th",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0a0e17",
+  "theme_color": "#0a2342",
+  "orientation": "portrait-primary",
+  "categories": ["portfolio", "technology", "development"],
+  "icons": [
+    {
+      "src": "/profile2.jpg",
+      "sizes": "192x192 512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
