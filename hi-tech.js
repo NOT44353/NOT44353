@@ -21,7 +21,7 @@
 
     const lines = [
       { text: '> INITIALIZING SYSTEM ..............', cls: 'dim' },
-      { text: '> LOAD PROFILE: THANAPAT PISAWONG (NOT44353)', cls: '' },
+      { text: '> LOAD PROFILE: THANAPAT PISAVONG (NOT44353)', cls: '' },
       { text: '> STACK: LARAVEL 12 · NEXT.JS 16 · .NET 8 · AWS · KOTLIN', cls: '' },
       { text: '> ENTERPRISE: MANHOUR · EBR · LEAFLET · TD MASTER · CAR SHARE', cls: 'dim' },
       { text: '> STATUS: ALL PRODUCTION SYSTEMS ONLINE', cls: 'ok' },

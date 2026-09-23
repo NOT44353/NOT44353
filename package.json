@@ -1,7 +1,7 @@
 {
-  "name": "thanapat-pisawong-portfolio",
+  "name": "thanapat-pisavong-portfolio",
   "version": "2.0.0",
-  "description": "Thanapat Pisawong — Full Stack Developer portfolio & resume",
+  "description": "Thanapat Pisavong — Full Stack Developer portfolio & resume",
   "private": true,
   "scripts": {
     "start": "bun run local-server.js",
@@ -12,12 +12,12 @@
     "express": "^4.18.2"
   },
   "keywords": [
-    "Thanapat Pisawong",
+    "Thanapat Pisavong",
     "Full Stack Developer",
     "portfolio",
     "resume",
     "NOT44353"
   ],
-  "author": "Thanapat Pisawong",
+  "author": "Thanapat Pisavong",
   "license": "MIT"
 }

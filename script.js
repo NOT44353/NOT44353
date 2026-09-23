@@ -792,7 +792,7 @@ class ResumeNarrator {
         ขอบคุณที่ให้ความสนใจในผลงานของผมครับ
       `,
       en: `
-        Hello, I'm Thanapat Pisawong (Not), a Senior Full Stack Developer and Cloud Systems Engineer.
+        Hello, I'm Thanapat Pisavong (Not), a Senior Full Stack Developer and Cloud Systems Engineer.
         
         I specialize in architecting mission-critical enterprise platforms, pharmaceutical GMP-grade manufacturing systems,
         SAP Business One bidirectional integrations, Android Auto in-car automotive engineering, and AWS cloud infrastructure.
