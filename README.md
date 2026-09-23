@@ -1,5 +1,5 @@
 # 🚀 Thanapat Pisavong (ธนภัทร พิศวงศ์)
-### Senior Full Stack Developer & Cloud Systems Engineer
+### Full Stack Developer & Cloud Systems Engineer
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://not44353.vercel.app/)
 [![GitHub Pages](https://img.shields.io/badge/GitHub_Pages-Live_Demo-222222?style=for-the-badge&logo=githubpages&logoColor=white)](https://not44353.github.io/NOT44353/)
@@ -15,11 +15,11 @@
 > *เป้าหมาย: เป็น Full Stack Developer ที่สร้างระบบเปลี่ยนแปลงองค์กรและสังคม*  
 > *คติประจำใจ: "ไม่หยุดพัฒนา ไม่หยุดเรียนรู้ ไม่หยุดสร้างสรรค์"*
 
-Senior Full Stack Developer และ Systems Engineer ผู้เชี่ยวชาญการออกแบบและพัฒนาระบบ Enterprise-grade ในสายงาน **โรงงานยามาตรฐาน GMP (Pharma Tech)**, **SAP Business One ERP Integration**, **Cloud DevOps (AWS ECS / Aurora)**, **Automotive In-Car Software (Android Auto)**, และ **FinTech / AI Automation**
+Full Stack Developer และ Systems Engineer ผู้เชี่ยวชาญการออกแบบและพัฒนาระบบ Enterprise-grade ในสายงาน **โรงงานยามาตรฐาน GMP (Pharma Tech)**, **SAP Business One ERP Integration**, **Cloud DevOps (AWS ECS / Aurora)**, **Automotive In-Car Software (Android Auto)**, และ **FinTech / AI Automation**
 
 - 📍 **Location:** Pathum Thani, Thailand (ปทุมธานี)
 - 🎓 **Education:** มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี (RMUTT) — คณะบริหารธุรกิจ สาขาระบบสารสนเทศ (GPA 3.09)
-- 💼 **Current Role:** Senior Full Stack Developer & Systems Engineer at **TP Drug Laboratories (1969) Co., Ltd.**
+- 💼 **Current Role:** Full Stack Developer & Systems Engineer at **TP Drug Laboratories (1969) Co., Ltd.**
 
 ---
 
@@ -94,7 +94,7 @@ Senior Full Stack Developer และ Systems Engineer ผู้เชี่ย�
 
 | Period | Company / Organization | Role | Key Contributions |
 | :--- | :--- | :--- | :--- |
-| **Aug 2025 - Present** | **TP Drug Laboratories (1969) Co., Ltd.** | **Senior Full Stack Developer & Systems Engineer** | สถาปัตยกรรมระบบ EBR (Next.js 16/AWS ECS), ManHour ↔ SAP Integration (Laravel 12/Node.js/.NET 8), E-Leaflet (.NET 8/PDF.js) และ AWS Cloud DevOps |
+| **Aug 2025 - Present** | **TP Drug Laboratories (1969) Co., Ltd.** | **Full Stack Developer & Systems Engineer** | สถาปัตยกรรมระบบ EBR (Next.js 16/AWS ECS), ManHour ↔ SAP Integration (Laravel 12/Node.js/.NET 8), E-Leaflet (.NET 8/PDF.js) และ AWS Cloud DevOps |
 | **Jun 2025 - Aug 2025** | **Advance Network Technology & Services Co., Ltd.** | **Programmer** | พัฒนาระบบ SMS Marketing Solutions, Agile SDLC, Azure DevOps, VM, IIS |
 | **Mar 2024 - Jun 2025** | **บจก. เจียเม้งมาร์เก็ตติ้ง (ข้าวหงษ์ทอง)** | **Fullstack Developer** | ออกแบบระบบ Attendance Geofencing, KPI Evaluation, Payroll System และ Database Architecture |
 | **Jan 2023 - Dec 2023** | **Software & Scale Engineering** | **Programmer / Software Tester** | พัฒนาโปรแกรม C# Windows App สแกนบัตรพนักงาน/รถบรรทุก และระบบชั่งน้ำหนัก IoT Truck Scale |
@@ -167,5 +167,5 @@ Feel free to connect or reach out for inquiries, enterprise collaboration, or te
 
 <p align="center">
   <b>Made with ❤️ and high-tech passion by Thanapat Pisavong (NOT44353)</b><br>
-  <i>Senior Full Stack Developer & Systems Engineer</i>
+  <i>Full Stack Developer & Systems Engineer</i>
 </p>

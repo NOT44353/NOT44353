@@ -767,7 +767,7 @@ class ResumeNarrator {
   prepareNarrationScript() {
     this.scripts = {
       th: `
-        สวัสดีครับ ผม ธนภัทร พิศวงศ์ (น๊อต) Senior Full Stack Developer และ Cloud Systems Engineer
+        สวัสดีครับ ผม ธนภัทร พิศวงศ์ (น๊อต) Full Stack Developer และ Cloud Systems Engineer
         
         ผมมีความเชี่ยวชาญในการออกแบบและพัฒนาระบบสถาปัตยกรรมระดับ Enterprise, ระบบโรงงานอุตสาหกรรมยาตามมาตรฐาน GMP, 
         ระบบเชื่อมต่อ SAP Business One, ระบบควบคุมยานยนต์ Android Auto, และ Cloud Infrastructure บน AWS
@@ -792,7 +792,7 @@ class ResumeNarrator {
         ขอบคุณที่ให้ความสนใจในผลงานของผมครับ
       `,
       en: `
-        Hello, I'm Thanapat Pisavong (Not), a Senior Full Stack Developer and Cloud Systems Engineer.
+        Hello, I'm Thanapat Pisavong (Not), a Full Stack Developer and Cloud Systems Engineer.
         
         I specialize in architecting mission-critical enterprise platforms, pharmaceutical GMP-grade manufacturing systems,
         SAP Business One bidirectional integrations, Android Auto in-car automotive engineering, and AWS cloud infrastructure.
