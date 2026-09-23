@@ -155,14 +155,20 @@ MIT License - ใช้งานได้ฟรี
 4. Push ไปยัง branch
 5. สร้าง Pull Request
 
+### 4. 🚀 Cyber Strike: Zero-G Protocol (Action Rogue-lite)
+- เกมแอคชั่นชู้ตติ้งสไตล์ Rogue-lite บน Canvas 60FPS
+- ระบบอัปเกรด Perk (Tesla, Missiles, Shield, Leech, Overclock ฯลฯ)
+- ระบบเสียงสังเคราะห์ Synth Audio & BGM ด้วย Web Audio API (ไม่ต้องโหลดไฟล์ภายนอก)
+- การต่อสู้กับบอสจักรกลยักษ์ (Mecha Titan) พร้อมระบบคอมโบและ Screen Shake สุดมันส์
+
 ## 📞 Contact
 
-- **Email**: your.email@example.com
-- **GitHub**: [@yourusername](https://github.com/yourusername)
-- **LinkedIn**: [Your Profile](https://linkedin.com/in/yourprofile)
+- **Email**: thanapatpisawong@gmail.com
+- **GitHub**: [@NOT44353](https://github.com/NOT44353)
+- **LinkedIn**: [Thanapat Pisavong](https://www.linkedin.com/in/thanapat-pisavong-0a8a80367)
 
 ---
 
 ⭐ **Star โปรเจคนี้ถ้าชอบ!** ⭐
 
-สร้างด้วย ❤️ โดย [Your Name]
+สร้างด้วย ❤️ โดย Thanapat Pisavong (NOT44353)

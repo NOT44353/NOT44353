@@ -2,113 +2,233 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Platform Game - Space Adventure</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Cyber Strike: Zero-G Protocol | Action Rogue-lite</title>
     <base href="/mini-projects/platform-game/">
     <link rel="stylesheet" href="styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sora:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
     <a class="demo-back" href="/mini-projects/"><i class="fas fa-arrow-left"></i> Back to Lab</a>
+
     <div id="gameContainer">
-        <!-- Game UI -->
-        <div class="game-ui">
-            <div class="game-header">
-                <div class="score-display">
-                    <i class="fas fa-star"></i>
-                    <span id="score">0</span>
+        <!-- Canvas -->
+        <canvas id="gameCanvas"></canvas>
+        <div class="crt-overlay" aria-hidden="true"></div>
+
+        <!-- In-Game HUD -->
+        <div class="game-ui" id="gameHud">
+            <div class="hud-top-bar">
+                <!-- Left Status Bars -->
+                <div class="hud-left">
+                    <div class="status-bar-group">
+                        <div class="bar-row">
+                            <span class="bar-label label-hp">HP</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-hp" id="hpFill" style="width: 100%;"></div>
+                            </div>
+                            <span class="bar-val" id="hpVal">100/100</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label label-energy">DASH</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-energy" id="energyFill" style="width: 100%;"></div>
+                            </div>
+                            <span class="bar-val" id="energyVal">READY</span>
+                        </div>
+                        <div class="bar-row">
+                            <span class="bar-label label-ult">ULT</span>
+                            <div class="bar-track">
+                                <div class="bar-fill fill-ult" id="ultFill" style="width: 0%;"></div>
+                            </div>
+                            <span class="bar-val" id="ultVal">0%</span>
+                        </div>
+                    </div>
                 </div>
-                <div class="lives-display">
-                    <i class="fas fa-heart"></i>
-                    <span id="lives">3</span>
+
+                <!-- Center Wave, Combo & Boss HUD -->
+                <div class="hud-center">
+                    <div class="wave-badge" id="waveDisplay">WAVE 01</div>
+                    <div class="combo-container" id="comboContainer">
+                        <span class="combo-num" id="comboCount">x2</span>
+                        <span class="combo-tag" id="comboTag">COMBO</span>
+                    </div>
+
+                    <!-- Boss Health Bar -->
+                    <div class="boss-bar-wrap" id="bossHud">
+                        <div class="boss-title-row">
+                            <span id="bossName">⚠️ TITAN MECHA // MK-IX</span>
+                            <span id="bossHpPercent">100%</span>
+                        </div>
+                        <div class="boss-track">
+                            <div class="boss-fill" id="bossFill" style="width: 100%;"></div>
+                        </div>
+                    </div>
                 </div>
-                <div class="level-display">
-                    <i class="fas fa-flag"></i>
-                    <span id="level">1</span>
+
+                <!-- Right Score & Audio Controls -->
+                <div class="hud-right">
+                    <div class="score-card">
+                        <span class="score-title">SCORE</span>
+                        <span class="score-value" id="scoreDisplay">0</span>
+                    </div>
+                    <button class="hud-btn" id="audioToggleBtn" title="Toggle Sound (Mute/Unmute)" type="button">
+                        <i class="fas fa-volume-up" id="audioIcon"></i>
+                    </button>
+                    <button class="hud-btn" id="pauseBtn" title="Pause Game (Esc)" type="button">
+                        <i class="fas fa-pause"></i>
+                    </button>
                 </div>
             </div>
-            
-            <div class="game-controls">
-                <button class="control-btn" id="leftBtn">
-                    <i class="fas fa-arrow-left"></i>
+
+            <!-- Active Perks Tray -->
+            <div class="perks-tray" id="perksTray"></div>
+        </div>
+
+        <!-- Mobile Touch Virtual Controls -->
+        <div class="mobile-controls" id="mobileControls">
+            <div class="touch-dpad">
+                <button class="touch-btn" id="touchLeft" type="button">
+                    <i class="fas fa-chevron-left"></i>
+                    <span class="touch-label">LEFT</span>
                 </button>
-                <button class="control-btn" id="jumpBtn">
+                <button class="touch-btn" id="touchRight" type="button">
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="touch-label">RIGHT</span>
+                </button>
+            </div>
+            <div class="touch-actions">
+                <button class="touch-btn btn-dash" id="touchDash" type="button">
+                    <i class="fas fa-bolt"></i>
+                    <span class="touch-label">DASH</span>
+                </button>
+                <button class="touch-btn btn-jump" id="touchJump" type="button">
                     <i class="fas fa-arrow-up"></i>
+                    <span class="touch-label">JUMP</span>
                 </button>
-                <button class="control-btn" id="rightBtn">
-                    <i class="fas fa-arrow-right"></i>
+                <button class="touch-btn btn-fire" id="touchFire" type="button">
+                    <i class="fas fa-crosshairs"></i>
+                    <span class="touch-label">FIRE</span>
+                </button>
+                <button class="touch-btn btn-ult" id="touchUlt" type="button">
+                    <i class="fas fa-radiation"></i>
+                    <span class="touch-label">ULT</span>
                 </button>
             </div>
         </div>
 
-        <!-- Game Canvas -->
-        <canvas id="gameCanvas"></canvas>
-
-        <!-- Game Overlay -->
-        <div class="game-overlay" id="gameOverlay">
-            <div class="overlay-content">
-                <h1 class="game-title">Space Adventure</h1>
-                <p class="game-subtitle">Navigate through the 3D world and collect stars!</p>
-                <div class="game-instructions">
-                    <div class="instruction">
-                        <i class="fas fa-arrow-left"></i>
-                        <span>Move Left</span>
+        <!-- Start Screen Overlay -->
+        <div class="game-modal active" id="startModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h1>CYBER <span class="neon-highlight">STRIKE</span></h1>
+                    <div class="wave-badge" style="display:inline-block; margin-bottom: 0.6rem;">ZERO-G PROTOCOL</div>
+                </div>
+                <p class="modal-subtitle">เกมแอคชั่นชู้ตติ้งสไตล์ Rogue-lite กระโดด ยิง แดช ปราบคลื่นจักรกลไซเบอร์และบอสระดับยักษ์!</p>
+                
+                <div class="guide-grid">
+                    <div class="guide-item">
+                        <span class="key-badge">A / D</span>
+                        <span class="guide-text">เดินซ้าย / ขวา</span>
                     </div>
-                    <div class="instruction">
-                        <i class="fas fa-arrow-right"></i>
-                        <span>Move Right</span>
+                    <div class="guide-item">
+                        <span class="key-badge">W / Space</span>
+                        <span class="guide-text">กระโดด (กดซ้ำ 2 ครั้งได้)</span>
                     </div>
-                    <div class="instruction">
-                        <i class="fas fa-arrow-up"></i>
-                        <span>Jump</span>
+                    <div class="guide-item">
+                        <span class="key-badge">Shift</span>
+                        <span class="guide-text">Phase Dash (อมตะชั่วขณะ)</span>
+                    </div>
+                    <div class="guide-item">
+                        <span class="key-badge">คลิก / J</span>
+                        <span class="guide-text">ยิง Plasma Blaster</span>
+                    </div>
+                    <div class="guide-item">
+                        <span class="key-badge">E / K</span>
+                        <span class="guide-text">ไม้ตาย Ultimate Nova</span>
+                    </div>
+                    <div class="guide-item">
+                        <span class="key-badge">ESC</span>
+                        <span class="guide-text">พักเกม Pause</span>
                     </div>
                 </div>
-                <button class="start-btn" onclick="startGame()">
-                    <i class="fas fa-play"></i>
-                    Start Game
-                </button>
+
+                <div class="modal-actions">
+                    <button class="btn-cyber" id="startBtn" type="button">
+                        <i class="fas fa-play"></i> LAUNCH PROTOCOL
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Rogue-lite Perk Selection Modal -->
+        <div class="game-modal" id="perkModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>CHOOSE <span class="neon-highlight">PROTOCOL</span></h2>
+                    <p class="modal-subtitle">เลือก 1 ใน 3 การอัปเกรดเพื่อเพิ่มขีดความสามารถการรบ</p>
+                </div>
+                <div class="perks-grid" id="perkOptionsContainer">
+                    <!-- Cards injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pause Modal -->
+        <div class="game-modal" id="pauseModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>SYSTEM <span class="neon-highlight">PAUSED</span></h2>
+                </div>
+                <p class="modal-subtitle">เกมถูกหยุดชั่วคราว คุณสามารถปรับเสียงหรือกลับสู่ภารกิจได้</p>
+                <div class="modal-actions">
+                    <button class="btn-cyber" id="resumeBtn" type="button">
+                        <i class="fas fa-play"></i> RESUME
+                    </button>
+                    <button class="btn-cyber btn-secondary" id="restartPauseBtn" type="button">
+                        <i class="fas fa-redo"></i> RESTART
+                    </button>
+                </div>
             </div>
         </div>
 
         <!-- Game Over Modal -->
-        <div class="game-over-modal" id="gameOverModal">
-            <div class="modal-content">
-                <h2>Game Over!</h2>
-                <div class="final-score">
-                    <i class="fas fa-trophy"></i>
-                    <span>Final Score: <span id="finalScore">0</span></span>
+        <div class="game-modal" id="gameOverModal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h2>SYSTEM <span style="color: var(--neon-red);">TERMINATED</span></h2>
+                    <p class="modal-subtitle">บันทึกสถิติการรบของคุณเรียบร้อยแล้ว</p>
                 </div>
-                <div class="modal-buttons">
-                    <button class="restart-btn" onclick="restartGame()">
-                        <i class="fas fa-redo"></i>
-                        Play Again
-                    </button>
-                    <button class="back-btn" onclick="goBack()">
-                        <i class="fas fa-home"></i>
-                        Back to Portfolio
-                    </button>
+                
+                <div class="stats-summary">
+                    <div class="stat-box">
+                        <div class="stat-box-title">FINAL SCORE</div>
+                        <div class="stat-box-num" id="finalScoreVal">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-title">HIGH SCORE</div>
+                        <div class="stat-box-num" id="highScoreVal">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-title">WAVE REACHED</div>
+                        <div class="stat-box-num" id="finalWaveVal">1</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box-title">ENEMIES DESTROYED</div>
+                        <div class="stat-box-num" id="finalKillsVal">0</div>
+                    </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Pause Menu -->
-        <div class="pause-menu" id="pauseMenu">
-            <div class="pause-content">
-                <h3>Game Paused</h3>
-                <div class="pause-buttons">
-                    <button class="resume-btn" onclick="resumeGame()">
-                        <i class="fas fa-play"></i>
-                        Resume
+                <div class="modal-actions">
+                    <button class="btn-cyber" id="playAgainBtn" type="button">
+                        <i class="fas fa-redo"></i> DEPLOY AGAIN
                     </button>
-                    <button class="restart-btn" onclick="restartGame()">
-                        <i class="fas fa-redo"></i>
-                        Restart
-                    </button>
-                    <button class="back-btn" onclick="goBack()">
-                        <i class="fas fa-home"></i>
-                        Back to Portfolio
-                    </button>
+                    <a class="btn-cyber btn-secondary" href="/mini-projects/" style="text-decoration:none;">
+                        <i class="fas fa-arrow-left"></i> BACK TO LAB
+                    </a>
                 </div>
             </div>
         </div>
