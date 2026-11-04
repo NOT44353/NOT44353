@@ -383,19 +383,11 @@ function initTypingEffect() {
   const originalText = element.textContent;
   let started = false;
 
-  const run = () => {
+    const run = () => {
     if (started) return;
     started = true;
-    let index = 0;
-    element.textContent = '';
-    const typeChar = () => {
-      if (index < originalText.length) {
-        element.textContent += originalText.charAt(index);
-        index++;
-        setTimeout(typeChar, 70);
-      }
-    };
-    typeChar();
+    // Keep original H2 intact in DOM for SEO crawlers and zero CLS
+    element.textContent = originalText;
   };
 
   if (document.body.classList.contains('boot-done')) {
@@ -512,7 +504,7 @@ function openProjectsModal() {
       if (loader) loader.textContent = 'Failed to load. Click X and try again.';
     };
 
-    frame.src = `/mini-projects/?t=${Date.now()}`;
+    frame.src = `mini-projects/?t=${Date.now()}`;
   }
 }
 
