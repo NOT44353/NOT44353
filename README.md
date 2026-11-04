@@ -161,7 +161,7 @@ Feel free to connect or reach out for inquiries, enterprise collaboration, or te
 - 📧 **Email:** [thanapatpisawong@gmail.com](mailto:thanapatpisawong@gmail.com)
 - 📱 **Phone:** [+66 81-735-6592](tel:0817356592)
 - 💬 **Line:** [line.me/ti/p/TCUE2PjhR7](https://line.me/ti/p/TCUE2PjhR7)
-- 👤 **Facebook:** [Thanapat Pisawong](https://www.facebook.com/thanaput.pisawong)
+- 👤 **Facebook:** [Thanapat Pisavong](https://www.facebook.com/thanaput.pisawong)
 
 ---
 
