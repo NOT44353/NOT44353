@@ -31,6 +31,7 @@ function animateSkillBars() {
       if (bar.classList.contains('csharp')) targetWidth = '95%';
       else if (bar.classList.contains('js')) targetWidth = '92%';
       else if (bar.classList.contains('react')) targetWidth = '90%';
+      else if (bar.classList.contains('kotlin')) targetWidth = '88%';
       else if (bar.classList.contains('node')) targetWidth = '88%';
       else if (bar.classList.contains('go')) targetWidth = '85%';
       else if (bar.classList.contains('php')) targetWidth = '88%';
@@ -77,22 +78,10 @@ function animateCounters() {
   const counters = document.querySelectorAll('.counter');
   
   counters.forEach(counter => {
-    const target = parseInt(counter.getAttribute('data-target'));
-    const duration = 2000; // 2 seconds
-    const step = target / (duration / 16); // 60fps
-    let current = 0;
-    
-    const updateCounter = () => {
-      current += step;
-      if (current < target) {
-        counter.textContent = Math.floor(current);
-        requestAnimationFrame(updateCounter);
-      } else {
-        counter.textContent = target;
-      }
-    };
-    
-    updateCounter();
+    const target = parseInt(counter.getAttribute('data-target'), 10);
+    if (!Number.isNaN(target)) {
+      counter.textContent = target;
+    }
   });
 }
 
@@ -402,33 +391,15 @@ function initScrollToTop() {
   const scrollBtn = document.createElement('button');
   scrollBtn.innerHTML = '<i class="fas fa-arrow-up"></i>';
   scrollBtn.className = 'scroll-to-top';
-  scrollBtn.style.cssText = `
-    position: fixed;
-    bottom: 30px;
-    right: 30px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, #2ca7e0, #0a2342);
-    color: white;
-    border: none;
-    cursor: pointer;
-    opacity: 0;
-    visibility: hidden;
-    transition: all 0.3s ease;
-    z-index: 1000;
-    box-shadow: 0 4px 15px rgba(44, 167, 224, 0.3);
-  `;
+  scrollBtn.setAttribute('aria-label', 'Scroll to top');
   
   document.body.appendChild(scrollBtn);
   
   window.addEventListener('scroll', () => {
     if (window.pageYOffset > 300) {
-      scrollBtn.style.opacity = '1';
-      scrollBtn.style.visibility = 'visible';
+      scrollBtn.classList.add('is-visible');
     } else {
-      scrollBtn.style.opacity = '0';
-      scrollBtn.style.visibility = 'hidden';
+      scrollBtn.classList.remove('is-visible');
     }
   });
   
@@ -1282,26 +1253,23 @@ function openProjectDetail(projectId) {
   const techBadges = data.tech.map(t => `<span class="badge">${t}</span>`).join(' ');
   const challengeItems = data.challenges.map(c => `<li>${c}</li>`).join('');
   const solutionItems = data.solutions.map(s => `<li>${s}</li>`).join('');
-  const metricItems = data.metrics.map(m => `<li><i class="fas fa-check" style="color:#22c55e;margin-right:6px"></i> ${m}</li>`).join('');
+  const metricItems = data.metrics.map(m => `<li><i class="fas fa-check"></i> ${m}</li>`).join('');
 
   contentEl.innerHTML = `
-    <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
-      <span class="project-cat-badge" style="font-size:0.8rem; padding:4px 12px;">${data.category}</span>
-    </div>
     <h2>${data.title}</h2>
-    <p class="modal-tagline">${data.tagline}</p>
+    <p class="modal-tagline"><strong>[${data.category}]</strong> — ${data.tagline}</p>
 
     <div class="modal-section-title"><i class="fas fa-sitemap"></i> SYSTEM ARCHITECTURE TOPOLOGY</div>
     <div class="modal-diagram-box">${data.diagram}</div>
 
-    <div class="modal-section-title"><i class="fas fa-exclamation-triangle" style="color:#f59e0b;"></i> KEY ENGINEERING CHALLENGES</div>
+    <div class="modal-section-title"><i class="fas fa-exclamation-triangle"></i> KEY ENGINEERING CHALLENGES</div>
     <ul class="modal-bullet-list">${challengeItems}</ul>
 
-    <div class="modal-section-title"><i class="fas fa-lightbulb" style="color:#00e5ff;"></i> TECHNICAL SOLUTIONS &amp; IMPLEMENTATION</div>
+    <div class="modal-section-title"><i class="fas fa-lightbulb"></i> TECHNICAL SOLUTIONS &amp; IMPLEMENTATION</div>
     <ul class="modal-bullet-list">${solutionItems}</ul>
 
-    <div class="modal-section-title"><i class="fas fa-chart-line" style="color:#22c55e;"></i> IMPACT &amp; VALIDATION RESULTS</div>
-    <ul class="modal-bullet-list" style="list-style:none; padding-left:0;">${metricItems}</ul>
+    <div class="modal-section-title"><i class="fas fa-chart-line"></i> IMPACT &amp; VALIDATION RESULTS</div>
+    <ul class="modal-bullet-list modal-metrics-list">${metricItems}</ul>
 
     <div class="modal-section-title"><i class="fas fa-code"></i> TECHNOLOGY STACK</div>
     <div class="modal-tech-chips">${techBadges}</div>

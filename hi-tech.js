@@ -1,6 +1,4 @@
 (() => {
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   function ready(fn) {
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', fn, { once: true });
@@ -22,14 +20,14 @@
     const icon = document.getElementById('themeIcon');
     const themeMeta = document.querySelector('meta[name="theme-color"]');
 
-    const savedTheme = localStorage.getItem('cvTheme') || 'dark';
+    const savedTheme = localStorage.getItem('cvTheme') || 'light';
     const applyTheme = (theme) => {
       root.setAttribute('data-theme', theme);
       if (icon) {
         icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
       }
       if (themeMeta) {
-        themeMeta.setAttribute('content', theme === 'dark' ? '#090d16' : '#f8fafc');
+        themeMeta.setAttribute('content', theme === 'dark' ? '#101824' : '#efece4');
       }
     };
 
@@ -37,7 +35,7 @@
 
     if (toggleBtn) {
       toggleBtn.addEventListener('click', () => {
-        const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+        const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
         const next = current === 'dark' ? 'light' : 'dark';
         localStorage.setItem('cvTheme', next);
         applyTheme(next);
@@ -130,68 +128,11 @@
     });
   }
 
-  function enhanceParticles() {
-    const canvas = document.getElementById('particle-canvas');
-    if (!canvas || prefersReduced) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let w = 0;
-    let h = 0;
-    let nodes = [];
-
-    const resize = () => {
-      w = canvas.width = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      nodes = Array.from({ length: 28 }, () => ({
-        x: Math.random() * w,
-        y: Math.random() * h,
-        vx: (Math.random() - 0.5) * 0.22,
-        vy: (Math.random() - 0.5) * 0.22
-      }));
-    };
-
-    const draw = () => {
-      ctx.clearRect(0, 0, w, h);
-      for (let i = 0; i < nodes.length; i++) {
-        const a = nodes[i];
-        a.x += a.vx;
-        a.y += a.vy;
-        if (a.x < 0 || a.x > w) a.vx *= -1;
-        if (a.y < 0 || a.y > h) a.vy *= -1;
-
-        ctx.beginPath();
-        ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
-        ctx.arc(a.x, a.y, 1.2, 0, Math.PI * 2);
-        ctx.fill();
-
-        for (let j = i + 1; j < nodes.length; j++) {
-          const b = nodes[j];
-          const dist = Math.hypot(a.x - b.x, a.y - b.y);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(56, 189, 248, ${(1 - dist / 120) * 0.35})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-      requestAnimationFrame(draw);
-    };
-
-    resize();
-    draw();
-    window.addEventListener('resize', resize);
-  }
-
   ready(() => {
     finishBootImmediate();
     initThemeToggle();
     initMobileMenu();
     initScrollSpy();
     injectProjectCaseStudyDrawers();
-    enhanceParticles();
   });
 })();

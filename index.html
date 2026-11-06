@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="th" data-theme="dark">
+<html lang="th" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,10 +11,9 @@
   <meta name="application-name" content="Thanapat Pisavong">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
   <meta name="googlebot" content="index, follow, max-image-preview:large, max-snippet:-1">
-  <meta name="theme-color" content="#0b0f19">
+  <meta name="theme-color" content="#efece4">
   <meta name="format-detection" content="telephone=yes, email=yes, address=yes">
 
-  <!-- Local SEO & Geo Tags -->
   <meta name="geo.region" content="TH-13">
   <meta name="geo.placename" content="Pathum Thani, Thailand">
   <meta name="geo.position" content="14.0208;100.7303">
@@ -27,7 +26,6 @@
   <link rel="apple-touch-icon" href="profile2.jpg">
   <link rel="manifest" href="site.webmanifest">
 
-  <!-- Open Graph / Facebook / LinkedIn -->
   <meta property="og:locale" content="th_TH">
   <meta property="og:locale:alternate" content="en_US">
   <meta property="og:title" content="Thanapat Pisavong (ธนภัทร พิศวงศ์) | Full Stack Developer &amp; Cloud Systems Engineer">
@@ -45,14 +43,12 @@
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="1200">
 
-  <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Thanapat Pisavong (ธนภัทร พิศวงศ์) | Full Stack Developer &amp; Cloud Systems Engineer">
   <meta name="twitter:description" content="Full Stack Developer &amp; Systems Engineer — Laravel 12, Next.js 16, .NET 8, AWS ECS, Kotlin Android Auto, SAP Integration.">
   <meta name="twitter:image" content="https://not44353.vercel.app/profile2.jpg">
   <meta name="twitter:image:alt" content="Thanapat Pisavong (ธนภัทร พิศวงศ์) profile photo">
 
-  <!-- Structured Data (Schema.org JSON-LD Graph) -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -63,7 +59,7 @@
         "url": "https://not44353.vercel.app/",
         "name": "Thanapat Pisavong (ธนภัทร พิศวงศ์) — Full Stack Developer & Cloud Systems Engineer CV & Portfolio",
         "dateCreated": "2024-01-15T00:00:00+07:00",
-        "dateModified": "2026-11-04T16:52:00+07:00",
+        "dateModified": "2026-11-06T13:45:00+07:00",
         "inLanguage": ["th", "en"],
         "isPartOf": {
           "@id": "https://not44353.vercel.app/#website"
@@ -198,7 +194,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Commit+Mono:wght@400;600;700&family=Sarabun:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="hi-tech.css">
@@ -206,239 +202,252 @@
 <body class="loaded">
   <a href="#main-content" class="skip-link">ข้ามไปยังเนื้อหาหลัก (Skip to content)</a>
 
-  <!-- Subtle Ambient Background -->
-  <div id="parallax-bg" aria-hidden="true">
-    <canvas id="particle-canvas"></canvas>
-    <div class="ambient-glow glow-1"></div>
-    <div class="ambient-glow glow-2"></div>
-  </div>
-
-  <!-- Executive Sticky Header & Navigation -->
-  <header class="site-header" id="topHeader">
-    <div class="header-inner">
-      <a href="#hero" class="brand-logo" aria-label="Thanapat Pisavong Home">
-        <span class="brand-monogram">TP</span>
-        <div class="brand-text">
-          <span class="brand-name">Thanapat Pisavong</span>
-          <span class="brand-sub">ธนภัทร พิศวงศ์ · Full Stack &amp; Cloud Engineer</span>
+  <main id="main-content" class="folio-shell">
+    <!-- FIRST VIEWPORT: ARCHITECTURAL ENGINEERING FOLIO SHEET -->
+    <section class="hero folio-sheet" id="hero">
+      <!-- Top Title-Block Bar -->
+      <header class="title-bar" id="topHeader">
+        <div class="title-cell doc-code">
+          <a href="#hero" class="brand-logo">DOC // TP-CV-2026</a>
         </div>
-      </a>
-
-      <nav class="main-nav" aria-label="Primary Navigation">
-        <a href="#about" class="nav-link">About</a>
-        <a href="#experience" class="nav-link">Experience</a>
-        <a href="#architecture" class="nav-link">Architecture</a>
-        <a href="#portfolio" class="nav-link">Projects</a>
-        <a href="#skills" class="nav-link">Skills</a>
-        <a href="#education" class="nav-link">Credentials</a>
-        <a href="#contact" class="nav-link">Contact</a>
-      </nav>
-
-      <div class="header-actions">
-        <!-- Audio Narrator & Theme Controls -->
-        <div class="audio-controls" role="group" aria-label="Voice Narration and Theme Controls">
-          <button id="languageToggle" class="language-btn" type="button" title="สลับภาษาเสียงบรรยาย (TH/EN)">
-            <i class="fas fa-globe" id="languageIcon"></i>
-            <span id="languageText">TH</span>
-          </button>
-          <button id="audioToggle" class="audio-btn" type="button" title="ฟังเสียงบรรยายเรซูเม่">
-            <i class="fas fa-play" id="audioIcon"></i>
-          </button>
-          <button id="themeToggle" class="theme-btn" type="button" title="สลับโหมดสี มืด/สว่าง (Toggle Dark/Light Theme)" aria-label="Toggle Theme">
-            <i class="fas fa-sun" id="themeIcon"></i>
+        <div class="title-cell status-cell">
+          <span class="pulse-dot"></span>
+          <span>PRODUCTION SYSTEMS ENGINEER DOSSIER · PATHUM THANI, TH</span>
+        </div>
+        <div class="title-cell controls-cell">
+          <div class="audio-controls" role="group" aria-label="Voice Narration and Theme Controls">
+            <button id="languageToggle" class="language-btn" type="button" title="สลับภาษาเสียงบรรยาย (TH/EN)">
+              <i class="fas fa-globe" id="languageIcon"></i>
+              <span id="languageText">TH</span>
+            </button>
+            <button id="audioToggle" class="audio-btn" type="button" title="ฟังเสียงบรรยายเรซูเม่">
+              <i class="fas fa-play" id="audioIcon"></i>
+            </button>
+            <button id="themeToggle" class="theme-btn" type="button" title="สลับโหมดกระดาษร่าง / พิมพ์เขียว (Toggle Vellum / Blueprint Theme)" aria-label="Toggle Theme">
+              <i class="fas fa-adjust" id="themeIcon"></i>
+            </button>
+          </div>
+          <button class="header-lab-btn" onclick="openProjectsModal()" type="button">
+            <i class="fas fa-flask"></i>
+            <span>MiniProjects Lab</span>
           </button>
         </div>
-
-        <button class="header-lab-btn" onclick="openProjectsModal()" type="button">
-          <i class="fas fa-flask"></i>
-          <span>MiniProjects</span>
-        </button>
-
-        <a href="resume.pdf" download class="header-cv-btn">
+        <a href="resume.pdf" download class="title-cell primary-pdf-cell">
           <i class="fas fa-file-pdf"></i>
-          <span>CV PDF</span>
+          <span>DOWNLOAD CV PDF</span>
         </a>
+      </header>
 
-        <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="เปิดเมนูนำทาง" aria-expanded="false">
-          <i class="fas fa-bars"></i>
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <main id="main-content">
-    <!-- Hero Section -->
-    <section class="hero" id="hero">
-      <div class="hero-grid">
-        <!-- Left Column: Executive Introduction -->
-        <div class="hero-content">
-          <div class="hero-status-pill">
-            <span class="pulse-dot"></span>
-            <span>Available for Enterprise &amp; Full Stack Engineering · Pathum Thani, TH</span>
-          </div>
-
-          <p class="hero-name-th">ธนภัทร พิศวงศ์ · น๊อต (NOT44353)</p>
-          <h1>THANAPAT PISAVONG <span class="sr-only">(ธนภัทร พิศวงศ์)</span></h1>
-          <h2>FULL STACK DEVELOPER &amp; CLOUD SYSTEMS ENGINEER</h2>
-          <p class="hero-tagline">Architecting Mission-Critical Enterprise Platforms: Laravel 12 · Next.js 16 · .NET 8 · AWS Cloud · Android Kotlin</p>
-
-          <div class="hero-specialties" aria-label="Core Specialties">
-            <span class="hero-chip"><i class="fas fa-pills"></i> Pharma GMP (EBR / Leaflet)</span>
-            <span class="hero-chip"><i class="fas fa-industry"></i> SAP Integration &amp; ManHour</span>
-            <span class="hero-chip"><i class="fas fa-car"></i> Android Auto (MG S5 EV)</span>
-            <span class="hero-chip"><i class="fas fa-chart-line"></i> FinTech Quant &amp; AI</span>
-            <span class="hero-chip"><i class="fas fa-cloud"></i> AWS ECS &amp; IaC SAM</span>
-          </div>
-
-          <div class="hero-buttons">
-            <a href="#portfolio" class="btn-main"><i class="fas fa-layer-group"></i> View Enterprise Work</a>
-            <a href="#architecture" class="btn-main btn-alt"><i class="fas fa-project-diagram"></i> System Blueprint</a>
-            <a href="#contact" class="btn-main btn-alt"><i class="fas fa-envelope"></i> Contact Me</a>
-            <a href="#download-resume" class="btn-main btn-alt"><i class="fas fa-file-pdf"></i> Resume PDF</a>
-          </div>
-        </div>
-
-        <!-- Right Column: Executive Portrait Card & Quick Profile -->
-        <div class="hero-profile-aside">
-          <div class="profile-container glass-card">
-            <div class="profile-3d-scene" id="profile3d" role="img" aria-label="Thanapat Pisavong (ธนภัทร พิศวงศ์) profile">
-              <div class="profile-3d-stage" id="profile3dStage">
-                <div class="profile-3d-card" id="profile3dCard">
-                  <div class="profile-shine" id="profileShine"></div>
-                  <img
-                    src="profile2.jpg"
-                    alt="Thanapat Pisavong (ธนภัทร พิศวงศ์) - Full Stack Developer &amp; Cloud Systems Engineer"
-                    class="profile-img"
-                    width="220"
-                    height="220"
-                    fetchpriority="high"
-                    draggable="false"
-                  />
-                </div>
+      <!-- Main Split Drafting Grid -->
+      <div class="main-grid">
+        <!-- Left Column: Portrait Plate, Key Metadata, Philosophy & Direct Contact -->
+        <aside class="left-col" aria-label="Engineer Identity and Metadata">
+          <div class="portrait-frame">
+            <div class="portrait-plate-wrap" id="profile3d">
+              <img
+                src="profile2.jpg"
+                alt="Thanapat Pisavong (ธนภัทร พิศวงศ์) - Full Stack Developer &amp; Cloud Systems Engineer"
+                class="profile-img"
+                width="200"
+                height="240"
+                fetchpriority="high"
+                draggable="false"
+              />
+              <span class="plate-caption">PLATE 01 // THANAPAT PISAVONG</span>
+            </div>
+            <dl class="meta-stack">
+              <div>
+                <dt>CURRENT ORGANIZATION</dt>
+                <dd>TP Drug Laboratories (1969) Co., Ltd.</dd>
               </div>
-              <p class="profile-hint" id="profileHint">Verified Full Stack &amp; Systems Engineer</p>
+              <div>
+                <dt>ACADEMIC DEGREE</dt>
+                <dd>RMUTT · Information Technology (GPA 3.09)</dd>
+              </div>
+              <div>
+                <dt>CERTIFICATION</dt>
+                <dd>Microsoft Certified: Azure Fundamentals</dd>
+              </div>
+              <div>
+                <dt>BASE LOCATION</dt>
+                <dd>Pathum Thani 12120, Thailand</dd>
+              </div>
+            </dl>
+          </div>
+
+          <div class="bio-block hero-extra">
+            <div>
+              <p class="folio-quote">"Code is my weapon, learning is my power."</p>
+              <p class="folio-motto">เป้าหมาย: เป็น Full Stack Developer ที่สร้างระบบเปลี่ยนแปลงองค์กรและสังคม<br>คติ: "ไม่หยุดพัฒนา ไม่หยุดเรียนรู้ ไม่หยุดสร้างสรรค์"</p>
             </div>
 
-            <div class="profile-quick-meta">
-              <div class="quick-meta-item">
-                <i class="fas fa-building"></i>
-                <div>
-                  <span class="meta-label">Current Organization</span>
-                  <strong>TP Drug Laboratories (1969) Co., Ltd.</strong>
-                </div>
-              </div>
-              <div class="quick-meta-item">
-                <i class="fas fa-graduation-cap"></i>
-                <div>
-                  <span class="meta-label">Education</span>
-                  <strong>RMUTT · Information Technology (GPA 3.09)</strong>
-                </div>
-              </div>
-              <div class="quick-meta-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <div>
-                  <span class="meta-label">Location &amp; Contact</span>
-                  <strong>Pathum Thani 12120 · 081-7356592</strong>
-                </div>
-              </div>
-            </div>
-
-            <div class="profile-card-actions">
+            <div class="left-col-actions">
               <button class="projects-btn" onclick="openProjectsModal()" type="button">
                 <i class="fas fa-code"></i>
                 <span>View My MiniProjects</span>
               </button>
               <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer" class="btn-github">
-                <i class="fab fa-github"></i> GitHub: NOT44353
+                <i class="fab fa-github"></i>
+                <span>GitHub: NOT44353</span>
               </a>
+            </div>
+
+            <div class="contact-rows">
+              <div><span>TEL:</span> <a href="tel:0817356592">081-7356592</a></div>
+              <div><span>MAIL:</span> <a href="mailto:thanapatpisawong@gmail.com">thanapatpisawong@gmail.com</a></div>
+              <div><span>LINKEDIN:</span> <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer">thanapat-pisavong-0a8a80367</a></div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Right Column: Primary Title Specimen & Flagship Production Systems Matrix -->
+        <div class="right-col">
+          <div class="hero-header">
+            <h1>THANAPAT PISAVONG <span class="sr-only">(ธนภัทร พิศวงศ์)</span></h1>
+            <p class="hero-name-th">ธนภัทร พิศวงศ์ · น๊อต (NOT44353)</p>
+            <h2>FULL STACK DEVELOPER &amp; CLOUD SYSTEMS ENGINEER</h2>
+            <p class="hero-tagline">Production Systems &amp; Architecture: Laravel 12 · Next.js 16 · .NET 8 · AWS Cloud · Android Kotlin</p>
+
+            <div class="hero-specialties" aria-label="Core Specialties">
+              <span class="hero-chip">Pharma GMP (EBR / Leaflet)</span>
+              <span class="hero-chip">SAP Integration &amp; ManHour</span>
+              <span class="hero-chip">Android Auto (MG S5 EV)</span>
+              <span class="hero-chip">FinTech Quant &amp; AI</span>
+              <span class="hero-chip">AWS ECS &amp; IaC SAM</span>
+            </div>
+          </div>
+
+          <!-- 3-Column Flagship Systems Matrix inside First Viewport -->
+          <div class="spec-matrix" aria-label="Flagship Production Systems Preview">
+            <div class="spec-cell">
+              <div>
+                <h3>Electronic Batch Record (EBR)</h3>
+                <div class="sys-tag">LIVE // PHARMA GMP</div>
+                <p>ระบบบันทึกประวัติการผลิตยาแบบดิจิทัลตามมาตรฐาน GMP ขจัดงานเอกสารกระดาษ รองรับ Drag &amp; Drop Form Builder และ Audit Trail</p>
+              </div>
+              <div class="spec-cell-foot">
+                <span>Next.js 16 · Bun 1.3 · Prisma 7 · AWS ECS</span>
+                <button type="button" class="spec-jump-btn" onclick="openProjectDetail('ebr')">SPEC →</button>
+              </div>
+            </div>
+            <div class="spec-cell">
+              <div>
+                <h3>ManHour &amp; SAP B1 Sync</h3>
+                <div class="sys-tag">LIVE // ERP INTEGRATION</div>
+                <p>ระบบคำนวณชั่วโมงทำงานและต้นทุนสายการผลิตโรงงานยา ซิงค์ข้อมูล Real-time 2 ทิศทางกับ SAP Business One (OWOR, Route Stages)</p>
+              </div>
+              <div class="spec-cell-foot">
+                <span>Laravel 12 · PHP 8.4 · MSSQL · .NET 8</span>
+                <button type="button" class="spec-jump-btn" onclick="openProjectDetail('manhour')">SPEC →</button>
+              </div>
+            </div>
+            <div class="spec-cell">
+              <div>
+                <h3>Car Share Mirror (MG S5 EV)</h3>
+                <div class="sys-tag">LIVE // AUTOMOTIVE SDK</div>
+                <p>Native Android Kotlin สื่อสารกับ Android Auto API โดยตรงเพื่อแชร์หน้าจอมือถือขึ้นจอรถยนต์ MG S5 EV ขนาด 12.8" ไร้สาย</p>
+              </div>
+              <div class="spec-cell-foot">
+                <span>Kotlin · Android Auto SDK · 60fps</span>
+                <button type="button" class="spec-jump-btn" onclick="openProjectDetail('carshare')">SPEC →</button>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
 
-    <!-- Key Metrics Counter Bar -->
-    <section class="counters" id="counters" aria-label="Key Career Metrics">
-      <div class="counter-card glass-card">
-        <div class="counter-val"><span class="counter" data-target="3">3</span><span class="counter-plus">+</span></div>
-        <div class="counter-label">Years Experience</div>
-      </div>
-      <div class="counter-card glass-card">
-        <div class="counter-val"><span class="counter" data-target="15">15</span><span class="counter-plus">+</span></div>
-        <div class="counter-label">Enterprise Systems</div>
-      </div>
-      <div class="counter-card glass-card">
-        <div class="counter-val"><span class="counter" data-target="100">100</span><span class="counter-plus">K+</span></div>
-        <div class="counter-label">Records &amp; Transactions</div>
-      </div>
-      <div class="counter-card glass-card">
-        <div class="counter-val"><span class="counter-static">99.9</span><span class="counter-plus">%</span></div>
-        <div class="counter-label">System Availability</div>
-      </div>
-    </section>
-
-    <!-- Hero Extra / Engineering Philosophy -->
-    <section class="hero-extra" aria-label="Engineering Motto">
-      <div class="glass-card philosophy-banner">
-        <div class="philosophy-quote">
-          <span class="section-badge"><i class="fas fa-terminal"></i> ENGINEERING PHILOSOPHY</span>
-          <h2>"Code is my weapon, learning is my power."</h2>
-          <p>เป้าหมาย: เป็น Full Stack Developer ที่สร้างระบบเปลี่ยนแปลงองค์กรและสังคม<br>คติ: "ไม่หยุดพัฒนา ไม่หยุดเรียนรู้ ไม่หยุดสร้างสรรค์"</p>
+      <!-- Bottom Validation Ledger Bar -->
+      <div class="footer-ledger" id="counters" aria-label="Key Career Metrics">
+        <div class="metric-box">
+          <div class="counter-val"><span class="counter" data-target="3">3</span><span class="counter-plus">+</span></div>
+          <div class="counter-label">Years Experience</div>
         </div>
-        <div class="philosophy-cta">
-          <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer" class="btn-github"><i class="fab fa-github"></i> GitHub: NOT44353</a>
-          <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer" class="btn-linkedin"><i class="fab fa-linkedin"></i> LinkedIn Profile</a>
+        <div class="metric-box">
+          <div class="counter-val"><span class="counter" data-target="15">15</span><span class="counter-plus">+</span></div>
+          <div class="counter-label">Enterprise Systems</div>
         </div>
+        <div class="metric-box">
+          <div class="counter-val"><span class="counter" data-target="100">100</span><span class="counter-plus">K+</span></div>
+          <div class="counter-label">Records &amp; Transactions</div>
+        </div>
+        <div class="metric-box">
+          <div class="counter-val"><span class="counter-static">99.9</span><span class="counter-plus">%</span></div>
+          <div class="counter-label">System Availability</div>
+        </div>
+        <a href="#portfolio" class="cta-cell">VIEW 12 PRODUCTION SYSTEMS →</a>
       </div>
     </section>
 
-    <!-- Executive Overview Grid: About Me & Mission/Vision -->
-    <div class="cv-bento-row two-col">
-      <!-- About Me -->
-      <section class="about glass-card" id="about">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-user-tie"></i> EXECUTIVE SUMMARY</span>
+    <!-- STICKY DOSSIER SECTION INDEX -->
+    <nav class="folio-index-bar" aria-label="Dossier Section Index">
+      <div class="index-links main-nav">
+        <a href="#about" class="nav-link">About &amp; Purpose</a>
+        <a href="#experience" class="nav-link">Work Experience</a>
+        <a href="#architecture" class="nav-link">System Blueprint</a>
+        <a href="#portfolio" class="nav-link">12 Production Projects</a>
+        <a href="#skills" class="nav-link">Core Languages</a>
+        <a href="#technical-skills" class="nav-link">Enterprise Stack</a>
+        <a href="#education" class="nav-link">Credentials &amp; Bio</a>
+        <a href="#contact" class="nav-link">Contact</a>
+      </div>
+      <button class="mobile-menu-btn" id="mobileMenuBtn" type="button" aria-label="เปิดเมนูนำทาง" aria-expanded="false">
+        <i class="fas fa-bars"></i>
+      </button>
+    </nav>
+
+    <!-- SHEET 02: EXECUTIVE SUMMARY, MISSION & ENGINEERING MINDSET -->
+    <div class="folio-sheet split-two-sheet">
+      <section class="about sheet-cell" id="about">
+        <div class="sheet-heading-bar">
           <h3>ABOUT ME</h3>
+          <span class="sheet-ref">REF // PROFILE-SUMMARY</span>
         </div>
         <p>I'm a passionate system developer who believes in continuous improvement—both personal and professional. With resilience under pressure, a hunger for knowledge, and a strong drive to learn from those ahead of me, I aim to become a force of positive change through technology. I believe in growing together with the team and shaping systems that not only solve problems but also move organizations forward. Thank you for taking the time to learn about me.</p>
       </section>
 
-      <!-- Mission & Vision Section -->
-      <section class="mission-vision glass-card" id="mission-vision">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-compass"></i> CORE PURPOSE</span>
-          <h3>MY MISSION &amp; VISION</h3>
-        </div>
-        <p>"สร้างระบบที่เปลี่ยนแปลงองค์กรและสังคมด้วยเทคโนโลยีที่มีประสิทธิภาพและยั่งยืน"<br>"เติบโตไปพร้อมกับทีมและไม่หยุดพัฒนาตนเอง"</p>
-        <div class="soft-skills-inline" id="soft-skills">
-          <h4><i class="fas fa-check-double"></i> SOFT SKILL &amp; HARD SKILL MINDSET</h4>
-          <ul>
+      <div class="sheet-cell">
+        <section class="mission-vision" id="mission-vision">
+          <div class="sheet-heading-bar">
+            <h3>MY MISSION &amp; VISION</h3>
+            <span class="sheet-ref">REF // CORE-PURPOSE</span>
+          </div>
+          <p>"สร้างระบบที่เปลี่ยนแปลงองค์กรและสังคมด้วยเทคโนโลยีที่มีประสิทธิภาพและยั่งยืน"<br>"เติบโตไปพร้อมกับทีมและไม่หยุดพัฒนาตนเอง"</p>
+        </section>
+
+        <section class="soft-skills" id="soft-skills">
+          <div class="sheet-heading-bar sub-bar">
+            <h3>SOFT SKILL &amp; HARD SKILL</h3>
+          </div>
+          <ul class="ruled-list">
             <li>I get along well with others and I am humble and respectful.</li>
             <li>I continuously develop myself and strive for self-improvement.</li>
             <li>I have the ability to adapt and thrive in any environment.</li>
             <li>I have diverse work experience and skills across various professions.</li>
           </ul>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
 
-    <!-- Experience -->
-    <section class="experience" id="experience">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-briefcase"></i> CAREER TRACK RECORD</span>
-        <h3>PROFESSIONAL WORK EXPERIENCE</h3>
-        <p class="section-subtitle">ประสบการณ์การทำงานจริงในการออกแบบ พัฒนา และดูแลระบบระดับองค์กรและสายการผลิตอุตสาหกรรม</p>
+    <!-- SHEET 03: PROFESSIONAL WORK EXPERIENCE -->
+    <section class="experience folio-sheet" id="experience">
+      <div class="sheet-section-header">
+        <div>
+          <h3>PROFESSIONAL WORK EXPERIENCE</h3>
+          <p class="section-subtitle">ประสบการณ์การทำงานจริงในการออกแบบ พัฒนา และดูแลระบบระดับองค์กรและสายการผลิตอุตสาหกรรม</p>
+        </div>
+        <span class="sheet-ref">RECORD // 2023 – PRESENT</span>
       </div>
-      <div class="timeline">
+
+      <div class="timeline-ledger">
         <article class="timeline-item current-job">
-          <div class="timeline-date">August 2025 - Present (ปัจจุบัน)</div>
-          <div class="timeline-content glass-card">
-            <div class="timeline-header">
-              <div>
-                <b>บริษัท ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด (TP Drug Laboratories (1969) Co., Ltd.)</b><br>
-                <span class="role-badge">Full Stack Developer &amp; Systems Engineer</span>
-              </div>
-              <span class="current-pill">Current Role</span>
+          <div class="timeline-meta-col">
+            <div class="timeline-date">August 2025 - Present (ปัจจุบัน)</div>
+            <div class="role-badge">Full Stack Developer &amp; Systems Engineer</div>
+            <span class="status-stamp live">CURRENT ROLE</span>
+          </div>
+          <div class="timeline-content">
+            <div class="company-line">
+              <b>บริษัท ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด (TP Drug Laboratories (1969) Co., Ltd.)</b>
             </div>
             <ul>
               <li><strong>Electronic Batch Record (EBR):</strong> ออกแบบและพัฒนาระบบบันทึกประวัติการผลิตยาแบบดิจิทัล (Digital Batch Record) ตามมาตรฐาน GMP ด้วย Next.js 16, React 19, Bun 1.3, TypeScript 5, Prisma 7 และ PostgreSQL รันบน AWS ECS Fargate</li>
@@ -449,14 +458,15 @@
             </ul>
           </div>
         </article>
+
         <article class="timeline-item">
-          <div class="timeline-date">June 2025 - August 2025</div>
-          <div class="timeline-content glass-card">
-            <div class="timeline-header">
-              <div>
-                <b>Advance Network Technology &amp; Services Company Limited</b><br>
-                <span class="role-badge">Programmer</span>
-              </div>
+          <div class="timeline-meta-col">
+            <div class="timeline-date">June 2025 - August 2025</div>
+            <div class="role-badge">Programmer</div>
+          </div>
+          <div class="timeline-content">
+            <div class="company-line">
+              <b>Advance Network Technology &amp; Services Company Limited</b>
             </div>
             <ul>
               <li>Designed and developed software applications based on business requirements using the Agile methodology.</li>
@@ -466,15 +476,16 @@
             </ul>
           </div>
         </article>
+
         <article class="timeline-item">
-          <div class="timeline-date">March 2024 - June 2025</div>
-          <div class="timeline-content glass-card">
-            <div class="timeline-header">
-              <div>
-                <b>บจก. เจียเม้งมาร์เก็ตติ้ง (ข้าวหงษ์ทอง)</b><br>
-                <b>เสียงเมืองนนทบุรี บางกระสอ อ.เมืองนนทบุรี นนทบุรี 11000</b><br>
-                <span class="role-badge">Fullstack Developer</span>
-              </div>
+          <div class="timeline-meta-col">
+            <div class="timeline-date">March 2024 - June 2025</div>
+            <div class="role-badge">Fullstack Developer</div>
+          </div>
+          <div class="timeline-content">
+            <div class="company-line">
+              <b>บจก. เจียเม้งมาร์เก็ตติ้ง (ข้าวหงษ์ทอง)</b><br>
+              <span class="company-sub">เสียงเมืองนนทบุรี บางกระสอ อ.เมืองนนทบุรี นนทบุรี 11000</span>
             </div>
             <ul>
               <li>Designed and implemented a complete back-office solution for employee attendance, geofencing, KPI evaluation, and payroll processing.</li>
@@ -482,14 +493,15 @@
             </ul>
           </div>
         </article>
+
         <article class="timeline-item">
-          <div class="timeline-date">January 2023 - December 2023</div>
-          <div class="timeline-content glass-card">
-            <div class="timeline-header">
-              <div>
-                <b>Software &amp; Scale Engineering | 49/61 M.4 shatluang13</b><br>
-                <span class="role-badge">Programmer / SoftwareTester</span>
-              </div>
+          <div class="timeline-meta-col">
+            <div class="timeline-date">January 2023 - December 2023</div>
+            <div class="role-badge">Programmer / SoftwareTester</div>
+          </div>
+          <div class="timeline-content">
+            <div class="company-line">
+              <b>Software &amp; Scale Engineering | 49/61 M.4 shatluang13</b>
             </div>
             <ul>
               <li>Developed a C# Windows application for scanning employee and vehicle ID cards.</li>
@@ -501,65 +513,65 @@
       </div>
     </section>
 
-    <!-- Enterprise Architecture Blueprint Section -->
-    <section class="architecture-section" id="architecture">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-network-wired"></i> SYSTEM ARCHITECTURE</span>
-        <h3>ENTERPRISE INTEGRATION BLUEPRINT</h3>
-        <p class="section-subtitle">สถาปัตยกรรมโครงข่ายระบบที่เชื่อมต่อถึงกันแบบครบวงจรในระดับองค์กร (Pharma GMP, SAP ERP, Cloud &amp; Automotive)</p>
+    <!-- SHEET 04: ENTERPRISE INTEGRATION BLUEPRINT -->
+    <section class="architecture-section folio-sheet" id="architecture">
+      <div class="sheet-section-header">
+        <div>
+          <h3>ENTERPRISE INTEGRATION BLUEPRINT</h3>
+          <p class="section-subtitle">สถาปัตยกรรมโครงข่ายระบบที่เชื่อมต่อถึงกันแบบครบวงจรในระดับองค์กร (Pharma GMP, SAP ERP, Cloud &amp; Automotive)</p>
+        </div>
+        <div class="blueprint-nav">
+          <span class="tag">SAP B1 ERP</span>
+          <span class="tag">AWS ECS / Aurora</span>
+          <span class="tag">GMP Production</span>
+          <span class="tag">Automotive &amp; IoT</span>
+        </div>
       </div>
 
-      <div class="blueprint-container glass-card">
+      <div class="blueprint-container">
         <div class="blueprint-header">
           <div class="blueprint-status"><span class="pulse-dot"></span> TOPOLOGY: MULTI-TIER HYBRID CLOUD &amp; ON-PREMISE</div>
-          <div class="blueprint-nav">
-            <span class="tag tag-blue">SAP B1 ERP</span>
-            <span class="tag tag-purple">AWS ECS / Aurora</span>
-            <span class="tag tag-green">GMP Production</span>
-            <span class="tag tag-amber">Automotive &amp; IoT</span>
-          </div>
+          <span class="sheet-ref">DRAWING // SYS-ARCH-01</span>
         </div>
 
         <div class="blueprint-grid">
-          <!-- Node 1: SAP ERP Core -->
           <div class="blueprint-node">
-            <div class="node-icon"><i class="fas fa-database"></i></div>
-            <div class="node-badge">CORE ERP</div>
-            <h4>SAP Business One</h4>
+            <div class="node-head">
+              <h4>SAP Business One</h4>
+              <span class="node-code">CORE ERP</span>
+            </div>
             <p class="node-desc">MSSQL Database, Production Orders (OWOR), Item Master &amp; Routing Stages</p>
             <div class="node-tags">
               <span>MSSQL</span><span>ODBC / sqlsrv</span><span>OWOR</span>
             </div>
           </div>
 
-          <!-- Connection 1 -->
           <div class="blueprint-connector">
             <div class="connector-line horizontal"></div>
             <div class="connector-label">Bidirectional ETL &amp; Cron Sync</div>
           </div>
 
-          <!-- Node 2: Integration Middleware -->
           <div class="blueprint-node featured">
-            <div class="node-icon"><i class="fas fa-random"></i></div>
-            <div class="node-badge">INTEGRATION ENGINE</div>
-            <h4>Sync Middleware</h4>
+            <div class="node-head">
+              <h4>Sync Middleware</h4>
+              <span class="node-code">INTEGRATION ENGINE</span>
+            </div>
             <p class="node-desc">Node.js ESM sync scripts (node-cron) + ASP.NET Core 8 Web API ส่งข้อมูลกลับ SAP พร้อม Serilog</p>
             <div class="node-tags">
               <span>Node.js</span><span>C# .NET 8</span><span>mysql2</span><span>mssql</span>
             </div>
           </div>
 
-          <!-- Connection 2 -->
           <div class="blueprint-connector">
             <div class="connector-line horizontal"></div>
             <div class="connector-label">REST API &amp; JWT Auth</div>
           </div>
 
-          <!-- Node 3: ManHour Ecosystem -->
           <div class="blueprint-node">
-            <div class="node-icon"><i class="fas fa-industry"></i></div>
-            <div class="node-badge">SHOP FLOOR</div>
-            <h4>ManHour Ecosystem</h4>
+            <div class="node-head">
+              <h4>ManHour Ecosystem</h4>
+              <span class="node-code">SHOP FLOOR</span>
+            </div>
             <p class="node-desc">Laravel 12 Backend API + Blade &amp; Vite 7 Frontend Web &amp; Mobile สำหรับคำนวณ Man Hour โรงงานยา</p>
             <div class="node-tags">
               <span>Laravel 12</span><span>PHP 8.4</span><span>MySQL</span><span>Tailwind 4</span>
@@ -567,70 +579,66 @@
           </div>
         </div>
 
-        <!-- Secondary Row: Cloud & Mobile & Devices -->
         <div class="blueprint-subgrid">
           <div class="blueprint-mini-card">
-            <div class="mini-header"><i class="fas fa-prescription-bottle-alt"></i> <strong>Electronic Batch Record (EBR)</strong></div>
+            <div class="mini-header"><strong>Electronic Batch Record (EBR)</strong></div>
             <p>Full-Stack Next.js 16 + Bun 1.3 + Prisma 7 บน AWS ECS Fargate &amp; Aurora PostgreSQL รองรับ GxP Validation</p>
           </div>
 
           <div class="blueprint-mini-card">
-            <div class="mini-header"><i class="fas fa-qrcode"></i> <strong>E-Leaflet &amp; Patient QR</strong></div>
+            <div class="mini-header"><strong>E-Leaflet &amp; Patient QR</strong></div>
             <p>ASP.NET Core 8 Web API + MVC Razor + Mobile Web สตรีมมิ่ง PDF ผ่าน PdfProxy พร้อมแจ้งเตือนยาหมดอายุ</p>
           </div>
 
           <div class="blueprint-mini-card">
-            <div class="mini-header"><i class="fas fa-car-side"></i> <strong>Car Share Mirror (MG S5 EV)</strong></div>
+            <div class="mini-header"><strong>Car Share Mirror (MG S5 EV)</strong></div>
             <p>Native Android (Kotlin) ส่งภาพหน้าจอขึ้นหน้าปัดรถยนต์ 12.8" ไร้สายผ่าน Android Auto SDK โดยตรง</p>
           </div>
 
           <div class="blueprint-mini-card">
-            <div class="mini-header"><i class="fas fa-chart-line"></i> <strong>TD Master &amp; JARVIS AI</strong></div>
+            <div class="mini-header"><strong>TD Master &amp; JARVIS AI</strong></div>
             <p>Quant Trading Journal &amp; Chart Capture เชื่อม MT5 EA พร้อม AI Autonomous Assistant Dashboard</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Portfolio -->
-    <section class="portfolio" id="portfolio">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-layer-group"></i> PRODUCTION SYSTEMS &amp; ENTERPRISE WORK</span>
-        <h3>FEATURED ENTERPRISE &amp; PRODUCTION PROJECTS</h3>
-        <p class="section-subtitle">รวบรวมโปรเจกต์จริงระดับองค์กร, โรงงานอุตสาหกรรมยา GMP, FinTech, Autonomous AI และ In-Car Automotive</p>
-      </div>
-
-      <!-- Category Filters -->
-      <div class="portfolio-filter-container" role="tablist" aria-label="Project Categories">
-        <button class="portfolio-filter-btn active" data-filter="all" type="button">
-          <i class="fas fa-layer-group"></i> All Projects (<span id="allCount">12</span>)
-        </button>
-        <button class="portfolio-filter-btn" data-filter="pharma" type="button">
-          <i class="fas fa-pills"></i> Pharma &amp; Enterprise
-        </button>
-        <button class="portfolio-filter-btn" data-filter="automotive" type="button">
-          <i class="fas fa-car"></i> Automotive &amp; IoT
-        </button>
-        <button class="portfolio-filter-btn" data-filter="fintech" type="button">
-          <i class="fas fa-chart-line"></i> FinTech &amp; AI
-        </button>
-        <button class="portfolio-filter-btn" data-filter="retail-cloud" type="button">
-          <i class="fas fa-cloud"></i> Retail, Cloud &amp; Web
-        </button>
+    <!-- SHEET 05: FEATURED ENTERPRISE & PRODUCTION PROJECTS (12 SYSTEMS) -->
+    <section class="portfolio folio-sheet" id="portfolio">
+      <div class="sheet-section-header">
+        <div>
+          <h3>FEATURED ENTERPRISE &amp; PRODUCTION PROJECTS</h3>
+          <p class="section-subtitle">รวบรวมโปรเจกต์จริงระดับองค์กร, โรงงานอุตสาหกรรมยา GMP, FinTech, Autonomous AI และ In-Car Automotive</p>
+        </div>
+        <div class="portfolio-filter-container" role="tablist" aria-label="Project Categories">
+          <button class="portfolio-filter-btn active" data-filter="all" type="button">
+            All Projects (<span id="allCount">12</span>)
+          </button>
+          <button class="portfolio-filter-btn" data-filter="pharma" type="button">
+            Pharma &amp; Enterprise
+          </button>
+          <button class="portfolio-filter-btn" data-filter="automotive" type="button">
+            Automotive &amp; IoT
+          </button>
+          <button class="portfolio-filter-btn" data-filter="fintech" type="button">
+            FinTech &amp; AI
+          </button>
+          <button class="portfolio-filter-btn" data-filter="retail-cloud" type="button">
+            Retail, Cloud &amp; Web
+          </button>
+        </div>
       </div>
 
       <div class="portfolio-list" id="portfolioList">
         <!-- 1. Electronic Batch Record -->
-        <article class="portfolio-item glass-card" data-category="pharma" data-project-id="ebr">
+        <article class="portfolio-item" data-category="pharma" data-project-id="ebr">
+          <h4>Electronic Batch Record (EBR)</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge pharma">Pharma GMP</span>
+            <span class="project-cat-badge">Pharma GMP</span>
           </div>
-          <h4>Electronic Batch Record (EBR)</h4>
           <p class="project-short-desc">ระบบบันทึกประวัติการผลิตยาแบบดิจิทัล (Digital Batch Record) ตามมาตรฐาน GMP ขจัดงานเอกสารกระดาษ รองรับ Drag &amp; Drop Form Builder และ Audit Trail</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Next.js 16 ↔ Prisma 7 ↔ AWS ECS Fargate ↔ Aurora DB
-          </div>
+          <div class="project-arch-pill">Next.js 16 ↔ Prisma 7 ↔ AWS ECS Fargate ↔ Aurora DB</div>
           <div class="project-tags">
             <span class="badge lang">Next.js 16</span>
             <span class="badge lang">React 19</span>
@@ -641,25 +649,22 @@
             <span class="badge cloud">Cognito OIDC</span>
             <span class="badge">Tailwind 4</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> GxP Compliant · Zero Data Loss · Multi-step Approval
-          </div>
+          <div class="project-metrics">GxP Compliant · Zero Data Loss · Multi-step Approval</div>
           <button class="btn-project-detail" onclick="openProjectDetail('ebr')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 2. ManHour Enterprise Ecosystem -->
-        <article class="portfolio-item glass-card" data-category="pharma" data-project-id="manhour">
+        <article class="portfolio-item" data-category="pharma" data-project-id="manhour">
+          <h4>ManHour Production Ecosystem &amp; SAP Sync</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge pharma">Pharma Enterprise</span>
+            <span class="project-cat-badge">Pharma Enterprise</span>
           </div>
-          <h4>ManHour Production Ecosystem &amp; SAP Sync</h4>
           <p class="project-short-desc">ระบบคำนวณชั่วโมงทำงานและต้นทุนสายการผลิตโรงงานยา ซิงค์ข้อมูล Real-time 2 ทิศทางกับ SAP Business One (OWOR, Route Stages) พร้อม REST API, DataTables, และ Swagger</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> SAP (MSSQL) ↔ Node Sync ↔ Laravel 12 API ↔ Shop Floor Web
-          </div>
+          <div class="project-arch-pill">SAP (MSSQL) ↔ Node Sync ↔ Laravel 12 API ↔ Shop Floor Web</div>
           <div class="project-tags">
             <span class="badge lang">PHP 8.4</span>
             <span class="badge">Laravel 12</span>
@@ -670,25 +675,22 @@
             <span class="badge">Vite 7</span>
             <span class="badge">Tailwind 4</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> 99.9% Uptime · 2-Way SAP Sync · QR Job Tracking
-          </div>
+          <div class="project-metrics">99.9% Uptime · 2-Way SAP Sync · QR Job Tracking</div>
           <button class="btn-project-detail" onclick="openProjectDetail('manhour')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 3. E-Leaflet Platform -->
-        <article class="portfolio-item glass-card" data-category="pharma" data-project-id="leaflet">
+        <article class="portfolio-item" data-category="pharma" data-project-id="leaflet">
+          <h4>E-Leaflet — Smart Drug Registration &amp; QR</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge pharma">Pharma Mobile/Web</span>
+            <span class="project-cat-badge">Pharma Mobile/Web</span>
           </div>
-          <h4>E-Leaflet — Smart Drug Registration &amp; QR</h4>
           <p class="project-short-desc">ระบบเอกสารกำกับยาและสแกน QR Code สำหรับคนไข้และแพทย์ สตรีมมิ่งไฟล์ PDF ความเร็วสูงผ่าน PdfProxy (Range Requests) พร้อม Background Jobs แจ้งเตือนวันหมดอายุยาผ่านอีเมล</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> ASP.NET Core 8 Web API ↔ EF Core 8 ↔ PdfProxy ↔ Razor MVC
-          </div>
+          <div class="project-arch-pill">ASP.NET Core 8 Web API ↔ EF Core 8 ↔ PdfProxy ↔ Razor MVC</div>
           <div class="project-tags">
             <span class="badge lang">C# .NET 8</span>
             <span class="badge">ASP.NET Core</span>
@@ -699,25 +701,22 @@
             <span class="badge">JWT Auth</span>
             <span class="badge">Hosted Services</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Real-time PDF Streaming · Automated Expiry Alerts
-          </div>
+          <div class="project-metrics">Real-time PDF Streaming · Automated Expiry Alerts</div>
           <button class="btn-project-detail" onclick="openProjectDetail('leaflet')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 4. Car Share Mirror -->
-        <article class="portfolio-item glass-card" data-category="automotive" data-project-id="carshare">
+        <article class="portfolio-item" data-category="automotive" data-project-id="carshare">
+          <h4>Car Share Mirror — MG S5 EV Projection</h4>
           <div class="project-card-header">
             <span class="project-status automotive"><span class="pulse-dot"></span> Active Automotive</span>
-            <span class="project-cat-badge automotive">Android Auto</span>
+            <span class="project-cat-badge">Android Auto</span>
           </div>
-          <h4>Car Share Mirror — MG S5 EV Projection</h4>
           <p class="project-short-desc">Native Android Kotlin Application ที่สื่อสารกับ Android Auto API โดยตรงเพื่อแชร์หน้าจอมือถือขึ้นจอรถยนต์ MG S5 EV ขนาด 12.8" ผ่านสัญญาณไร้สาย โดยไม่ต้องใช้ Browser หรือเปิด Hotspot</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Android Kotlin ↔ MediaProjection ↔ Android Auto Wireless
-          </div>
+          <div class="project-arch-pill">Android Kotlin ↔ MediaProjection ↔ Android Auto Wireless</div>
           <div class="project-tags">
             <span class="badge lang">Kotlin</span>
             <span class="badge">Android Auto SDK</span>
@@ -726,25 +725,22 @@
             <span class="badge">CarMirrorService</span>
             <span class="badge">Gradle</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Zero Hotspot Required · High-FPS Mirroring
-          </div>
+          <div class="project-metrics">Zero Hotspot Required · High-FPS Mirroring</div>
           <button class="btn-project-detail" onclick="openProjectDetail('carshare')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 5. TD Master Quant Trading Journal -->
-        <article class="portfolio-item glass-card" data-category="fintech" data-project-id="tdmaster">
+        <article class="portfolio-item" data-category="fintech" data-project-id="tdmaster">
+          <h4>TD Master — Private Quant Trading Journal</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge fintech">FinTech Quant</span>
+            <span class="project-cat-badge">FinTech Quant</span>
           </div>
-          <h4>TD Master — Private Quant Trading Journal</h4>
           <p class="project-short-desc">ระบบบันทึกและวิเคราะห์สถิติการเทรดอัตโนมัติ ดึงข้อมูลตรงจาก MetaTrader 5 (MT5 EA) วิเคราะห์ Equity Curve, Drawdown, และ Win Rate แบบเรียลไทม์ พร้อม TradingView MCP</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> MT5 MQL5 EA ↔ Next.js 14 ↔ Supabase ↔ Chart.js ↔ MCP
-          </div>
+          <div class="project-arch-pill">MT5 MQL5 EA ↔ Next.js 14 ↔ Supabase ↔ Chart.js ↔ MCP</div>
           <div class="project-tags">
             <span class="badge lang">Next.js 14</span>
             <span class="badge db">Supabase</span>
@@ -754,25 +750,22 @@
             <span class="badge">Chart.js</span>
             <span class="badge">PowerShell</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Automated Execution Log · Real-time Equity Curves
-          </div>
+          <div class="project-metrics">Automated Execution Log · Real-time Equity Curves</div>
           <button class="btn-project-detail" onclick="openProjectDetail('tdmaster')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 6. JARVIS AI Autonomous Dashboard -->
-        <article class="portfolio-item glass-card" data-category="fintech" data-project-id="jarvis">
+        <article class="portfolio-item" data-category="fintech" data-project-id="jarvis">
+          <h4>JARVIS AI — Autonomous Engineer Dashboard</h4>
           <div class="project-card-header">
             <span class="project-status ai"><span class="pulse-dot"></span> Autonomous Agent</span>
-            <span class="project-cat-badge ai">AI &amp; Agent</span>
+            <span class="project-cat-badge">AI &amp; Agent</span>
           </div>
-          <h4>JARVIS AI — Autonomous Engineer Dashboard</h4>
           <p class="project-short-desc">แดชบอร์ดผู้ช่วยวิศวกรสไตล์ Tony Stark ขับเคลื่อนด้วย Agentic LLM รองรับคำสั่งเสียง/ข้อความ การอ่านเขียนโค้ด การรันคำสั่ง Shell อัตโนมัติ พร้อม UI แบบ Holographic HUD</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Next.js ↔ Supabase ↔ Prisma ↔ Agent Tools (Bash/Files)
-          </div>
+          <div class="project-arch-pill">Next.js ↔ Supabase ↔ Prisma ↔ Agent Tools (Bash/Files)</div>
           <div class="project-tags">
             <span class="badge lang">Next.js</span>
             <span class="badge db">Supabase</span>
@@ -781,25 +774,22 @@
             <span class="badge">Cinematic HUD</span>
             <span class="badge">Orbitron</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Autonomous Code Execution · Bilingual EN/TH Voice
-          </div>
+          <div class="project-metrics">Autonomous Code Execution · Bilingual EN/TH Voice</div>
           <button class="btn-project-detail" onclick="openProjectDetail('jarvis')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 7. CrossMatch Phone Catalog & POS -->
-        <article class="portfolio-item glass-card" data-category="retail-cloud" data-project-id="crossmatch">
+        <article class="portfolio-item" data-category="retail-cloud" data-project-id="crossmatch">
+          <h4>CrossMatch Catalog &amp; Multi-Branch POS</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge retail">Retail POS</span>
+            <span class="project-cat-badge">Retail POS</span>
           </div>
-          <h4>CrossMatch Catalog &amp; Multi-Branch POS</h4>
           <p class="project-short-desc">ระบบแคตตาล็อกอุปกรณ์เสริมมือถือพร้อม Cross-Device Compatibility Checker สำหรับหน้าร้าน ค้นหารวดเร็วในระดับมิลลิวินาที พร้อมระบบบริหารสต็อก สาขา และสรุปยอดขาย</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Next.js ↔ Fuzzy Normalized Search ↔ Multi-Branch POS ↔ Chart.js
-          </div>
+          <div class="project-arch-pill">Next.js ↔ Fuzzy Normalized Search ↔ Multi-Branch POS ↔ Chart.js</div>
           <div class="project-tags">
             <span class="badge lang">Next.js</span>
             <span class="badge">Tailwind CSS</span>
@@ -808,25 +798,22 @@
             <span class="badge">Chart.js</span>
             <span class="badge">CSV Export</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Sub-5ms Instant Lookup · Multi-Branch POS Matrix
-          </div>
+          <div class="project-metrics">Sub-5ms Instant Lookup · Multi-Branch POS Matrix</div>
           <button class="btn-project-detail" onclick="openProjectDetail('crossmatch')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 8. TP Drug Corporate Website & Intranet -->
-        <article class="portfolio-item glass-card" data-category="retail-cloud" data-project-id="corporate">
+        <article class="portfolio-item" data-category="retail-cloud" data-project-id="corporate">
+          <h4>TP Drug Corporate Website &amp; Employee Intranet</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Production Live</span>
-            <span class="project-cat-badge pharma">Pharma Web/SSO</span>
+            <span class="project-cat-badge">Pharma Web/SSO</span>
           </div>
-          <h4>TP Drug Corporate Website &amp; Employee Intranet</h4>
           <p class="project-short-desc">เว็บไซต์ทางการของบริษัท ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด และระบบ Intranet พนักงาน พร้อมระบบความปลอดภัยระดับสูง PKCE OIDC Server-Side Auth และ S3 Storage</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Next.js 16 ↔ Bun ↔ AWS Cognito PKCE OIDC ↔ AWS S3
-          </div>
+          <div class="project-arch-pill">Next.js 16 ↔ Bun ↔ AWS Cognito PKCE OIDC ↔ AWS S3</div>
           <div class="project-tags">
             <span class="badge lang">Next.js 16</span>
             <span class="badge lang">Bun 1.3</span>
@@ -836,25 +823,22 @@
             <span class="badge cloud">AWS S3</span>
             <span class="badge">Bilingual i18n</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Zero Client-side Tokens · Cloud S3 Document Management
-          </div>
+          <div class="project-metrics">Zero Client-side Tokens · Cloud S3 Document Management</div>
           <button class="btn-project-detail" onclick="openProjectDetail('corporate')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 9. Enterprise AWS Cloud Infrastructure -->
-        <article class="portfolio-item glass-card" data-category="retail-cloud" data-project-id="aws">
+        <article class="portfolio-item" data-category="retail-cloud" data-project-id="aws">
+          <h4>Enterprise AWS Cloud Infrastructure (SAM / IaC)</h4>
           <div class="project-card-header">
             <span class="project-status cloud"><span class="pulse-dot"></span> Cloud Infra</span>
-            <span class="project-cat-badge cloud">AWS Architecture</span>
+            <span class="project-cat-badge">AWS Architecture</span>
           </div>
-          <h4>Enterprise AWS Cloud Infrastructure (SAM / IaC)</h4>
           <p class="project-short-desc">โครงสร้างพื้นฐาน Cloud สำหรับระบบทั้งหมดขององค์กร ออกแบบ VPC, NAT Gateway, Application Load Balancer, Containerized Services บน ECS Fargate และ Pipeline CI/CD ปลอดภัยด้วย OIDC</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> AWS SAM ↔ ECS Fargate ↔ Aurora PostgreSQL ↔ CloudFront ↔ GitHub Actions
-          </div>
+          <div class="project-arch-pill">AWS SAM ↔ ECS Fargate ↔ Aurora PostgreSQL ↔ CloudFront ↔ GitHub Actions</div>
           <div class="project-tags">
             <span class="badge cloud">AWS SAM</span>
             <span class="badge cloud">ECS Fargate</span>
@@ -864,25 +848,22 @@
             <span class="badge">GitHub Actions</span>
             <span class="badge lang">Python Lambda</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> IaC Automation · OIDC Zero Credential Deployment
-          </div>
+          <div class="project-metrics">IaC Automation · OIDC Zero Credential Deployment</div>
           <button class="btn-project-detail" onclick="openProjectDetail('aws')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 10. ANTS SMS Marketing Platform -->
-        <article class="portfolio-item glass-card" data-category="pharma" data-project-id="ants">
+        <article class="portfolio-item" data-category="pharma" data-project-id="ants">
+          <h4>ANTS Enterprise SMS Marketing Platform</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Enterprise Active</span>
-            <span class="project-cat-badge enterprise">SMS Telecom</span>
+            <span class="project-cat-badge">SMS Telecom</span>
           </div>
-          <h4>ANTS Enterprise SMS Marketing Platform</h4>
           <p class="project-short-desc">แพลตฟอร์มส่งข้อความ SMS ทางการตลาดระดับ Enterprise รองรับทราฟฟิกข้อความมหาศาล พร้อมระบบจัดการเครดิต รายงาน และ API สำหรับเชื่อมต่อภายนอก</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> C# .NET Core ↔ React ↔ SQL Server ↔ High-Throughput Queue
-          </div>
+          <div class="project-arch-pill">C# .NET Core ↔ React ↔ SQL Server ↔ High-Throughput Queue</div>
           <div class="project-tags">
             <span class="badge lang">C# .NET Core</span>
             <span class="badge">React</span>
@@ -891,25 +872,22 @@
             <span class="badge">Azure DevOps</span>
             <span class="badge">IIS Deploy</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> High-Throughput Messaging · Financial Credit Engine
-          </div>
+          <div class="project-metrics">High-Throughput Messaging · Financial Credit Engine</div>
           <button class="btn-project-detail" onclick="openProjectDetail('ants')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 11. Hong Thong Rice Attendance & Payroll -->
-        <article class="portfolio-item glass-card" data-category="retail-cloud" data-project-id="hongthong">
+        <article class="portfolio-item" data-category="retail-cloud" data-project-id="hongthong">
+          <h4>Geofencing Attendance &amp; Payroll (ข้าวหงษ์ทอง)</h4>
           <div class="project-card-header">
             <span class="project-status live"><span class="pulse-dot"></span> Enterprise Active</span>
-            <span class="project-cat-badge enterprise">HR &amp; Payroll</span>
+            <span class="project-cat-badge">HR &amp; Payroll</span>
           </div>
-          <h4>Geofencing Attendance &amp; Payroll (ข้าวหงษ์ทอง)</h4>
           <p class="project-short-desc">ระบบลงเวลาทำงานด้วย Geofencing คำนวณ KPI และประมวลผลเงินเดือนพนักงานแบบครบวงจร พร้อมออกแบบฐานข้อมูล SQL และจัดการ Deployment</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> Fullstack Web ↔ Geofencing Engine ↔ SQL DB ↔ Payroll Report
-          </div>
+          <div class="project-arch-pill">Fullstack Web ↔ Geofencing Engine ↔ SQL DB ↔ Payroll Report</div>
           <div class="project-tags">
             <span class="badge">Fullstack</span>
             <span class="badge">Geofencing</span>
@@ -918,25 +896,22 @@
             <span class="badge">KPI Analytics</span>
             <span class="badge">FileZilla</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Multi-branch Geofencing · Automated Payroll Calculation
-          </div>
+          <div class="project-metrics">Multi-branch Geofencing · Automated Payroll Calculation</div>
           <button class="btn-project-detail" onclick="openProjectDetail('hongthong')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
 
         <!-- 12. Industrial IoT Truck Scale -->
-        <article class="portfolio-item glass-card" data-category="automotive" data-project-id="truckscale">
+        <article class="portfolio-item" data-category="automotive" data-project-id="truckscale">
+          <h4>Industrial IoT Truck Scale Weight System</h4>
           <div class="project-card-header">
             <span class="project-status automotive"><span class="pulse-dot"></span> Industrial Hardware</span>
-            <span class="project-cat-badge automotive">IoT &amp; Scale</span>
+            <span class="project-cat-badge">IoT &amp; Scale</span>
           </div>
-          <h4>Industrial IoT Truck Scale Weight System</h4>
           <p class="project-short-desc">ระบบชั่งน้ำหนักรถบรรทุกและสแกนบัตรพนักงานในโรงงานอุตสาหกรรม บันทึกและคำนวณค่าน้ำหนักสุทธิก่อน-หลังขนถ่ายอัตโนมัติ ป้องกันการทุจริต</p>
-          <div class="project-arch-pill">
-            <i class="fas fa-sitemap"></i> C# Windows App ↔ RS232 / IoT Scale Sensors ↔ RFID ↔ Database
-          </div>
+          <div class="project-arch-pill">C# Windows App ↔ RS232 / IoT Scale Sensors ↔ RFID ↔ Database</div>
           <div class="project-tags">
             <span class="badge lang">C# .NET</span>
             <span class="badge">IoT Sensors</span>
@@ -944,43 +919,105 @@
             <span class="badge">RFID / Barcode</span>
             <span class="badge db">Database</span>
           </div>
-          <div class="project-metrics">
-            <i class="fas fa-check-circle"></i> Hardware Scale Calibration · Fraud Prevention Security
-          </div>
+          <div class="project-metrics">Hardware Scale Calibration · Fraud Prevention Security</div>
           <button class="btn-project-detail" onclick="openProjectDetail('truckscale')" type="button">
-            <i class="fas fa-search-plus"></i> Deep Dive / Architecture
+            <span>Deep Dive / Architecture</span>
+            <span>→</span>
           </button>
         </article>
       </div>
     </section>
 
-    <!-- Skills -->
-    <section class="skills" id="skills">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-code"></i> PROFICIENCY MATRIX</span>
-        <h3>CORE PROGRAMMING LANGUAGES &amp; RUNTIMES</h3>
+    <!-- SHEET 06: CORE PROGRAMMING LANGUAGES & RUNTIMES (TRACEABILITY MATRIX) -->
+    <section class="skills folio-sheet" id="skills">
+      <div class="sheet-section-header">
+        <div>
+          <h3>CORE PROGRAMMING LANGUAGES &amp; RUNTIMES</h3>
+          <p class="section-subtitle">ระดับความเชี่ยวชาญในการพัฒนาซอฟต์แวร์พร้อมการอ้างอิงระบบที่ใช้งานจริงในสายการผลิต</p>
+        </div>
+        <span class="sheet-ref">MATRIX // RUNTIME-CALIBRATION</span>
       </div>
-      <div class="skill-bars glass-card">
-        <div class="skill"><span>C# / .NET 8 Core</span><div class="bar"><div class="progress csharp" style="width:95%"></div></div><em class="skill-pct">95%</em></div>
-        <div class="skill"><span>PHP 8.4 / Laravel 12</span><div class="bar"><div class="progress php" style="width:88%"></div></div><em class="skill-pct">88%</em></div>
-        <div class="skill"><span>TypeScript 5 / JavaScript</span><div class="bar"><div class="progress js" style="width:92%"></div></div><em class="skill-pct">92%</em></div>
-        <div class="skill"><span>Next.js 16 / React 19 / Bun 1.3</span><div class="bar"><div class="progress react" style="width:90%"></div></div><em class="skill-pct">90%</em></div>
-        <div class="skill"><span>Android Kotlin / Android Auto</span><div class="bar"><div class="progress node" style="width:88%"></div></div><em class="skill-pct">88%</em></div>
-        <div class="skill"><span>Node.js (ESM) / Express</span><div class="bar"><div class="progress node" style="width:88%"></div></div><em class="skill-pct">88%</em></div>
-        <div class="skill"><span>Go / Echo Framework</span><div class="bar"><div class="progress go" style="width:85%"></div></div><em class="skill-pct">85%</em></div>
-        <div class="skill"><span>Python 3 / AWS Lambda</span><div class="bar"><div class="progress python" style="width:75%"></div></div><em class="skill-pct">75%</em></div>
+
+      <div class="skill-bars">
+        <div class="skill">
+          <div class="skill-head">
+            <span>C# / .NET 8 Core</span>
+            <small>E-Leaflet · SAP Sync API · ANTS · Truck Scale</small>
+          </div>
+          <div class="bar"><div class="progress csharp" style="width:95%"></div></div>
+          <em class="skill-pct">95%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>PHP 8.4 / Laravel 12</span>
+            <small>ManHour Production Ecosystem &amp; Shop Floor</small>
+          </div>
+          <div class="bar"><div class="progress php" style="width:88%"></div></div>
+          <em class="skill-pct">88%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>TypeScript 5 / JavaScript</span>
+            <small>EBR GMP · Corporate CMS · CrossMatch · JARVIS</small>
+          </div>
+          <div class="bar"><div class="progress js" style="width:92%"></div></div>
+          <em class="skill-pct">92%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>Next.js 16 / React 19 / Bun 1.3</span>
+            <small>Electronic Batch Record · TP Drug Intranet · TD Master</small>
+          </div>
+          <div class="bar"><div class="progress react" style="width:90%"></div></div>
+          <em class="skill-pct">90%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>Android Kotlin / Android Auto</span>
+            <small>Car Share Mirror (MG S5 EV 12.8" Projection)</small>
+          </div>
+          <div class="bar"><div class="progress kotlin" style="width:88%"></div></div>
+          <em class="skill-pct">88%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>Node.js (ESM) / Express</span>
+            <small>SAP Business One Bidirectional Sync Engine</small>
+          </div>
+          <div class="bar"><div class="progress node" style="width:88%"></div></div>
+          <em class="skill-pct">88%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>Go / Echo Framework</span>
+            <small>High-Concurrency Microservices &amp; Backend APIs</small>
+          </div>
+          <div class="bar"><div class="progress go" style="width:85%"></div></div>
+          <em class="skill-pct">85%</em>
+        </div>
+        <div class="skill">
+          <div class="skill-head">
+            <span>Python 3 / AWS Lambda</span>
+            <small>AWS SAM Cloud Bootstrap &amp; AI Automation</small>
+          </div>
+          <div class="bar"><div class="progress python" style="width:75%"></div></div>
+          <em class="skill-pct">75%</em>
+        </div>
       </div>
     </section>
 
-    <!-- Technical Skills -->
-    <section class="technical-skills" id="technical-skills">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-server"></i> DOMAIN EXPERTISE</span>
-        <h3>TECHNICAL SKILLS &amp; ENTERPRISE STACK</h3>
+    <!-- SHEET 07: TECHNICAL SKILLS & ENTERPRISE STACK -->
+    <section class="technical-skills folio-sheet" id="technical-skills">
+      <div class="sheet-section-header">
+        <div>
+          <h3>TECHNICAL SKILLS &amp; ENTERPRISE STACK</h3>
+        </div>
+        <span class="sheet-ref">SPEC // 6-DOMAIN-STACK</span>
       </div>
+
       <div class="tech-grid">
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-database"></i> Database &amp; Storage</h4>
+        <div class="tech-category">
+          <h4>Database &amp; Storage</h4>
           <ul>
             <li>PostgreSQL (Aurora &amp; Prisma 7)</li>
             <li>MySQL (InnoDB &amp; Index Optimization)</li>
@@ -990,8 +1027,8 @@
             <li>Entity Framework Core 8 / Eloquent ORM</li>
           </ul>
         </div>
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-cloud"></i> Cloud &amp; DevOps (AWS Focus)</h4>
+        <div class="tech-category">
+          <h4>Cloud &amp; DevOps (AWS Focus)</h4>
           <ul>
             <li>AWS ECS (Fargate Containerized Apps)</li>
             <li>AWS SAM &amp; CloudFormation (IaC)</li>
@@ -1002,8 +1039,8 @@
             <li>GitHub Actions CI/CD (OIDC Authentication)</li>
           </ul>
         </div>
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-industry"></i> Enterprise &amp; Pharma Integration</h4>
+        <div class="tech-category">
+          <h4>Enterprise &amp; Pharma Integration</h4>
           <ul>
             <li>SAP Business One Integration (OWOR/ODBC)</li>
             <li>Bidirectional SAP ↔ ManHour Sync Engine</li>
@@ -1013,8 +1050,8 @@
             <li>Microservices &amp; RESTful API Architecture</li>
           </ul>
         </div>
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-car"></i> Automotive &amp; Edge IoT</h4>
+        <div class="tech-category">
+          <h4>Automotive &amp; Edge IoT</h4>
           <ul>
             <li>Android Auto SDK (Car Screen Projection)</li>
             <li>Native Android (Kotlin &amp; MediaProjection)</li>
@@ -1024,8 +1061,8 @@
             <li>MQTT / OPC-UA / Modbus Edge Integration</li>
           </ul>
         </div>
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-layer-group"></i> Modern Frameworks &amp; Runtimes</h4>
+        <div class="tech-category">
+          <h4>Modern Frameworks &amp; Runtimes</h4>
           <ul>
             <li>Laravel 12 (Blade, Vite 7, Sanctum)</li>
             <li>Next.js 16 (React 19, App Router, SSR/CSR)</li>
@@ -1035,8 +1072,8 @@
             <li>Radix UI &amp; shadcn Accessible UI</li>
           </ul>
         </div>
-        <div class="tech-category glass-card">
-          <h4><i class="fas fa-chart-line"></i> FinTech, AI &amp; Automation</h4>
+        <div class="tech-category">
+          <h4>FinTech, AI &amp; Automation</h4>
           <ul>
             <li>MetaTrader 5 (MT5 EA &amp; MQL5 Integration)</li>
             <li>TradingView MCP &amp; Market Feeds</li>
@@ -1049,89 +1086,80 @@
       </div>
     </section>
 
-    <!-- Special Skills -->
-    <section class="special-skills" id="special-skills">
-      <div class="section-title-wrap">
-        <span class="section-badge"><i class="fas fa-star"></i> CORE CAPABILITIES</span>
-        <h3>SPECIAL SKILLS</h3>
+    <!-- SHEET 08: SPECIAL SKILLS LEDGER -->
+    <section class="special-skills folio-sheet" id="special-skills">
+      <div class="sheet-section-header">
+        <div>
+          <h3>SPECIAL SKILLS</h3>
+        </div>
+        <span class="sheet-ref">CAPABILITIES // OPERATIONAL</span>
       </div>
+
       <div class="special-grid">
-        <div class="special-item glass-card">
-          <i class="fas fa-headset"></i>
+        <div class="special-item">
           <h4>24/7 Support Program</h4>
           <p>มีประสบการณ์ให้การสนับสนุนระบบและแก้ไขปัญหาตลอด 24 ชั่วโมง</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-bug"></i>
+        <div class="special-item">
           <h4>Bug Detection &amp; Debugging</h4>
           <p>ความสามารถในการติดตามและแก้ไขข้อผิดพลาดในระบบได้อย่างรวดเร็ว</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-server"></i>
+        <div class="special-item">
           <h4>System Architecture</h4>
           <p>ออกแบบสถาปัตยกรรมระบบและ Microservices สำหรับ Enterprise</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-project-diagram"></i>
+        <div class="special-item">
           <h4>Flowchart &amp; Diagram</h4>
           <p>ความเชี่ยวชาญในการสร้าง Flowchart และ System Diagram</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-code-branch"></i>
+        <div class="special-item">
           <h4>DevOps &amp; Deployment</h4>
           <p>การจัดการ CI/CD, Docker และ Deployment Strategy</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-chart-bar"></i>
+        <div class="special-item">
           <h4>Data Processing</h4>
           <p>ประมวลผลข้อมูลขนาดใหญ่และสร้าง Report อัตโนมัติ</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-shield-alt"></i>
+        <div class="special-item">
           <h4>Security &amp; Authentication</h4>
           <p>JWT, OAuth และการรักษาความปลอดภัยของระบบ</p>
         </div>
-        <div class="special-item glass-card">
-          <i class="fas fa-mobile-alt"></i>
+        <div class="special-item">
           <h4>Responsive Design</h4>
           <p>สร้าง UI/UX ที่รองรับทุกอุปกรณ์และความละเอียด</p>
         </div>
       </div>
     </section>
 
-    <!-- Credentials Bento Row: Education & Certificates -->
-    <div class="cv-bento-row two-col">
-      <!-- Education -->
-      <section class="education glass-card" id="education">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-graduation-cap"></i> ACADEMIC BACKGROUND</span>
+    <!-- SHEET 09: ACADEMIC CREDENTIALS, BIOGRAPHY & INTERESTS REGISTER -->
+    <div class="folio-sheet split-two-sheet">
+      <section class="education sheet-cell" id="education">
+        <div class="sheet-heading-bar">
           <h3>EDUCATION</h3>
+          <span class="sheet-ref">ACADEMIC // RMUTT</span>
         </div>
-        <div class="edu-card-inner">
-          <div class="edu-icon"><i class="fas fa-university"></i></div>
-          <p><strong>Rajamangala University of Technology Thanyaburi</strong><br>Faculty of Business Administration, Department of Information<br><span class="edu-meta">July 2020 - March 2024 | GPA: 3.09</span></p>
-        </div>
+        <p class="edu-block">
+          <strong>Rajamangala University of Technology Thanyaburi</strong><br>
+          Faculty of Business Administration, Department of Information<br>
+          <span class="edu-period">July 2020 - March 2024 | GPA: 3.09</span>
+        </p>
       </section>
 
-      <!-- Certificates -->
-      <section class="certificates glass-card" id="certificates">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-award"></i> CREDENTIALS &amp; HONORS</span>
+      <section class="certificates sheet-cell" id="certificates">
+        <div class="sheet-heading-bar">
           <h3>CERTIFICATES &amp; AWARDS</h3>
+          <span class="sheet-ref">HONORS // VERIFIED</span>
         </div>
-        <ul class="cert-list">
-          <li><i class="fas fa-certificate"></i> Microsoft Certified: Azure Fundamentals</li>
-          <li><i class="fas fa-award"></i> รางวัลชนะเลิศ แข่งขันพัฒนาโปรแกรมระดับคณะ</li>
+        <ul class="ruled-list">
+          <li>Microsoft Certified: Azure Fundamentals</li>
+          <li>รางวัลชนะเลิศ แข่งขันพัฒนาโปรแกรมระดับคณะ</li>
         </ul>
       </section>
     </div>
 
-    <!-- Personal Profile, Hobbies & Fun Facts Bento Row -->
-    <div class="cv-bento-row three-col">
-      <!-- Personal Info Section -->
-      <section class="personal-info glass-card" id="personal-info">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-id-card"></i> BIOGRAPHY</span>
+    <div class="folio-sheet split-three-sheet">
+      <section class="personal-info sheet-cell" id="personal-info">
+        <div class="sheet-heading-bar">
           <h3>PERSONAL INFO</h3>
         </div>
         <ul class="personal-list">
@@ -1143,28 +1171,24 @@
         </ul>
       </section>
 
-      <!-- Hobbies & Interests Section -->
-      <section class="hobbies glass-card" id="hobbies">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-heart"></i> LIFESTYLE</span>
+      <section class="hobbies sheet-cell" id="hobbies">
+        <div class="sheet-heading-bar">
           <h3>HOBBIES &amp; INTERESTS</h3>
         </div>
-        <ul class="hobby-list">
-          <li><i class="fas fa-dumbbell"></i> ออกกำลังกาย/ฟิตเนส</li>
-          <li><i class="fas fa-gamepad"></i> เล่นเกม</li>
-          <li><i class="fas fa-music"></i> ฟังเพลง</li>
-          <li><i class="fas fa-code"></i> Coding &amp; Technology</li>
-          <li><i class="fas fa-mountain"></i> ท่องเที่ยวธรรมชาติ</li>
+        <ul class="ruled-list">
+          <li>ออกกำลังกาย/ฟิตเนส</li>
+          <li>เล่นเกม</li>
+          <li>ฟังเพลง</li>
+          <li>Coding &amp; Technology</li>
+          <li>ท่องเที่ยวธรรมชาติ</li>
         </ul>
       </section>
 
-      <!-- Fun Facts Section -->
-      <section class="fun-facts glass-card" id="fun-facts">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-bolt"></i> HIGHLIGHTS</span>
+      <section class="fun-facts sheet-cell" id="fun-facts">
+        <div class="sheet-heading-bar">
           <h3>FUN FACTS</h3>
         </div>
-        <ul class="fun-list">
+        <ul class="ruled-list">
           <li>เคยแก้บั๊กข้ามวันข้ามคืนจนสำเร็จ!</li>
           <li>ชอบออกแบบ flowchart และ diagram มาก</li>
           <li>เป็นสาย support เพื่อนร่วมงาน 24/7</li>
@@ -1173,62 +1197,59 @@
       </section>
     </div>
 
-    <!-- Contact, Social Media & Download Resume Row -->
-    <div class="cv-bento-row two-col">
-      <!-- Contact -->
-      <section class="contact glass-card" id="contact">
-        <div class="card-section-header">
-          <span class="section-kicker"><i class="fas fa-paper-plane"></i> DIRECT CHANNELS</span>
+    <!-- SHEET 10: DIRECT CONTACT, SOCIAL CHANNELS & RESUME DOWNLOAD -->
+    <div class="folio-sheet split-two-sheet">
+      <section class="contact sheet-cell" id="contact">
+        <div class="sheet-heading-bar">
           <h3>CONTACT</h3>
+          <span class="sheet-ref">DIRECT // PATHUM THANI</span>
         </div>
-        <ul>
-          <li><i class="fas fa-phone"></i> <a href="tel:0817356592">081-7356592</a></li>
-          <li><i class="fas fa-envelope"></i> <a href="mailto:thanapatpisawong@gmail.com">thanapatpisawong@gmail.com</a></li>
-          <li><i class="fas fa-map-marker-alt"></i> <span>90/84 ม.19 Phathumthani 12120</span></li>
+        <ul class="ruled-list contact-list">
+          <li><strong>TEL:</strong> <a href="tel:0817356592">081-7356592</a></li>
+          <li><strong>EMAIL:</strong> <a href="mailto:thanapatpisawong@gmail.com">thanapatpisawong@gmail.com</a></li>
+          <li><strong>ADDRESS:</strong> <span>90/84 ม.19 Phathumthani 12120</span></li>
         </ul>
       </section>
 
-      <!-- Social Media & Download Resume Section -->
-      <div class="contact-right-stack">
-        <section class="social-media glass-card" id="social-media">
-          <div class="card-section-header">
-            <span class="section-kicker"><i class="fas fa-share-alt"></i> NETWORK</span>
+      <div class="sheet-cell">
+        <section class="social-media" id="social-media">
+          <div class="sheet-heading-bar">
             <h3>SOCIAL MEDIA</h3>
           </div>
           <div class="social-list">
-            <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fab fa-github"></i> GitHub</a>
-            <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            <a href="mailto:thanapatpisawong@gmail.com" class="social-btn"><i class="fas fa-envelope"></i> Email</a>
-            <a href="tel:0817356592" class="social-btn"><i class="fas fa-phone"></i> 081-7356592</a>
-            <a href="https://www.facebook.com/thanaput.pisawong" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fab fa-facebook"></i> Facebook</a>
-            <a href="https://line.me/ti/p/TCUE2PjhR7" target="_blank" rel="noopener noreferrer" class="social-btn"><i class="fab fa-line"></i> Line</a>
+            <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer" class="social-btn">GitHub</a>
+            <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer" class="social-btn">LinkedIn</a>
+            <a href="mailto:thanapatpisawong@gmail.com" class="social-btn">Email</a>
+            <a href="tel:0817356592" class="social-btn">081-7356592</a>
+            <a href="https://www.facebook.com/thanaput.pisawong" target="_blank" rel="noopener noreferrer" class="social-btn">Facebook</a>
+            <a href="https://line.me/ti/p/TCUE2PjhR7" target="_blank" rel="noopener noreferrer" class="social-btn">Line</a>
           </div>
         </section>
 
-        <section class="download-resume glass-card" id="download-resume">
+        <section class="download-resume" id="download-resume">
           <div class="download-resume-inner">
             <div>
               <h3>DOWNLOAD RESUME</h3>
               <p>ดาวน์โหลดเรซูเม่ฉบับสมบูรณ์ (PDF) สำหรับฝ่ายทรัพยากรบุคคลและองค์กร</p>
             </div>
-            <a href="resume.pdf" download class="btn-main" id="download-btn"><i class="fas fa-file-download"></i> Download PDF</a>
+            <a href="resume.pdf" download class="btn-main" id="download-btn">Download PDF →</a>
           </div>
         </section>
       </div>
     </div>
   </main>
 
-  <footer>
+  <footer class="folio-footer">
     <div class="footer-inner">
       <p>&copy; 2026 Thanapat Pisavong (ธนภัทร พิศวงศ์ · NOT44353) — Full Stack Developer &amp; Cloud Systems Engineer</p>
       <p class="footer-links">
-        <a href="mini-projects/"><i class="fas fa-cube"></i> Mini Projects Lab</a>
+        <a href="mini-projects/">Mini Projects Lab</a>
         <span>·</span>
-        <a href="resume.pdf" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-pdf"></i> Resume PDF</a>
+        <a href="resume.pdf" target="_blank" rel="noopener noreferrer">Resume PDF</a>
         <span>·</span>
-        <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> GitHub</a>
+        <a href="https://github.com/NOT44353" target="_blank" rel="noopener noreferrer">GitHub</a>
         <span>·</span>
-        <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i> LinkedIn</a>
+        <a href="https://www.linkedin.com/in/thanapat-pisavong-0a8a80367" target="_blank" rel="noopener noreferrer">LinkedIn</a>
       </p>
     </div>
   </footer>
@@ -1236,13 +1257,11 @@
   <!-- Project Detail Modal -->
   <div id="projectDetailModal" class="project-detail-modal" aria-hidden="true">
     <div class="modal-backdrop" onclick="closeProjectDetailModal()"></div>
-    <div class="project-detail-container glass-card">
+    <div class="project-detail-container">
       <button class="modal-close-btn" onclick="closeProjectDetailModal()" type="button" title="Close (ESC)">
         <i class="fas fa-times"></i>
       </button>
-      <div class="modal-inner" id="projectDetailContent">
-        <!-- Injected dynamically via script.js -->
-      </div>
+      <div class="modal-inner" id="projectDetailContent"></div>
     </div>
   </div>
 
