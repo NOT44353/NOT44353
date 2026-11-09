@@ -3,6 +3,169 @@
    System Topology, Portfolio Matrix, Skills Calibration, Modals & Responsive
    ========================================================================== */
 
+/* ===== OVERDRIVE 3D CAD ENGINE & SPATIAL DEPTH SYSTEM ===== */
+#cad3d-bg-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+}
+
+.folio-shell,
+.folio-footer {
+  position: relative;
+  z-index: 2;
+}
+
+.cad3d-viewport-wrap {
+  border: 2px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  margin-bottom: 22px;
+}
+
+.cad3d-toolbar {
+  border-bottom: 2px solid var(--rule-strong);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: var(--sheet-bg);
+}
+
+.cad3d-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.cad3d-cam-controls {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cad3d-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+}
+
+.cad3d-btn:hover,
+.cad3d-btn.active {
+  background: var(--ink);
+  color: var(--sheet-contrast-text);
+}
+
+.cad3d-canvas-box {
+  position: relative;
+  width: 100%;
+  height: 360px;
+  background: var(--sheet-bg);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+}
+
+.cad3d-canvas-box:active {
+  cursor: grabbing;
+}
+
+#cad3dTopologyCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.cad3d-labels {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cad3d-label {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate3d(-50%, -50%, 0);
+  padding: 4px 10px;
+  background: var(--sheet-bg);
+  color: var(--ink);
+  border: 1px solid var(--rule-strong);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  pointer-events: auto;
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+}
+
+.cad3d-label:hover,
+.cad3d-label.is-focused {
+  background: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+  z-index: 5;
+}
+
+.cad3d-telemetry-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 8px 16px;
+  border-top: 1px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-secondary);
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* Spatial 3D Multi-Plane Depth Cards */
+.spatial-3d-card {
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.spatial-3d-card.is-tilting .profile-img,
+.spatial-3d-card.is-tilting h3,
+.spatial-3d-card.is-tilting h4 {
+  transform: translateZ(20px);
+}
+
+.spatial-3d-card.is-tilting .plate-caption,
+.spatial-3d-card.is-tilting .project-arch-pill,
+.spatial-3d-card.is-tilting .spec-cell-foot,
+.spatial-3d-card.is-tilting .btn-project-detail {
+  transform: translateZ(14px);
+}
+
 /* ===== SYSTEM TOPOLOGY DIAGRAM ===== */
 .blueprint-nav {
   display: flex;
@@ -822,6 +985,12 @@ a.social-btn:hover,
   }
   .main-grid {
     grid-template-columns: 380px 1fr;
+  }
+  .hero-header {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .hero-3d-core-wrap {
+    max-width: 280px;
   }
   .blueprint-grid {
     grid-template-columns: 1fr;

@@ -467,8 +467,61 @@ a.btn-github:hover,
 }
 
 .hero-header {
-  padding: 36px 40px 28px;
+  padding: 32px 34px 26px;
   border-bottom: 2px solid var(--rule-strong);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 232px;
+  gap: 24px;
+  align-items: center;
+}
+
+.hero-header-main {
+  min-width: 0;
+}
+
+.hero-3d-core-wrap {
+  border: 2px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  display: flex;
+  flex-direction: column;
+  cursor: grab;
+  user-select: none;
+}
+
+.hero-3d-core-wrap:active {
+  cursor: grabbing;
+}
+
+.hero-3d-core-head {
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--sheet-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+#hero3dCoreCanvas {
+  width: 100%;
+  height: 184px;
+  display: block;
+  background: var(--sheet-bg);
+}
+
+.hero-3d-core-foot {
+  padding: 6px 10px;
+  border-top: 1px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--signal);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
 }
 
 .hero-header h1 {

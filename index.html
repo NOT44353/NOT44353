@@ -200,6 +200,7 @@
   <link rel="stylesheet" href="hi-tech.css">
 </head>
 <body class="loaded">
+  <canvas id="cad3d-bg-canvas" aria-hidden="true"></canvas>
   <a href="#main-content" class="skip-link">ข้ามไปยังเนื้อหาหลัก (Skip to content)</a>
 
   <main id="main-content" class="folio-shell">
@@ -303,17 +304,29 @@
         <!-- Right Column: Primary Title Specimen & Flagship Production Systems Matrix -->
         <div class="right-col">
           <div class="hero-header">
-            <h1>THANAPAT PISAVONG <span class="sr-only">(ธนภัทร พิศวงศ์)</span></h1>
-            <p class="hero-name-th">ธนภัทร พิศวงศ์ · น๊อต (NOT44353)</p>
-            <h2>FULL STACK DEVELOPER &amp; CLOUD SYSTEMS ENGINEER</h2>
-            <p class="hero-tagline">Production Systems &amp; Architecture: Laravel 12 · Next.js 16 · .NET 8 · AWS Cloud · Android Kotlin</p>
+            <div class="hero-header-main">
+              <h1>THANAPAT PISAVONG <span class="sr-only">(ธนภัทร พิศวงศ์)</span></h1>
+              <p class="hero-name-th">ธนภัทร พิศวงศ์ · น๊อต (NOT44353)</p>
+              <h2>FULL STACK DEVELOPER &amp; CLOUD SYSTEMS ENGINEER</h2>
+              <p class="hero-tagline">Production Systems &amp; Architecture: Laravel 12 · Next.js 16 · .NET 8 · AWS Cloud · Android Kotlin</p>
 
-            <div class="hero-specialties" aria-label="Core Specialties">
-              <span class="hero-chip">Pharma GMP (EBR / Leaflet)</span>
-              <span class="hero-chip">SAP Integration &amp; ManHour</span>
-              <span class="hero-chip">Android Auto (MG S5 EV)</span>
-              <span class="hero-chip">FinTech Quant &amp; AI</span>
-              <span class="hero-chip">AWS ECS &amp; IaC SAM</span>
+              <div class="hero-specialties" aria-label="Core Specialties">
+                <span class="hero-chip">Pharma GMP (EBR / Leaflet)</span>
+                <span class="hero-chip">SAP Integration &amp; ManHour</span>
+                <span class="hero-chip">Android Auto (MG S5 EV)</span>
+                <span class="hero-chip">FinTech Quant &amp; AI</span>
+                <span class="hero-chip">AWS ECS &amp; IaC SAM</span>
+              </div>
+            </div>
+
+            <!-- Interactive 3D CAD System Core in First Viewport -->
+            <div class="hero-3d-core-wrap" id="hero3dCoreWrap" title="Drag to rotate 3D System Architecture Core">
+              <div class="hero-3d-core-head">
+                <span>3D CORE // SYS-GYRO</span>
+                <span class="pulse-dot"></span>
+              </div>
+              <canvas id="hero3dCoreCanvas" width="240" height="200"></canvas>
+              <div class="hero-3d-core-foot" id="hero3dCoreReadout">DRAG 3D · 60FPS CAD</div>
             </div>
           </div>
 
@@ -532,6 +545,36 @@
         <div class="blueprint-header">
           <div class="blueprint-status"><span class="pulse-dot"></span> TOPOLOGY: MULTI-TIER HYBRID CLOUD &amp; ON-PREMISE</div>
           <span class="sheet-ref">DRAWING // SYS-ARCH-01</span>
+        </div>
+
+        <!-- INTERACTIVE 3D CAD TOPOLOGY VIEWPORT (Three.js WebGL) -->
+        <div class="cad3d-viewport-wrap" id="blueprint3dStage" aria-label="Interactive 3D System Architecture CAD Viewport">
+          <div class="cad3d-toolbar">
+            <div class="cad3d-status">
+              <span class="pulse-dot"></span>
+              <span id="cad3dNodeReadout">3D CAD ENGINE // DRAG TO ORBIT · CLICK NODE TO INSPECT</span>
+            </div>
+            <div class="cad3d-cam-controls" role="group" aria-label="3D Camera View Presets">
+              <button type="button" class="cad3d-btn active" data-cam="iso">ISO 3D</button>
+              <button type="button" class="cad3d-btn" data-cam="top">TOP PLAN</button>
+              <button type="button" class="cad3d-btn" data-cam="front">ELEVATION</button>
+              <button type="button" class="cad3d-btn active" id="cad3dOrbitBtn" data-cam="orbit">AUTO-ORBIT</button>
+            </div>
+          </div>
+          <div class="cad3d-canvas-box" id="cad3dTopologyBox">
+            <canvas id="cad3dTopologyCanvas"></canvas>
+            <div class="cad3d-labels" id="cad3dLabels">
+              <button type="button" class="cad3d-label" data-node="sap" onclick="openProjectDetail('manhour')">01 // SAP B1 MSSQL</button>
+              <button type="button" class="cad3d-label" data-node="sync" onclick="openProjectDetail('manhour')">02 // SYNC ENGINE (.NET 8 / NODE)</button>
+              <button type="button" class="cad3d-label" data-node="gmp" onclick="openProjectDetail('ebr')">03 // EBR &amp; MANHOUR GMP</button>
+              <button type="button" class="cad3d-label" data-node="aws" onclick="openProjectDetail('aws')">04 // AWS ECS &amp; AURORA</button>
+              <button type="button" class="cad3d-label" data-node="edge" onclick="openProjectDetail('carshare')">05 // ANDROID AUTO &amp; IOT</button>
+            </div>
+            <div class="cad3d-telemetry-bar">
+              <span>AXIS: X/Y/Z ORTHO-PERSPECTIVE</span>
+              <span id="cad3dTelemetryCoords">ROT: -28° / +35° · PACKETS: ACTIVE</span>
+            </div>
+          </div>
         </div>
 
         <div class="blueprint-grid">
@@ -1284,5 +1327,6 @@
 
   <script src="script.js"></script>
   <script src="hi-tech.js"></script>
+  <script src="overdrive-3d.js" defer></script>
 </body>
 </html>
