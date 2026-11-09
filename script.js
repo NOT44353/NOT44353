@@ -475,7 +475,7 @@ function openProjectsModal() {
       if (loader) loader.textContent = 'Failed to load. Click X and try again.';
     };
 
-    frame.src = `mini-projects/?t=${Date.now()}`;
+    frame.src = `mini-projects/index.html?t=${Date.now()}`;
   }
 }
 

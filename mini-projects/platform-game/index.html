@@ -4,6 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Cyber Strike: Zero-G Protocol | 60fps Canvas &amp; Web Audio Engine</title>
+    <script>
+      (function() {
+        var p = location.pathname;
+        if (!p.endsWith('/') && !p.endsWith('.html')) {
+          var b = document.createElement('base');
+          b.href = p + '/';
+          document.head.appendChild(b);
+        }
+      })();
+    </script>
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

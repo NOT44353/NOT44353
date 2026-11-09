@@ -31,7 +31,7 @@ class InteractiveShowcase {
     }
 
     initTheme() {
-        const saved = localStorage.getItem('tp_theme') || localStorage.getItem('theme') || 'light';
+        const saved = localStorage.getItem('cvTheme') || localStorage.getItem('tp_theme') || localStorage.getItem('theme') || 'light';
         this.applyTheme(saved === 'dark' ? 'dark' : 'light');
 
         const toggleBtn = document.getElementById('labThemeToggle');
@@ -41,6 +41,7 @@ class InteractiveShowcase {
                 const next = current === 'dark' ? 'light' : 'dark';
                 this.applyTheme(next);
                 try {
+                    localStorage.setItem('cvTheme', next);
                     localStorage.setItem('tp_theme', next);
                     localStorage.setItem('theme', next);
                 } catch (_) {}
