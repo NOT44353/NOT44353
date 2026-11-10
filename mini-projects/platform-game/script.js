@@ -420,7 +420,7 @@ class CyberStrikeGame {
         this.height = window.innerHeight;
         this.canvas.width = this.width * dpr;
         this.canvas.height = this.height * dpr;
-        this.ctx.scale(dpr, dpr);
+        this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
     createPlayer() {
@@ -501,15 +501,18 @@ class CyberStrikeGame {
 
     startWave(waveNum) {
         this.wave = waveNum;
+        this.enemies = [];
+        this.enemyBullets = [];
         this.waveEnemiesTotal = 6 + waveNum * 3;
         this.waveEnemiesSpawned = 0;
-        this.spawnTimer = 0;
+        this.spawnTimer = 0.25;
         this.boss = null;
         const bossHud = document.getElementById('bossHud');
         if (bossHud) bossHud.classList.remove('active');
 
         // Boss Wave every 5 waves
         if (this.wave % 5 === 0) {
+            this.waveEnemiesTotal = 0;
             this.sound.bossWarning();
             this.triggerScreenShake(20);
             this.createBoss();
@@ -922,13 +925,21 @@ class CyberStrikeGame {
         this.enemyBullets = [];
 
         // Damage all enemies
-        for (const e of this.enemies) {
+        for (let i = this.enemies.length - 1; i >= 0; i--) {
+            const e = this.enemies[i];
+            if (!e) continue;
             e.hp -= 250;
             this.createExplosionSparks(e.x + e.w / 2, e.y + e.h / 2, '#ffe600', 20);
+            if (e.hp <= 0) {
+                this.destroyEnemy(e);
+            }
         }
         if (this.boss) {
             this.boss.hp -= 350;
             this.createExplosionSparks(this.boss.x + this.boss.w / 2, this.boss.y + this.boss.h / 2, '#ffe600', 30);
+            if (this.boss.hp <= 0) {
+                this.destroyBoss();
+            }
         }
 
         // Spawn Expanding Nova Ring
@@ -1017,6 +1028,7 @@ class CyberStrikeGame {
             let hit = false;
             for (let j = this.enemies.length - 1; j >= 0; j--) {
                 const e = this.enemies[j];
+                if (!e || e.dead) continue;
                 if (b.x > e.x && b.x < e.x + e.w && b.y > e.y && b.y < e.y + e.h) {
                     hit = true;
                     e.hp -= 40;
@@ -1029,8 +1041,8 @@ class CyberStrikeGame {
                         this.createTeslaArc(e);
                     }
 
-                    if (e.hp <= 0) {
-                        this.destroyEnemy(e, j);
+                    if (!e.dead && e.hp <= 0) {
+                        this.destroyEnemy(e);
                     }
                     break;
                 }
@@ -1081,19 +1093,22 @@ class CyberStrikeGame {
 
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const e = this.enemies[i];
+            if (!e || e.dead) continue;
             if (Math.hypot(e.x + e.w / 2 - x, e.y + e.h / 2 - y) < radius) {
                 e.hp -= damage;
-                if (e.hp <= 0) this.destroyEnemy(e, i);
+                if (e.hp <= 0) this.destroyEnemy(e);
             }
         }
     }
 
     createTeslaArc(sourceEnemy) {
-        for (const e of this.enemies) {
-            if (e !== sourceEnemy && Math.hypot(e.x - sourceEnemy.x, e.y - sourceEnemy.y) < 180) {
+        for (let i = this.enemies.length - 1; i >= 0; i--) {
+            const e = this.enemies[i];
+            if (!e || e.dead || e === sourceEnemy) continue;
+            if (Math.hypot(e.x - sourceEnemy.x, e.y - sourceEnemy.y) < 180) {
                 e.hp -= 30;
                 this.createTeslaBeam(sourceEnemy.x + sourceEnemy.w / 2, sourceEnemy.y + sourceEnemy.h / 2, e.x + e.w / 2, e.y + e.h / 2);
-                if (e.hp <= 0) this.destroyEnemy(e, this.enemies.indexOf(e));
+                if (e.hp <= 0) this.destroyEnemy(e);
                 break;
             }
         }
@@ -1109,8 +1124,11 @@ class CyberStrikeGame {
         });
     }
 
-    destroyEnemy(e, index) {
-        if (index >= 0 && index < this.enemies.length) {
+    destroyEnemy(e) {
+        if (!e || e.dead) return;
+        e.dead = true;
+        const index = this.enemies.indexOf(e);
+        if (index !== -1) {
             this.enemies.splice(index, 1);
         }
         this.kills++;
@@ -1166,14 +1184,17 @@ class CyberStrikeGame {
     updateEnemies(dt) {
         for (let i = this.enemies.length - 1; i >= 0; i--) {
             const e = this.enemies[i];
+            if (!e || e.dead) continue;
 
             if (e.type === 'drone') {
-                // Flying swoop attack
+                // Flying swoop attack (directional bounds check prevents off-screen lock)
                 e.angle += dt * 3;
                 e.x += e.vx * dt;
                 e.y += Math.sin(e.angle) * 120 * dt;
+                e.y = Math.max(70, Math.min(this.height - 160, e.y));
 
-                if (e.x < 30 || e.x > this.width - 50) e.vx *= -1;
+                if (e.x < 30 && e.vx < 0) e.vx = Math.abs(e.vx);
+                if (e.x > this.width - e.w - 30 && e.vx > 0) e.vx = -Math.abs(e.vx);
 
                 e.fireTimer -= dt;
                 if (e.fireTimer <= 0) {
@@ -1198,9 +1219,11 @@ class CyberStrikeGame {
                     e.y += (dy / dist) * e.speed * dt;
                 }
             } else {
-                // Ground patrol walker
+                // Ground patrol walker (directional bounds check prevents off-screen lock)
                 e.x += e.vx * dt;
-                if (e.x < 30 || e.x > this.width - 60) e.vx *= -1;
+                e.y = this.height - 70 - e.h;
+                if (e.x < 30 && e.vx < 0) e.vx = Math.abs(e.vx);
+                if (e.x > this.width - e.w - 30 && e.vx > 0) e.vx = -Math.abs(e.vx);
             }
 
             // Touch damage to player
@@ -1208,7 +1231,7 @@ class CyberStrikeGame {
             if (!p.isDashing && e.x < p.x + p.w && e.x + e.w > p.x && e.y < p.y + p.h && e.y + e.h > p.y) {
                 this.damagePlayer(20);
                 if (e.type === 'seeker') {
-                    this.destroyEnemy(e, i);
+                    this.destroyEnemy(e);
                 }
             }
         }
@@ -1330,21 +1353,21 @@ class CyberStrikeGame {
         if (chosen === 'drone') {
             this.enemies.push({
                 type: 'drone',
-                x: side === 1 ? -40 : this.width + 40,
-                y: 120 + Math.random() * 220,
+                x: side === 1 ? 36 : Math.max(60, this.width - 76),
+                y: 110 + Math.random() * Math.max(120, this.height * 0.32),
                 w: 36,
                 h: 28,
-                vx: side * 140,
+                vx: side * (150 + this.wave * 8),
                 hp: 50 + this.wave * 15,
                 angle: 0,
-                fireTimer: 1.5,
+                fireTimer: 1.2,
                 color: '#00f0ff'
             });
         } else if (chosen === 'seeker') {
             this.enemies.push({
                 type: 'seeker',
-                x: Math.random() * (this.width - 100) + 50,
-                y: -40,
+                x: Math.random() * Math.max(120, this.width - 120) + 60,
+                y: 24,
                 w: 26,
                 h: 26,
                 speed: 210 + this.wave * 12,
@@ -1352,13 +1375,14 @@ class CyberStrikeGame {
                 color: '#ff3366'
             });
         } else {
+            const walkerH = 44;
             this.enemies.push({
                 type: 'walker',
-                x: side === 1 ? 50 : this.width - 90,
-                y: this.height - 120,
+                x: side === 1 ? 45 : Math.max(80, this.width - 85),
+                y: this.height - 70 - walkerH,
                 w: 38,
-                h: 44,
-                vx: side * 120,
+                h: walkerH,
+                vx: side * (130 + this.wave * 6),
                 hp: 90 + this.wave * 25,
                 color: '#ff007f'
             });
@@ -1536,6 +1560,14 @@ class CyberStrikeGame {
         // Score
         const scoreDisplay = document.getElementById('scoreDisplay');
         if (scoreDisplay) scoreDisplay.textContent = this.score.toLocaleString();
+
+        // Wave & Hostiles Remaining
+        const waveDisplay = document.getElementById('waveDisplay');
+        if (waveDisplay) {
+            const waveStr = this.wave < 10 ? '0' + this.wave : String(this.wave);
+            const remaining = this.boss ? 1 : (Math.max(0, this.waveEnemiesTotal - this.waveEnemiesSpawned) + this.enemies.length);
+            waveDisplay.textContent = `WAVE ${waveStr} · HOSTILES: ${remaining}`;
+        }
 
         // Combo
         const cc = document.getElementById('comboContainer');
