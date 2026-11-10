@@ -4,21 +4,21 @@
    ========================================================================== */
 
 :root,
-[data-theme="light"] {
-  --bg-outer: #efece4;
-  --sheet-bg: #f5f2eb;
-  --ground-recessed: #eae6dc;
-  --ground-elevated: #faf8f3;
-  --ink: #102238;
-  --ink-secondary: #243447;
-  --ink-muted: #425264;
-  --rule-strong: #102238;
-  --rule-muted: #b8b3a6;
-  --signal: #9a3412;
-  --signal-hover: #7c2d12;
-  --valid: #166534;
-  --valid-bg: #e3efe6;
-  --sheet-contrast-text: #f5f2eb;
+[data-theme="dark"] {
+  --bg-outer: #060b16;
+  --sheet-bg: #0a1324;
+  --ground-recessed: #0e1a31;
+  --ground-elevated: #142442;
+  --ink: #f0f7ff;
+  --ink-secondary: #bdd0ea;
+  --ink-muted: #7c97bc;
+  --rule-strong: #23426b;
+  --rule-muted: #162b49;
+  --signal: #00d4ff;
+  --signal-hover: #38bdf8;
+  --valid: #34d399;
+  --valid-bg: #0c2d27;
+  --sheet-contrast-text: #060b16;
 
   --font-display: 'Archivo', 'Sarabun', sans-serif;
   --font-body: 'Sarabun', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -27,21 +27,21 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-[data-theme="dark"] {
-  --bg-outer: #101824;
-  --sheet-bg: #152030;
-  --ground-recessed: #1b2a3e;
-  --ground-elevated: #21334b;
-  --ink: #e8e4da;
-  --ink-secondary: #c5d1de;
-  --ink-muted: #94a9be;
-  --rule-strong: #466385;
-  --rule-muted: #29405c;
-  --signal: #f97316;
-  --signal-hover: #fb923c;
-  --valid: #34d399;
-  --valid-bg: #13332a;
-  --sheet-contrast-text: #101824;
+[data-theme="light"] {
+  --bg-outer: #edf3fa;
+  --sheet-bg: #f7faff;
+  --ground-recessed: #e6effa;
+  --ground-elevated: #ffffff;
+  --ink: #09152b;
+  --ink-secondary: #1e3354;
+  --ink-muted: #4b6589;
+  --rule-strong: #1e3a5f;
+  --rule-muted: #bfd0e6;
+  --signal: #0284c7;
+  --signal-hover: #0369a1;
+  --valid: #059669;
+  --valid-bg: #dcfce7;
+  --sheet-contrast-text: #f7faff;
 }
 
 /* ===== RESET & BROWSER SURFACES ===== */
@@ -293,7 +293,7 @@ li {
 .theme-btn:hover,
 .header-lab-btn:hover {
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
   border-color: var(--signal);
 }
 
@@ -311,7 +311,7 @@ a.primary-pdf-cell,
 a.primary-pdf-cell:hover,
 .primary-pdf-cell:hover {
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
 }
 
 .main-grid {
@@ -588,7 +588,7 @@ a.btn-main,
   text-decoration: none;
   cursor: pointer;
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
   border: 1px solid var(--signal);
   transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
 }
@@ -596,7 +596,7 @@ a.btn-main,
 a.btn-main:hover,
 .btn-main:hover {
   background: var(--signal-hover);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
 }
 
 a.btn-main.btn-alt,
@@ -679,7 +679,7 @@ a.btn-main.btn-alt:hover,
 
 .spec-jump-btn:hover {
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
 }
 
 .footer-ledger {
@@ -714,7 +714,7 @@ a.btn-main.btn-alt:hover,
 a.cta-cell,
 .cta-cell {
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -728,7 +728,7 @@ a.cta-cell,
 a.cta-cell:hover,
 .cta-cell:hover {
   background: var(--signal-hover);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
 }
 
 /* ===== STICKY FOLIO INDEX BAR ===== */

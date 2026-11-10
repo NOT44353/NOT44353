@@ -20,17 +20,18 @@
   z-index: 2;
 }
 
-/* Translucent Architectural Vellum / Blueprint Sheets so Full-Screen 3D World Shines Through */
+/* Translucent Quantum Tech Sheets — High Readability + Subtle 3D Depth */
 .folio-sheet {
-  background: rgba(245, 242, 235, 0.84);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  background: rgba(247, 250, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 [data-theme="dark"] .folio-sheet {
-  background: rgba(21, 32, 48, 0.78);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 19, 36, 0.90);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 16px 40px -12px rgba(0, 0, 0, 0.65), 0 0 1px 1px rgba(0, 212, 255, 0.14);
 }
 
 /* 3D Perspective Containers for All Card Grids */
@@ -45,8 +46,7 @@
 .split-two-sheet,
 .split-three-sheet,
 .footer-ledger {
-  perspective: 1100px;
-  transform-style: preserve-3d;
+  perspective: 1400px;
 }
 
 /* Hero 3D Core Header Action Controls */
@@ -72,7 +72,7 @@
 .hero-3d-mode-btn:hover,
 .hero-3d-mode-btn.active {
   background: var(--signal);
-  color: #ffffff;
+  color: #060b16;
   border-color: var(--signal);
 }
 
@@ -84,11 +84,11 @@
 
 #hero3dCoreWrap:hover {
   border-color: var(--signal);
-  box-shadow: 6px 6px 0 rgba(16, 34, 56, 0.16);
+  box-shadow: 0 0 24px rgba(2, 132, 199, 0.22);
 }
 
 [data-theme="dark"] #hero3dCoreWrap:hover {
-  box-shadow: 6px 6px 0 rgba(249, 115, 22, 0.22);
+  box-shadow: 0 0 26px rgba(0, 212, 255, 0.28);
 }
 
 .cad3d-viewport-wrap {
@@ -147,7 +147,7 @@
 .cad3d-btn[data-mode]:hover,
 .cad3d-btn[data-mode].active {
   background: var(--signal);
-  color: #ffffff;
+  color: #060b16;
   border-color: var(--signal);
 }
 
@@ -156,7 +156,7 @@
   width: 100%;
   height: 420px;
   background:
-    radial-gradient(circle at 50% 44%, rgba(154, 52, 18, 0.06), transparent 68%),
+    radial-gradient(circle at 50% 44%, rgba(2, 132, 199, 0.08), transparent 68%),
     var(--sheet-bg);
   overflow: hidden;
   cursor: grab;
@@ -165,7 +165,7 @@
 
 [data-theme="dark"] .cad3d-canvas-box {
   background:
-    radial-gradient(circle at 50% 44%, rgba(249, 115, 22, 0.11), rgba(21, 32, 48, 0.95) 72%),
+    radial-gradient(circle at 50% 44%, rgba(0, 212, 255, 0.14), rgba(10, 19, 36, 0.96) 72%),
     var(--sheet-bg);
 }
 
@@ -177,12 +177,12 @@
   bottom: 44px;
   pointer-events: none;
   z-index: 2;
-  border: 1px dashed rgba(16, 34, 56, 0.14);
+  border: 1px dashed rgba(2, 132, 199, 0.18);
 }
 
 [data-theme="dark"] .cad3d-canvas-box::before,
 [data-theme="dark"] .cad3d-canvas-box::after {
-  border-color: rgba(148, 169, 190, 0.16);
+  border-color: rgba(0, 212, 255, 0.20);
 }
 
 .cad3d-canvas-box:active {
@@ -212,7 +212,7 @@
   background: var(--sheet-bg);
   color: var(--ink);
   border: 1.5px solid var(--rule-strong);
-  box-shadow: 3px 3px 0 rgba(16, 34, 56, 0.18);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
   font-family: var(--font-mono);
   font-size: 11.5px;
   font-weight: 700;
@@ -237,9 +237,9 @@
 .cad3d-label:hover,
 .cad3d-label.is-focused {
   background: var(--signal);
-  color: #ffffff;
+  color: #060b16;
   border-color: var(--signal);
-  box-shadow: 4px 4px 0 var(--ink);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.45);
   z-index: 6;
 }
 
@@ -270,33 +270,7 @@
   pointer-events: none;
 }
 
-/* Spatial 3D Multi-Plane Depth Cards, Live 3D Hologram Canvas, Conic Laser Border & Unflattened Pop-Out */
-@keyframes cadLaserScan {
-  0% {
-    top: -15%;
-    opacity: 0;
-  }
-  15% {
-    opacity: 0.95;
-  }
-  85% {
-    opacity: 0.95;
-  }
-  100% {
-    top: 110%;
-    opacity: 0;
-  }
-}
-
-@keyframes cadBorderSpin {
-  0% {
-    transform: translate(-50%, -50%) rotate(0deg);
-  }
-  100% {
-    transform: translate(-50%, -50%) rotate(360deg);
-  }
-}
-
+/* ===== FUTURISTIC QUANTUM TECH BOXES (CLEAN, HIGH-READABILITY, SUBTLE 3D) ===== */
 @keyframes skillBarShimmer {
   0% {
     background-position: -200% 0;
@@ -308,339 +282,201 @@
 
 .spatial-3d-card {
   position: relative;
-  overflow: visible !important;
-  transform-style: preserve-3d !important;
+  overflow: hidden;
   will-change: transform, box-shadow;
   transition:
-    box-shadow 260ms var(--ease-out),
-    border-color 260ms var(--ease-out),
-    background-color 260ms var(--ease-out);
+    transform 240ms var(--ease-out),
+    box-shadow 240ms var(--ease-out),
+    border-color 240ms var(--ease-out),
+    background-color 240ms var(--ease-out);
   --mouse-x: 50%;
   --mouse-y: 50%;
-  --shadow-x: 0px;
-  --shadow-y: 0px;
-  --bevel-x: 0px;
-  --bevel-y: 0px;
 }
 
-/* Scroll-Triggered 3D Unfold Choreography for Individual Boxes (No opacity < 1 after reveal so preserve-3d stays active!) */
+/* Smooth Scroll Entrance for Individual Boxes */
 .spatial-3d-card.card-3d-init {
   opacity: 0;
-  transform: perspective(1000px) rotateX(-22deg) rotateY(6deg) translateY(44px) translateZ(-60px) scale(0.94);
+  transform: translateY(20px);
 }
 
 .spatial-3d-card.card-3d-visible {
   opacity: 1;
   transform: none;
   transition:
-    transform 680ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
-    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
-    box-shadow 260ms var(--ease-out),
-    border-color 260ms var(--ease-out);
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
+    opacity 440ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
+    box-shadow 240ms var(--ease-out),
+    border-color 240ms var(--ease-out);
 }
 
-/* Dedicated Surface Plate at Z=0 (Isolates overflow:hidden so 3D child layers pop out freely!) */
+/* Dedicated Ambient Surface Layer (Soft Glow Only — Zero Text Interference!) */
 .cad-box-surface {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
-  z-index: 1;
-  transform: translateZ(0px);
+  z-index: 0;
 }
 
-/* Rotating Conic Laser Border Ring inside .cad-box-surface */
+/* Soft Top Quantum Edge Highlight */
 .cad-box-surface::before {
   content: "";
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 180%;
-  height: 180%;
-  background: conic-gradient(
-    from 0deg,
-    transparent 0deg,
-    var(--signal) 45deg,
-    var(--valid) 90deg,
-    transparent 130deg,
-    transparent 180deg,
-    var(--signal) 225deg,
-    var(--valid) 270deg,
-    transparent 310deg
-  );
-  opacity: 0;
-  transition: opacity 240ms var(--ease-out);
-  animation: cadBorderSpin 4.5s linear infinite;
-  mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-}
-
-/* Holographic Prism Glare + Blueprint Micro-Grid inside .cad-box-surface */
-.cad-box-surface::after {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  opacity: 0;
-  transition: opacity 240ms var(--ease-out);
-  background:
-    radial-gradient(
-      420px circle at var(--mouse-x) var(--mouse-y),
-      rgba(154, 52, 18, 0.22),
-      rgba(22, 101, 52, 0.10) 38%,
-      rgba(16, 34, 56, 0.04) 62%,
-      transparent 82%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 13px,
-      rgba(16, 34, 56, 0.06) 14px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 13px,
-      rgba(16, 34, 56, 0.06) 14px
-    );
-}
-
-[data-theme="dark"] .cad-box-surface::after {
-  background:
-    radial-gradient(
-      440px circle at var(--mouse-x) var(--mouse-y),
-      rgba(249, 115, 22, 0.28),
-      rgba(52, 211, 153, 0.14) 40%,
-      rgba(21, 32, 48, 0.2) 68%,
-      transparent 85%
-    ),
-    repeating-linear-gradient(
-      0deg,
-      transparent,
-      transparent 13px,
-      rgba(232, 228, 218, 0.065) 14px
-    ),
-    repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 13px,
-      rgba(232, 228, 218, 0.065) 14px
-    );
-}
-
-/* Live 3D Rotating Wireframe Hologram Canvas Embedded Inside Each Box */
-.cad-box-holo-canvas {
-  position: absolute;
-  right: 6px;
-  bottom: 6px;
-  width: 118px;
-  height: 118px;
-  pointer-events: none;
-  opacity: 0.34;
-  transition: opacity 260ms var(--ease-out), transform 320ms var(--ease-out);
-  z-index: 2;
-}
-
-.spatial-3d-card.is-tilting .cad-box-holo-canvas {
-  opacity: 0.92;
-  transform: scale(1.16);
-}
-
-/* Laser Scan Beam inside .cad-box-surface */
-.cad-laser-line {
-  position: absolute;
+  top: 0;
   left: 0;
   right: 0;
-  top: -15%;
-  height: 2.5px;
+  height: 2px;
   background: linear-gradient(
     90deg,
     transparent 0%,
-    var(--signal) 22%,
-    #ffffff 50%,
-    var(--valid) 78%,
+    var(--signal) 50%,
     transparent 100%
   );
-  box-shadow: 0 0 16px var(--signal), 0 0 6px var(--valid);
   opacity: 0;
-  z-index: 4;
+  transition: opacity 220ms var(--ease-out);
 }
 
-.spatial-3d-card.is-tilting .cad-laser-line {
-  animation: cadLaserScan 2.0s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+/* Gentle Cursor-Tracked Ambient Glow (Kept Subtle so Text Stays 100% Crisp) */
+.cad-box-surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 240ms var(--ease-out);
+  background: radial-gradient(
+    360px circle at var(--mouse-x) var(--mouse-y),
+    rgba(2, 132, 199, 0.07),
+    transparent 70%
+  );
 }
 
-/* 3D Extruded Multi-Wall Slab Bevel + Deep Floating Shadow */
+[data-theme="dark"] .cad-box-surface::after {
+  background: radial-gradient(
+    380px circle at var(--mouse-x) var(--mouse-y),
+    rgba(0, 212, 255, 0.08),
+    rgba(52, 211, 153, 0.03) 45%,
+    transparent 72%
+  );
+}
+
+/* Subtle Corner 3D Wireframe Watermark (Low Opacity so Text is Effortless to Read) */
+.cad-box-holo-canvas {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 88px;
+  height: 88px;
+  pointer-events: none;
+  opacity: 0.08;
+  transition: opacity 260ms var(--ease-out), transform 260ms var(--ease-out);
+  z-index: 1;
+}
+
+.spatial-3d-card.is-tilting .cad-box-holo-canvas {
+  opacity: 0.18;
+  transform: scale(1.05);
+}
+
+.cad-laser-line {
+  display: none;
+}
+
+/* Clean Futuristic Hover State: Cyan Border Glow + Subtle Elevation */
 .spatial-3d-card.is-tilting {
-  z-index: 30 !important;
+  z-index: 10;
   border-color: var(--signal) !important;
   box-shadow:
-    var(--bevel-x, 5px) var(--bevel-y, 5px) 0px var(--signal),
-    calc(var(--bevel-x, 5px) * 1.9) calc(var(--bevel-y, 5px) * 1.9) 0px var(--ink),
-    calc(var(--bevel-x, 5px) * 2.6) calc(var(--bevel-y, 5px) * 2.6) 0px var(--valid),
-    var(--shadow-x, 0px) var(--shadow-y, 24px) 44px -4px rgba(16, 34, 56, 0.42);
+    0 12px 28px -8px rgba(2, 132, 199, 0.18),
+    0 0 0 1px var(--signal);
 }
 
 [data-theme="dark"] .spatial-3d-card.is-tilting {
   box-shadow:
-    var(--bevel-x, 5px) var(--bevel-y, 5px) 0px var(--signal),
-    calc(var(--bevel-x, 5px) * 1.9) calc(var(--bevel-y, 5px) * 1.9) 0px rgba(52, 211, 153, 0.75),
-    calc(var(--bevel-x, 5px) * 2.7) calc(var(--bevel-y, 5px) * 2.7) 0px rgba(249, 115, 22, 0.45),
-    var(--shadow-x, 0px) var(--shadow-y, 26px) 52px -2px rgba(0, 0, 0, 0.82),
-    0 0 28px rgba(249, 115, 22, 0.22);
+    0 14px 32px -6px rgba(0, 0, 0, 0.65),
+    0 0 20px -4px rgba(0, 212, 255, 0.22),
+    inset 0 0 0 1px rgba(0, 212, 255, 0.25);
 }
 
-.spatial-3d-card.is-tilting .cad-box-surface::before {
-  opacity: 0.28;
-}
-
+.spatial-3d-card.is-tilting .cad-box-surface::before,
 .spatial-3d-card.is-tilting .cad-box-surface::after {
   opacity: 1;
 }
 
-/* CAD Corner Reticles & Live 3D Telemetry Stamp Floating Above Box at Z=48px */
+/* Clean Corner Precision Ticks (Perimeter Only — Never Overlaps Text) */
 .cad-box-hud {
   position: absolute;
   inset: 0;
   pointer-events: none;
-  z-index: 10;
-  transform-style: preserve-3d;
-  transform: translateZ(48px);
+  z-index: 4;
 }
 
 .cad-corner {
   position: absolute;
-  width: 14px;
-  height: 14px;
+  width: 9px;
+  height: 9px;
   border-color: var(--signal);
   border-style: solid;
   opacity: 0;
-  transition: opacity 180ms var(--ease-out), transform 240ms var(--ease-out);
+  transition: opacity 180ms var(--ease-out), transform 200ms var(--ease-out);
 }
 
 .cad-corner.tl {
-  top: -4px;
-  left: -4px;
-  border-width: 3px 0 0 3px;
-  transform: translate(-8px, -8px);
+  top: 4px;
+  left: 4px;
+  border-width: 2px 0 0 2px;
+  transform: translate(-3px, -3px);
 }
 
 .cad-corner.tr {
-  top: -4px;
-  right: -4px;
-  border-width: 3px 3px 0 0;
-  transform: translate(8px, -8px);
+  top: 4px;
+  right: 4px;
+  border-width: 2px 2px 0 0;
+  transform: translate(3px, -3px);
 }
 
 .cad-corner.bl {
-  bottom: -4px;
-  left: -4px;
-  border-width: 0 0 3px 3px;
-  transform: translate(-8px, 8px);
+  bottom: 4px;
+  left: 4px;
+  border-width: 0 0 2px 2px;
+  transform: translate(-3px, 3px);
 }
 
 .cad-corner.br {
-  bottom: -4px;
-  right: -4px;
-  border-width: 0 3px 3px 0;
-  transform: translate(8px, 8px);
+  bottom: 4px;
+  right: 4px;
+  border-width: 0 2px 2px 0;
+  transform: translate(3px, 3px);
 }
 
 .spatial-3d-card.is-tilting .cad-corner {
-  opacity: 1;
+  opacity: 0.85;
   transform: translate(0, 0);
 }
 
 .cad-box-coords {
-  position: absolute;
-  top: -11px;
-  right: 12px;
-  padding: 2px 8px;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: #ffffff;
-  background: var(--signal);
-  border: 1px solid var(--ink);
-  box-shadow: 3px 3px 0 var(--ink);
-  opacity: 0;
-  transform: translateY(-8px) translateZ(12px);
-  transition: opacity 180ms var(--ease-out), transform 220ms var(--ease-out);
-  font-variant-numeric: tabular-nums;
+  display: none;
 }
 
-.spatial-3d-card.is-tilting .cad-box-coords {
-  opacity: 1;
-  transform: translateY(0) translateZ(12px);
-}
-
-/* TRUE UNFLATTENED Multi-Plane preserve-3d Z-Layering (22px -> 62px Pop-Out!) */
+/* Keep All Box Text 100% Sharp & Unwarped */
 .spatial-3d-card > *:not(.cad-box-hud):not(.cad-box-surface) {
   position: relative;
-  z-index: 3;
-  transform-style: preserve-3d;
-  transition: transform 260ms var(--ease-out), filter 260ms var(--ease-out);
-}
-
-.spatial-3d-card.is-tilting .profile-img,
-.spatial-3d-card.is-tilting .project-card-header,
-.spatial-3d-card.is-tilting .node-head,
-.spatial-3d-card.is-tilting .skill-head,
-.spatial-3d-card.is-tilting .mini-header,
-.spatial-3d-card.is-tilting .role-badge,
-.spatial-3d-card.is-tilting .counter-val,
-.spatial-3d-card.is-tilting h3,
-.spatial-3d-card.is-tilting h4 {
-  transform: translateZ(48px);
-  filter: drop-shadow(0 8px 10px rgba(16, 34, 56, 0.22));
+  z-index: 2;
 }
 
 .spatial-3d-card.is-tilting .counter-val {
   color: var(--signal);
-  transform: translateZ(58px) scale(1.1);
 }
 
-.spatial-3d-card.is-tilting .plate-caption,
-.spatial-3d-card.is-tilting .project-arch-pill,
-.spatial-3d-card.is-tilting .bar,
-.spatial-3d-card.is-tilting .node-tags,
-.spatial-3d-card.is-tilting .project-tags,
-.spatial-3d-card.is-tilting .sys-tag,
-.spatial-3d-card.is-tilting .timeline-date,
-.spatial-3d-card.is-tilting .status-stamp {
-  transform: translateZ(36px);
-  filter: drop-shadow(0 6px 8px rgba(16, 34, 56, 0.18));
-}
-
-.spatial-3d-card.is-tilting .spec-cell-foot,
-.spatial-3d-card.is-tilting .btn-project-detail,
-.spatial-3d-card.is-tilting .project-metrics,
-.spatial-3d-card.is-tilting .skill-pct {
-  transform: translateZ(60px);
-  filter: drop-shadow(0 10px 14px rgba(16, 34, 56, 0.28));
-}
-
-.spatial-3d-card.is-tilting p,
-.spatial-3d-card.is-tilting ul,
-.spatial-3d-card.is-tilting .company-line,
-.spatial-3d-card.is-tilting .project-seo-drawer {
-  transform: translateZ(22px);
-}
-
-/* Animated 3D Energy Shimmer on Hovered Skill Bars */
+/* Animated Futuristic Cyan/Emerald Shimmer on Hovered Skill Bars */
 .skill.spatial-3d-card.is-tilting .progress {
   background: linear-gradient(
     90deg,
-    var(--ink) 0%,
-    var(--signal) 50%,
-    var(--valid) 100%
+    var(--signal) 0%,
+    var(--valid) 50%,
+    var(--signal) 100%
   );
   background-size: 200% 100%;
-  animation: skillBarShimmer 1.4s linear infinite;
+  animation: skillBarShimmer 1.8s linear infinite;
 }
 
 /* Scroll-Driven 3D Architectural Sheet Perspective */
@@ -1065,7 +901,7 @@
 
 .btn-project-detail:hover {
   background: var(--signal);
-  color: #ffffff;
+  color: var(--sheet-contrast-text);
   border-color: var(--signal);
 }
 

@@ -20,14 +20,14 @@
     const icon = document.getElementById('themeIcon');
     const themeMeta = document.querySelector('meta[name="theme-color"]');
 
-    const savedTheme = localStorage.getItem('cvTheme') || 'light';
+    const savedTheme = localStorage.getItem('cvThemeFuturistic') || 'dark';
     const applyTheme = (theme) => {
       root.setAttribute('data-theme', theme);
       if (icon) {
         icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
       }
       if (themeMeta) {
-        themeMeta.setAttribute('content', theme === 'dark' ? '#101824' : '#efece4');
+        themeMeta.setAttribute('content', theme === 'dark' ? '#060b16' : '#eef4fb');
       }
     };
 
@@ -37,7 +37,7 @@
       toggleBtn.addEventListener('click', () => {
         const current = root.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
         const next = current === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('cvTheme', next);
+        localStorage.setItem('cvThemeFuturistic', next);
         applyTheme(next);
       });
     }

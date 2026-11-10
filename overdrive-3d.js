@@ -55,44 +55,44 @@
     if (isDarkTheme()) {
       return {
         dark: true,
-        inkHex: 0xe8e4da,
-        inkSubHex: 0x94a9be,
-        ruleHex: 0x466385,
-        gridHex: 0x29405c,
-        surfaceHex: 0x1b2a3e,
-        elevatedHex: 0x243852,
-        sheetHex: 0x152030,
-        signalHex: 0xf97316,
+        inkHex: 0xe0f2fe,
+        inkSubHex: 0x7dd3fc,
+        ruleHex: 0x23426b,
+        gridHex: 0x162b49,
+        surfaceHex: 0x0e1a31,
+        elevatedHex: 0x16284a,
+        sheetHex: 0x0a1324,
+        signalHex: 0x00d4ff,
         validHex: 0x34d399,
-        ink: 'rgba(232, 228, 218, 0.88)',
-        inkMuted: 'rgba(148, 169, 190, 0.34)',
-        inkFaint: 'rgba(148, 169, 190, 0.12)',
-        signal: 'rgba(249, 115, 22, 0.95)',
-        signalSoft: 'rgba(249, 115, 22, 0.24)',
+        ink: 'rgba(240, 247, 255, 0.92)',
+        inkMuted: 'rgba(124, 151, 188, 0.36)',
+        inkFaint: 'rgba(0, 212, 255, 0.14)',
+        signal: 'rgba(0, 212, 255, 0.95)',
+        signalSoft: 'rgba(0, 212, 255, 0.25)',
         valid: 'rgba(52, 211, 153, 0.92)',
-        surface: 'rgba(27, 42, 62, 0.82)',
-        sheet: '#152030'
+        surface: 'rgba(14, 26, 49, 0.86)',
+        sheet: '#0a1324'
       };
     }
     return {
       dark: false,
-      inkHex: 0x102238,
-      inkSubHex: 0x32475c,
-      ruleHex: 0x102238,
-      gridHex: 0xc8c2b4,
-      surfaceHex: 0xe5e0d5,
-      elevatedHex: 0xfaf8f3,
-      sheetHex: 0xf5f2eb,
-      signalHex: 0x9a3412,
-      validHex: 0x166534,
-      ink: 'rgba(16, 34, 56, 0.88)',
-      inkMuted: 'rgba(16, 34, 56, 0.30)',
-      inkFaint: 'rgba(16, 34, 56, 0.09)',
-      signal: 'rgba(154, 52, 18, 0.95)',
-      signalSoft: 'rgba(154, 52, 18, 0.18)',
-      valid: 'rgba(22, 101, 52, 0.92)',
-      surface: 'rgba(234, 230, 220, 0.85)',
-      sheet: '#f5f2eb'
+      inkHex: 0x09152b,
+      inkSubHex: 0x1e3354,
+      ruleHex: 0x1e3a5f,
+      gridHex: 0xbfd0e6,
+      surfaceHex: 0xe6effa,
+      elevatedHex: 0xffffff,
+      sheetHex: 0xf7faff,
+      signalHex: 0x0284c7,
+      validHex: 0x059669,
+      ink: 'rgba(9, 21, 43, 0.90)',
+      inkMuted: 'rgba(30, 51, 84, 0.30)',
+      inkFaint: 'rgba(2, 132, 199, 0.12)',
+      signal: 'rgba(2, 132, 199, 0.95)',
+      signalSoft: 'rgba(2, 132, 199, 0.20)',
+      valid: 'rgba(5, 150, 105, 0.92)',
+      surface: 'rgba(230, 239, 250, 0.88)',
+      sheet: '#f7faff'
     };
   }
 
@@ -1717,11 +1717,11 @@
       const isWideBox =
         card.classList.contains('timeline-item') || card.classList.contains('sheet-cell');
       const maxTilt = card.classList.contains('portrait-plate-wrap')
-        ? 13
+        ? 5.5
         : isWideBox
-        ? 6
-        : 11;
-      const liftTarget = isWideBox ? 16 : 26;
+        ? 1.1
+        : 2.4;
+      const liftTarget = isWideBox ? 2 : 4;
 
       const cardState = {
         card,
@@ -1741,37 +1741,24 @@
       let targetRX = 0;
       let targetRY = 0;
       let targetZ = 0;
-      let targetScale = 1;
-      let currScale = 1;
       let velRX = 0;
       let velRY = 0;
       let velZ = 0;
-      let velScale = 0;
       let rafId = 0;
 
       function stepSpring() {
-        const stiffness = 0.17;
-        const damping = 0.73;
+        const stiffness = 0.16;
+        const damping = 0.75;
 
         velRX = (velRX + (targetRX - cardState.currRX) * stiffness) * damping;
         velRY = (velRY + (targetRY - cardState.currRY) * stiffness) * damping;
         velZ = (velZ + (targetZ - cardState.currZ) * stiffness) * damping;
-        velScale = (velScale + (targetScale - currScale) * stiffness) * damping;
 
         cardState.currRX += velRX;
         cardState.currRY += velRY;
         cardState.currZ += velZ;
-        currScale += velScale;
 
-        card.style.transform = `perspective(780px) rotateX(${cardState.currRX.toFixed(2)}deg) rotateY(${cardState.currRY.toFixed(2)}deg) translateZ(${cardState.currZ.toFixed(1)}px) scale(${currScale.toFixed(3)})`;
-        card.style.setProperty('--bevel-x', `${(-cardState.currRY * 0.75).toFixed(1)}px`);
-        card.style.setProperty('--bevel-y', `${(5 + cardState.currRX * 0.75).toFixed(1)}px`);
-        card.style.setProperty('--shadow-x', `${(-cardState.currRY * 2.4).toFixed(1)}px`);
-        card.style.setProperty('--shadow-y', `${(18 + cardState.currRX * 2.0).toFixed(1)}px`);
-
-        if (coordsBadge && cardState.hovered) {
-          coordsBadge.textContent = `3D // X:${cardState.currRX >= 0 ? '+' : ''}${cardState.currRX.toFixed(1)}° Y:${cardState.currRY >= 0 ? '+' : ''}${cardState.currRY.toFixed(1)}° Z:${Math.round(cardState.currZ)}mm`;
-        }
+        card.style.transform = `perspective(1400px) rotateX(${cardState.currRX.toFixed(2)}deg) rotateY(${cardState.currRY.toFixed(2)}deg) translateY(${(-cardState.currZ).toFixed(1)}px)`;
 
         const stillMoving =
           Math.abs(velRX) > 0.01 ||
@@ -1792,7 +1779,6 @@
       card.addEventListener('pointerenter', () => {
         cardState.hovered = true;
         targetZ = liftTarget;
-        targetScale = isWideBox ? 1.008 : 1.022;
         card.classList.add('is-tilting');
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
@@ -1813,7 +1799,6 @@
         targetRX = 0;
         targetRY = 0;
         targetZ = 0;
-        targetScale = 1;
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
     });
