@@ -11,7 +11,7 @@
   height: 100vh;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.85;
+  opacity: 0.92;
 }
 
 .folio-shell,
@@ -20,10 +20,53 @@
   z-index: 2;
 }
 
+/* Hero 3D Core Header Action Controls */
+.hero-3d-core-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.hero-3d-mode-btn {
+  padding: 2px 6px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  color: var(--ink);
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+}
+
+.hero-3d-mode-btn:hover,
+.hero-3d-mode-btn.active {
+  background: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+
+#hero3dCoreWrap {
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+}
+
+#hero3dCoreWrap:hover {
+  border-color: var(--signal);
+  box-shadow: 6px 6px 0 rgba(16, 34, 56, 0.16);
+}
+
+[data-theme="dark"] #hero3dCoreWrap:hover {
+  box-shadow: 6px 6px 0 rgba(249, 115, 22, 0.22);
+}
+
 .cad3d-viewport-wrap {
   border: 2px solid var(--rule-strong);
   background: var(--ground-recessed);
   margin-bottom: 22px;
+  position: relative;
 }
 
 .cad3d-toolbar {
@@ -63,7 +106,7 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
-  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out);
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), transform 150ms var(--ease-out);
 }
 
 .cad3d-btn:hover,
@@ -72,14 +115,45 @@
   color: var(--sheet-contrast-text);
 }
 
+.cad3d-btn[data-mode]:hover,
+.cad3d-btn[data-mode].active {
+  background: var(--signal);
+  color: #ffffff;
+  border-color: var(--signal);
+}
+
 .cad3d-canvas-box {
   position: relative;
   width: 100%;
-  height: 360px;
-  background: var(--sheet-bg);
+  height: 420px;
+  background:
+    radial-gradient(circle at 50% 44%, rgba(154, 52, 18, 0.06), transparent 68%),
+    var(--sheet-bg);
   overflow: hidden;
   cursor: grab;
   user-select: none;
+}
+
+[data-theme="dark"] .cad3d-canvas-box {
+  background:
+    radial-gradient(circle at 50% 44%, rgba(249, 115, 22, 0.11), rgba(21, 32, 48, 0.95) 72%),
+    var(--sheet-bg);
+}
+
+.cad3d-canvas-box::before,
+.cad3d-canvas-box::after {
+  content: "";
+  position: absolute;
+  inset: 12px;
+  bottom: 44px;
+  pointer-events: none;
+  z-index: 2;
+  border: 1px dashed rgba(16, 34, 56, 0.14);
+}
+
+[data-theme="dark"] .cad3d-canvas-box::before,
+[data-theme="dark"] .cad3d-canvas-box::after {
+  border-color: rgba(148, 169, 190, 0.16);
 }
 
 .cad3d-canvas-box:active {
@@ -97,6 +171,7 @@
   inset: 0;
   pointer-events: none;
   overflow: hidden;
+  z-index: 3;
 }
 
 .cad3d-label {
@@ -104,18 +179,30 @@
   top: 0;
   left: 0;
   transform: translate3d(-50%, -50%, 0);
-  padding: 4px 10px;
+  padding: 5px 11px;
   background: var(--sheet-bg);
   color: var(--ink);
-  border: 1px solid var(--rule-strong);
+  border: 1.5px solid var(--rule-strong);
+  box-shadow: 3px 3px 0 rgba(16, 34, 56, 0.18);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 11.5px;
   font-weight: 700;
   white-space: nowrap;
   pointer-events: auto;
   cursor: pointer;
   font-variant-numeric: tabular-nums;
-  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out);
+  transition: background-color 150ms var(--ease-out), color 150ms var(--ease-out), border-color 150ms var(--ease-out), box-shadow 150ms var(--ease-out);
+}
+
+.cad3d-label::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -9px;
+  width: 1.5px;
+  height: 8px;
+  background: var(--rule-strong);
+  transform: translateX(-50%);
 }
 
 .cad3d-label:hover,
@@ -123,7 +210,13 @@
   background: var(--signal);
   color: #ffffff;
   border-color: var(--signal);
-  z-index: 5;
+  box-shadow: 4px 4px 0 var(--ink);
+  z-index: 6;
+}
+
+.cad3d-label:hover::after,
+.cad3d-label.is-focused::after {
+  background: var(--signal);
 }
 
 .cad3d-telemetry-bar {
@@ -131,6 +224,7 @@
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: 4;
   padding: 8px 16px;
   border-top: 1px solid var(--rule-strong);
   background: var(--ground-recessed);
@@ -147,23 +241,159 @@
   pointer-events: none;
 }
 
-/* Spatial 3D Multi-Plane Depth Cards */
+/* Spatial 3D Multi-Plane Depth Cards & Specular Glare Surface Shader */
 .spatial-3d-card {
+  position: relative;
   transform-style: preserve-3d;
-  will-change: transform;
+  will-change: transform, box-shadow;
+  transition: box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+  --mouse-x: 50%;
+  --mouse-y: 50%;
+  --shadow-x: 0px;
+  --shadow-y: 0px;
+}
+
+.spatial-3d-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms var(--ease-out);
+  background:
+    radial-gradient(
+      360px circle at var(--mouse-x) var(--mouse-y),
+      rgba(154, 52, 18, 0.12),
+      rgba(16, 34, 56, 0.04) 45%,
+      transparent 75%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(16, 34, 56, 0.035) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(16, 34, 56, 0.035) 20px
+    );
+  z-index: 1;
+}
+
+[data-theme="dark"] .spatial-3d-card::after {
+  background:
+    radial-gradient(
+      380px circle at var(--mouse-x) var(--mouse-y),
+      rgba(249, 115, 22, 0.18),
+      rgba(52, 211, 153, 0.06) 45%,
+      transparent 75%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 19px,
+      rgba(232, 228, 218, 0.04) 20px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 19px,
+      rgba(232, 228, 218, 0.04) 20px
+    );
+}
+
+.spatial-3d-card.is-tilting {
+  z-index: 8;
+  box-shadow:
+    var(--shadow-x, 0px) var(--shadow-y, 12px) 26px -6px rgba(16, 34, 56, 0.24),
+    0 0 0 1px var(--signal);
+}
+
+[data-theme="dark"] .spatial-3d-card.is-tilting {
+  box-shadow:
+    var(--shadow-x, 0px) var(--shadow-y, 14px) 30px -4px rgba(0, 0, 0, 0.55),
+    0 0 0 1px var(--signal);
+}
+
+.spatial-3d-card.is-tilting::after {
+  opacity: 1;
+}
+
+.spatial-3d-card > * {
+  position: relative;
+  z-index: 2;
+  transition: transform 240ms var(--ease-out);
 }
 
 .spatial-3d-card.is-tilting .profile-img,
+.spatial-3d-card.is-tilting .project-card-header,
+.spatial-3d-card.is-tilting .node-head,
+.spatial-3d-card.is-tilting .skill-head,
 .spatial-3d-card.is-tilting h3,
 .spatial-3d-card.is-tilting h4 {
-  transform: translateZ(20px);
+  transform: translateZ(24px);
 }
 
 .spatial-3d-card.is-tilting .plate-caption,
 .spatial-3d-card.is-tilting .project-arch-pill,
+.spatial-3d-card.is-tilting .bar,
+.spatial-3d-card.is-tilting .node-tags,
+.spatial-3d-card.is-tilting .project-tags {
+  transform: translateZ(16px);
+}
+
 .spatial-3d-card.is-tilting .spec-cell-foot,
-.spatial-3d-card.is-tilting .btn-project-detail {
-  transform: translateZ(14px);
+.spatial-3d-card.is-tilting .btn-project-detail,
+.spatial-3d-card.is-tilting .project-metrics {
+  transform: translateZ(28px);
+}
+
+/* Scroll-Driven 3D Architectural Sheet Perspective */
+.folio-sheet.sheet-3d-stage {
+  transform-origin: center top;
+  will-change: transform, opacity;
+  transition: transform 420ms var(--ease-out), opacity 420ms var(--ease-out);
+}
+
+/* Modal 3D Interactive Architecture Hologram Stage */
+.modal-3d-stage-wrap {
+  border: 2px solid var(--rule-strong);
+  background: var(--ground-recessed);
+  margin-bottom: 14px;
+}
+
+.modal-3d-stage-bar {
+  padding: 6px 12px;
+  border-bottom: 1px solid var(--rule-strong);
+  background: var(--sheet-bg);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.modal-3d-canvas-host {
+  position: relative;
+  width: 100%;
+  height: 220px;
+  background: var(--sheet-bg);
+  cursor: grab;
+  overflow: hidden;
+}
+
+.modal-3d-canvas-host:active {
+  cursor: grabbing;
+}
+
+#modal3dProjectCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 /* ===== SYSTEM TOPOLOGY DIAGRAM ===== */

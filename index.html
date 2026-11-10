@@ -320,13 +320,16 @@
             </div>
 
             <!-- Interactive 3D CAD System Core in First Viewport -->
-            <div class="hero-3d-core-wrap" id="hero3dCoreWrap" title="Drag to rotate 3D System Architecture Core">
+            <div class="hero-3d-core-wrap" id="hero3dCoreWrap" title="Drag to rotate 3D System Architecture Core · Double-click to Explode">
               <div class="hero-3d-core-head">
                 <span>3D CORE // SYS-GYRO</span>
-                <span class="pulse-dot"></span>
+                <div class="hero-3d-core-actions">
+                  <button type="button" class="hero-3d-mode-btn" id="hero3dExplodeBtn" title="Toggle Exploded 3D Assembly">EXPLODE</button>
+                  <span class="pulse-dot"></span>
+                </div>
               </div>
               <canvas id="hero3dCoreCanvas" width="240" height="200"></canvas>
-              <div class="hero-3d-core-foot" id="hero3dCoreReadout">DRAG 3D · 60FPS CAD</div>
+              <div class="hero-3d-core-foot" id="hero3dCoreReadout">WEBGL 3D · DRAG / EXPLODE</div>
             </div>
           </div>
 
@@ -558,6 +561,8 @@
               <button type="button" class="cad3d-btn active" data-cam="iso">ISO 3D</button>
               <button type="button" class="cad3d-btn" data-cam="top">TOP PLAN</button>
               <button type="button" class="cad3d-btn" data-cam="front">ELEVATION</button>
+              <button type="button" class="cad3d-btn" id="cad3dWireBtn" data-mode="wireframe">X-RAY</button>
+              <button type="button" class="cad3d-btn" id="cad3dExplodeBtn" data-mode="explode">EXPLODE</button>
               <button type="button" class="cad3d-btn active" id="cad3dOrbitBtn" data-cam="orbit">AUTO-ORBIT</button>
             </div>
           </div>
@@ -1327,6 +1332,7 @@
 
   <script src="script.js"></script>
   <script src="hi-tech.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js" defer></script>
   <script src="overdrive-3d.js" defer></script>
 </body>
 </html>

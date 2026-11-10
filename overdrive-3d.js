@@ -1,434 +1,1093 @@
 /* ==========================================================================
-   THANAPAT PISAVONG — OVERDRIVE 3D CAD & SPATIAL BLUEPRINT ENGINE
-   High-DPI 3D Matrix Projection Renderer, Interactive 3D Hero Gyro Core,
-   3D Enterprise Topology Stage, Scroll-Reactive 3D Margin Wireframes,
-   and Spring-Physics Multi-Plane 3D Cards
+   THANAPAT PISAVONG — ARCHITECTURAL 3D CAD & WEBGL SPATIAL ENGINE (overdrive-3d.js)
+   Three.js WebGL Hardware-Accelerated Digital Twin, Custom CAD Shaders/Wireframes,
+   Exploded Axonometric Assembly, Multi-Plane 3D Cards & Modal 3D Topology
+   Harmonized with DESIGN.md (Drafting Vellum & Prussian Blueprint)
    ========================================================================== */
 
-(() => {
+(function () {
+  'use strict';
+
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const isCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
 
-  function getPalette() {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    return isDark
-      ? {
-          ink: '#e8e4da',
-          inkMuted: 'rgba(197, 209, 222, 0.42)',
-          grid: 'rgba(143, 163, 184, 0.22)',
-          gridStrong: 'rgba(197, 209, 222, 0.38)',
-          signal: '#f97316',
-          valid: '#34d399',
-          bg: '#152030'
-        }
-      : {
-          ink: '#102238',
-          inkMuted: 'rgba(16, 34, 56, 0.42)',
-          grid: 'rgba(16, 34, 56, 0.14)',
-          gridStrong: 'rgba(16, 34, 56, 0.28)',
-          signal: '#9a3412',
-          valid: '#166534',
-          bg: '#f5f2eb'
-        };
+  // Global shared pointer & scroll telemetry
+  const pointer = {
+    x: window.innerWidth * 0.5,
+    y: window.innerHeight * 0.5,
+    nx: 0,
+    ny: 0,
+    tx: 0,
+    ty: 0
+  };
+
+  let scrollY = window.scrollY || 0;
+  let smoothScroll = scrollY;
+  let scrollVelocity = 0;
+
+  window.addEventListener(
+    'pointermove',
+    (e) => {
+      pointer.x = e.clientX;
+      pointer.y = e.clientY;
+      pointer.tx = (e.clientX / Math.max(window.innerWidth, 1) - 0.5) * 2;
+      pointer.ty = (e.clientY / Math.max(window.innerHeight, 1) - 0.5) * 2;
+    },
+    { passive: true }
+  );
+
+  window.addEventListener(
+    'scroll',
+    () => {
+      scrollY = window.scrollY || 0;
+    },
+    { passive: true }
+  );
+
+  /* ==========================================================================
+     THEME PALETTE SYNCHRONIZER (Drafting Vellum vs Prussian Blueprint)
+     ========================================================================== */
+  function isDarkTheme() {
+    return document.documentElement.getAttribute('data-theme') === 'dark';
   }
 
-  /* ===== 3D MATH & PROJECTION PRIMITIVES ===== */
-  function rotate3D(pt, rx, ry, rz = 0) {
-    let { x, y, z } = pt;
-    // Rotate Y (yaw)
-    const cy = Math.cos(ry);
-    const sy = Math.sin(ry);
-    const x1 = x * cy + z * sy;
-    const z1 = -x * sy + z * cy;
-    // Rotate X (pitch)
-    const cx = Math.cos(rx);
-    const sx = Math.sin(rx);
-    const y2 = y * cx - z1 * sx;
-    const z2 = y * sx + z1 * cx;
-    // Rotate Z (roll)
-    if (rz !== 0) {
-      const cz = Math.cos(rz);
-      const sz = Math.sin(rz);
-      return { x: x1 * cz - y2 * sz, y: x1 * sz + y2 * cz, z: z2 };
+  function getThemePalette() {
+    if (isDarkTheme()) {
+      return {
+        dark: true,
+        inkHex: 0xe8e4da,
+        inkSubHex: 0x94a9be,
+        ruleHex: 0x466385,
+        gridHex: 0x29405c,
+        surfaceHex: 0x1b2a3e,
+        elevatedHex: 0x243852,
+        sheetHex: 0x152030,
+        signalHex: 0xf97316,
+        validHex: 0x34d399,
+        ink: 'rgba(232, 228, 218, 0.88)',
+        inkMuted: 'rgba(148, 169, 190, 0.34)',
+        inkFaint: 'rgba(148, 169, 190, 0.12)',
+        signal: 'rgba(249, 115, 22, 0.95)',
+        signalSoft: 'rgba(249, 115, 22, 0.24)',
+        valid: 'rgba(52, 211, 153, 0.92)',
+        surface: 'rgba(27, 42, 62, 0.82)',
+        sheet: '#152030'
+      };
     }
-    return { x: x1, y: y2, z: z2 };
-  }
-
-  function project3D(pt, w, h, fov, camDist) {
-    const zOffset = camDist - pt.z;
-    const scale = fov / Math.max(zOffset, 0.5);
     return {
-      x: w * 0.5 + pt.x * scale,
-      y: h * 0.5 - pt.y * scale,
-      scale,
-      depth: zOffset
+      dark: false,
+      inkHex: 0x102238,
+      inkSubHex: 0x32475c,
+      ruleHex: 0x102238,
+      gridHex: 0xc8c2b4,
+      surfaceHex: 0xe5e0d5,
+      elevatedHex: 0xfaf8f3,
+      sheetHex: 0xf5f2eb,
+      signalHex: 0x9a3412,
+      validHex: 0x166534,
+      ink: 'rgba(16, 34, 56, 0.88)',
+      inkMuted: 'rgba(16, 34, 56, 0.30)',
+      inkFaint: 'rgba(16, 34, 56, 0.09)',
+      signal: 'rgba(154, 52, 18, 0.95)',
+      signalSoft: 'rgba(154, 52, 18, 0.18)',
+      valid: 'rgba(22, 101, 52, 0.92)',
+      surface: 'rgba(234, 230, 220, 0.85)',
+      sheet: '#f5f2eb'
     };
   }
 
-  function makeBoxWireframe(hx, hy, hz) {
-    const v = [
-      { x: -hx, y: -hy, z: -hz },
-      { x: hx, y: -hy, z: -hz },
-      { x: hx, y: hy, z: -hz },
-      { x: -hx, y: hy, z: -hz },
-      { x: -hx, y: -hy, z: hz },
-      { x: hx, y: -hy, z: hz },
-      { x: hx, y: hy, z: hz },
-      { x: -hx, y: hy, z: hz }
-    ];
-    const e = [
-      [0, 1], [1, 2], [2, 3], [3, 0],
-      [4, 5], [5, 6], [6, 7], [7, 4],
-      [0, 4], [1, 5], [2, 6], [3, 7]
-    ];
-    return { v, e };
+  const themeListeners = [];
+  function onThemeChange(fn) {
+    themeListeners.push(fn);
   }
 
-  function makeOctahedronWireframe(r) {
-    const v = [
-      { x: 0, y: r, z: 0 },
-      { x: 0, y: -r, z: 0 },
-      { x: r, y: 0, z: 0 },
-      { x: -r, y: 0, z: 0 },
-      { x: 0, y: 0, z: r },
-      { x: 0, y: 0, z: -r }
-    ];
-    const e = [
-      [0, 2], [0, 3], [0, 4], [0, 5],
-      [1, 2], [1, 3], [1, 4], [1, 5],
-      [2, 4], [4, 3], [3, 5], [5, 2]
-    ];
-    return { v, e };
+  const themeObserver = new MutationObserver(() => {
+    const pal = getThemePalette();
+    themeListeners.forEach((fn) => {
+      try {
+        fn(pal);
+      } catch (err) {
+        console.warn('Theme listener error:', err);
+      }
+    });
+  });
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
+  });
+
+  /* ==========================================================================
+     HELPER: BUILD CAD SOLID + WIREFRAME MESH (ARCHITECTURAL DUAL-PASS)
+     ========================================================================== */
+  function createCadMesh(geometry, materialOpts, edgeColorHex, edgeOpacity) {
+    const THREE = window.THREE;
+    const group = new THREE.Group();
+
+    const mat = new THREE.MeshStandardMaterial(
+      Object.assign(
+        {
+          color: 0xe5e0d5,
+          roughness: 0.55,
+          metalness: 0.18,
+          flatShading: true,
+          polygonOffset: true,
+          polygonOffsetFactor: 1,
+          polygonOffsetUnits: 1
+        },
+        materialOpts || {}
+      )
+    );
+
+    const solid = new THREE.Mesh(geometry, mat);
+    group.add(solid);
+
+    const edgesGeo = new THREE.EdgesGeometry(geometry, 18);
+    const edgesMat = new THREE.LineBasicMaterial({
+      color: edgeColorHex !== undefined ? edgeColorHex : 0x102238,
+      transparent: true,
+      opacity: edgeOpacity !== undefined ? edgeOpacity : 0.78
+    });
+    const wire = new THREE.LineSegments(edgesGeo, edgesMat);
+    group.add(wire);
+
+    group.userData.solid = solid;
+    group.userData.wire = wire;
+    return group;
   }
 
-  function makeCylinderWireframe(r, h, segs = 10) {
-    const v = [];
-    const e = [];
-    const hh = h * 0.5;
-    for (let i = 0; i < segs; i++) {
-      const a = (i / segs) * Math.PI * 2;
-      const cx = Math.cos(a) * r;
-      const cz = Math.sin(a) * r;
-      v.push({ x: cx, y: -hh, z: cz });
-      v.push({ x: cx, y: hh, z: cz });
-      const b = i * 2;
-      const next = ((i + 1) % segs) * 2;
-      e.push([b, next], [b + 1, next + 1], [b, b + 1]);
-    }
-    return { v, e };
-  }
-
-  /* ========================================================================
-     1. FIRST-VIEWPORT 3D CAD GYROSCOPE & SYSTEM CORE (#hero3dCoreCanvas)
-     ======================================================================== */
-  function initHero3dCore() {
-    const wrap = document.getElementById('hero3dCoreWrap');
+  /* ==========================================================================
+     1. FIRST VIEWPORT: WEBGL 3D HERO ARCHITECTURAL GYRO-CORE (#hero3dCoreCanvas)
+     ========================================================================== */
+  function initHero3DCore() {
     const canvas = document.getElementById('hero3dCoreCanvas');
+    const wrap = document.getElementById('hero3dCoreWrap');
     const readout = document.getElementById('hero3dCoreReadout');
-    if (!wrap || !canvas) return;
+    const explodeBtn = document.getElementById('hero3dExplodeBtn');
+    if (!canvas || !wrap) return;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const THREE = window.THREE;
+    if (!THREE) return;
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let w = 232;
-    let h = 184;
+    // Create crisp 2D HUD overlay canvas on top of WebGL canvas for callouts
+    let hudCanvas = wrap.querySelector('.hero-3d-hud-overlay');
+    if (!hudCanvas) {
+      hudCanvas = document.createElement('canvas');
+      hudCanvas.className = 'hero-3d-hud-overlay';
+      hudCanvas.style.cssText =
+        'position:absolute;left:0;top:29px;width:100%;height:184px;pointer-events:none;z-index:2;';
+      wrap.appendChild(hudCanvas);
+    }
+    const hudCtx = hudCanvas.getContext('2d');
 
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (e) {
+      return;
+    }
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
+    camera.position.set(0, 0.3, 5.5);
+    camera.lookAt(0, 0, 0);
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.75);
+    scene.add(ambientLight);
+
+    const dirLight1 = new THREE.DirectionalLight(0xffffff, 0.9);
+    dirLight1.position.set(4, 6, 5);
+    scene.add(dirLight1);
+
+    const dirLight2 = new THREE.DirectionalLight(0xf97316, 0.55);
+    dirLight2.position.set(-4, -3, 3);
+    scene.add(dirLight2);
+
+    const corePointLight = new THREE.PointLight(0x9a3412, 1.4, 8);
+    scene.add(corePointLight);
+
+    // Root assembly group
+    const rootGroup = new THREE.Group();
+    scene.add(rootGroup);
+
+    let pal = getThemePalette();
+
+    // 1A. Inner Glowing Reactor Core (Octahedron + Icosahedron)
+    const innerCoreGeo = new THREE.OctahedronGeometry(0.58, 0);
+    const innerCoreMesh = createCadMesh(
+      innerCoreGeo,
+      {
+        color: pal.signalHex,
+        emissive: pal.signalHex,
+        emissiveIntensity: 0.28,
+        roughness: 0.25,
+        metalness: 0.4
+      },
+      pal.inkHex,
+      0.95
+    );
+    rootGroup.add(innerCoreMesh);
+
+    const outerCageGeo = new THREE.IcosahedronGeometry(0.92, 0);
+    const outerCageEdges = new THREE.EdgesGeometry(outerCageGeo);
+    const outerCageMat = new THREE.LineBasicMaterial({
+      color: pal.inkHex,
+      transparent: true,
+      opacity: 0.65
+    });
+    const outerCageWire = new THREE.LineSegments(outerCageEdges, outerCageMat);
+    rootGroup.add(outerCageWire);
+
+    // 1B. 8 Explodable Precision Octant Shield Plates
+    const shieldGroup = new THREE.Group();
+    rootGroup.add(shieldGroup);
+    const shieldPlates = [];
+    const octantDirs = [
+      [1, 1, 1],
+      [-1, 1, 1],
+      [1, -1, 1],
+      [-1, -1, 1],
+      [1, 1, -1],
+      [-1, 1, -1],
+      [1, -1, -1],
+      [-1, -1, -1]
+    ];
+    const plateGeo = new THREE.BoxGeometry(0.36, 0.36, 0.12);
+    octantDirs.forEach((dir) => {
+      const v = new THREE.Vector3(dir[0], dir[1], dir[2]).normalize();
+      const plate = createCadMesh(
+        plateGeo,
+        {
+          color: pal.surfaceHex,
+          roughness: 0.5,
+          metalness: 0.2,
+          transparent: true,
+          opacity: 0.88
+        },
+        pal.inkHex,
+        0.8
+      );
+      plate.position.copy(v).multiplyScalar(0.76);
+      plate.lookAt(v.clone().multiplyScalar(3));
+      shieldGroup.add(plate);
+      shieldPlates.push({ mesh: plate, dir: v });
+    });
+
+    // 1C. 3 Orthogonal CNC Gimbal Rings
+    const gimbalGroup = new THREE.Group();
+    rootGroup.add(gimbalGroup);
+
+    const ring1Geo = new THREE.TorusGeometry(1.32, 0.022, 8, 48);
+    const ring1Mat = new THREE.MeshStandardMaterial({
+      color: pal.inkHex,
+      roughness: 0.3,
+      metalness: 0.5
+    });
+    const ring1 = new THREE.Mesh(ring1Geo, ring1Mat);
+    ring1.rotation.x = Math.PI * 0.38;
+    gimbalGroup.add(ring1);
+
+    const ring2Geo = new THREE.TorusGeometry(1.52, 0.018, 8, 48);
+    const ring2Mat = new THREE.MeshStandardMaterial({
+      color: pal.signalHex,
+      roughness: 0.35,
+      metalness: 0.4
+    });
+    const ring2 = new THREE.Mesh(ring2Geo, ring2Mat);
+    ring2.rotation.y = Math.PI * 0.35;
+    ring2.rotation.x = -Math.PI * 0.2;
+    gimbalGroup.add(ring2);
+
+    const ring3Geo = new THREE.TorusGeometry(1.72, 0.014, 6, 40);
+    const ring3Mat = new THREE.MeshStandardMaterial({
+      color: pal.validHex,
+      roughness: 0.4,
+      metalness: 0.3
+    });
+    const ring3 = new THREE.Mesh(ring3Geo, ring3Mat);
+    ring3.rotation.z = Math.PI * 0.25;
+    gimbalGroup.add(ring3);
+
+    // 1D. 5 Orbital Stack Satellites (L12, N16, .NET8, AWS, KT)
+    const satDefs = [
+      { label: 'L12', radius: 1.62, speed: 0.85, phase: 0.2, tiltX: 0.45, tiltZ: 0.2, isSignal: true },
+      { label: 'N16', radius: 1.72, speed: -0.72, phase: 1.6, tiltX: -0.5, tiltZ: 0.35, isSignal: false },
+      { label: '.NET8', radius: 1.58, speed: 0.64, phase: 3.1, tiltX: 0.25, tiltZ: -0.55, isSignal: true },
+      { label: 'AWS', radius: 1.76, speed: -0.58, phase: 4.4, tiltX: -0.35, tiltZ: -0.3, isSignal: false },
+      { label: 'KT', radius: 1.65, speed: 0.78, phase: 5.5, tiltX: 0.6, tiltZ: -0.15, isSignal: false }
+    ];
+
+    const satGeo = new THREE.OctahedronGeometry(0.11, 0);
+    const satellites = satDefs.map((def) => {
+      const satMesh = createCadMesh(
+        satGeo,
+        {
+          color: def.isSignal ? pal.signalHex : pal.validHex,
+          emissive: def.isSignal ? pal.signalHex : pal.validHex,
+          emissiveIntensity: 0.35
+        },
+        pal.inkHex,
+        0.9
+      );
+      rootGroup.add(satMesh);
+      return Object.assign({}, def, { mesh: satMesh });
+    });
+
+    // Update materials on theme toggle
+    onThemeChange((newPal) => {
+      pal = newPal;
+      innerCoreMesh.userData.solid.material.color.setHex(pal.signalHex);
+      innerCoreMesh.userData.solid.material.emissive.setHex(pal.signalHex);
+      innerCoreMesh.userData.wire.material.color.setHex(pal.inkHex);
+      outerCageMat.color.setHex(pal.inkHex);
+      shieldPlates.forEach((p) => {
+        p.mesh.userData.solid.material.color.setHex(pal.surfaceHex);
+        p.mesh.userData.wire.material.color.setHex(pal.inkHex);
+      });
+      ring1Mat.color.setHex(pal.inkHex);
+      ring2Mat.color.setHex(pal.signalHex);
+      ring3Mat.color.setHex(pal.validHex);
+      satellites.forEach((s) => {
+        const hex = s.isSignal ? pal.signalHex : pal.validHex;
+        s.mesh.userData.solid.material.color.setHex(hex);
+        s.mesh.userData.solid.material.emissive.setHex(hex);
+        s.mesh.userData.wire.material.color.setHex(pal.inkHex);
+      });
+    });
+
+    // Sizing
+    let width = 240;
+    let height = 184;
+    function resize() {
       const rect = canvas.getBoundingClientRect();
-      w = Math.max(rect.width, 200);
-      h = Math.max(rect.height, 160);
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+      width = Math.max(rect.width || 232, 180);
+      height = Math.max(rect.height || 184, 150);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+
+      hudCanvas.width = Math.floor(width * dpr);
+      hudCanvas.height = Math.floor(height * dpr);
+      hudCanvas.style.height = height + 'px';
+      hudCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
     resize();
     window.addEventListener('resize', resize);
 
-    const coreOct = makeOctahedronWireframe(1.15);
-    const innerBox = makeBoxWireframe(0.58, 0.58, 0.58);
-
-    // 3 Gimbal Rings
-    const makeRing = (radius, axis, steps = 36) => {
-      const pts = [];
-      for (let i = 0; i <= steps; i++) {
-        const a = (i / steps) * Math.PI * 2;
-        if (axis === 'xz') pts.push({ x: Math.cos(a) * radius, y: 0, z: Math.sin(a) * radius });
-        else if (axis === 'xy') pts.push({ x: Math.cos(a) * radius, y: Math.sin(a) * radius, z: 0 });
-        else pts.push({ x: 0, y: Math.cos(a) * radius, z: Math.sin(a) * radius });
-      }
-      return pts;
-    };
-
-    const ringXZ = makeRing(1.65, 'xz');
-    const ringXY = makeRing(1.42, 'xy');
-    const ringYZ = makeRing(1.85, 'yz');
-
-    const satellites = [
-      { label: 'L12', angle: 0.2, radius: 1.85, speed: 0.018, plane: 'xz' },
-      { label: 'N16', angle: 2.1, radius: 1.65, speed: -0.022, plane: 'xy' },
-      { label: '.NET8', angle: 4.0, radius: 1.85, speed: 0.015, plane: 'yz' },
-      { label: 'AWS', angle: 1.1, radius: 1.42, speed: 0.025, plane: 'xz' }
-    ];
-
-    let yaw = 0.6;
-    let pitch = 0.38;
-    let targetYaw = yaw;
-    let targetPitch = pitch;
-    let dragging = false;
+    // Interactive state
+    let rotX = -0.32;
+    let rotY = 0.52;
+    let velX = 0.002;
+    let velY = 0.009;
+    let isDragging = false;
     let lastX = 0;
     let lastY = 0;
-    let spinPhase = 0;
+    let isExploded = false;
+    let explodeProgress = 0;
+
+    function toggleExplode(e) {
+      if (e) e.stopPropagation();
+      isExploded = !isExploded;
+      if (explodeBtn) {
+        explodeBtn.classList.toggle('active', isExploded);
+        explodeBtn.textContent = isExploded ? 'ASSEMBLE' : 'EXPLODE';
+      }
+    }
+
+    if (explodeBtn) {
+      explodeBtn.addEventListener('click', toggleExplode);
+    }
+    wrap.addEventListener('dblclick', toggleExplode);
 
     wrap.addEventListener('pointerdown', (e) => {
-      dragging = true;
+      if (e.target === explodeBtn) return;
+      isDragging = true;
       lastX = e.clientX;
       lastY = e.clientY;
-      wrap.setPointerCapture(e.pointerId);
+      if (wrap.setPointerCapture) {
+        try {
+          wrap.setPointerCapture(e.pointerId);
+        } catch (_) {}
+      }
     });
 
     wrap.addEventListener('pointermove', (e) => {
-      if (!dragging) return;
-      targetYaw += (e.clientX - lastX) * 0.014;
-      targetPitch = Math.max(-1.2, Math.min(1.2, targetPitch + (e.clientY - lastY) * 0.014));
+      if (!isDragging) {
+        const rect = wrap.getBoundingClientRect();
+        const hx = (e.clientX - rect.left) / Math.max(rect.width, 1) - 0.5;
+        const hy = (e.clientY - rect.top) / Math.max(rect.height, 1) - 0.5;
+        velY += hx * 0.0012;
+        velX += hy * 0.0012;
+        return;
+      }
+      const dx = e.clientX - lastX;
+      const dy = e.clientY - lastY;
       lastX = e.clientX;
       lastY = e.clientY;
-    });
-
-    const endDrag = () => {
-      dragging = false;
-    };
-    wrap.addEventListener('pointerup', endDrag);
-    wrap.addEventListener('pointercancel', endDrag);
-
-    const draw = () => {
-      const pal = getPalette();
-      ctx.clearRect(0, 0, w, h);
-
-      // Subtle CAD Crosshair Reticle
-      ctx.strokeStyle = pal.grid;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.moveTo(0, h * 0.5);
-      ctx.lineTo(w, h * 0.5);
-      ctx.moveTo(w * 0.5, 0);
-      ctx.lineTo(w * 0.5, h);
-      ctx.stroke();
-
-      if (!prefersReducedMotion && !dragging) {
-        targetYaw += 0.009;
-      }
-      spinPhase += 0.022;
-      yaw += (targetYaw - yaw) * 0.12;
-      pitch += (targetPitch - pitch) * 0.12;
-
-      const fov = 175;
-      const camDist = 4.6;
-
-      // Draw 3 Gimbal Rings
-      const drawRing = (pts, rRx, rRy, rRz, color, dashed = false) => {
-        ctx.save();
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1.15;
-        if (dashed) ctx.setLineDash([4, 3]);
-        ctx.beginPath();
-        pts.forEach((p, idx) => {
-          const r1 = rotate3D(p, rRx, rRy, rRz);
-          const r2 = rotate3D(r1, pitch, yaw);
-          const pr = project3D(r2, w, h, fov, camDist);
-          if (idx === 0) ctx.moveTo(pr.x, pr.y);
-          else ctx.lineTo(pr.x, pr.y);
-        });
-        ctx.stroke();
-        ctx.restore();
-      };
-
-      drawRing(ringXZ, 0.35, spinPhase * 0.6, 0, pal.inkMuted, false);
-      drawRing(ringXY, -spinPhase * 0.5, 0.4, 0.2, pal.signal, true);
-      drawRing(ringYZ, 0.2, -spinPhase * 0.4, 0.5, pal.valid, false);
-
-      // Draw Inner Box
-      const boxProj = innerBox.v.map((v) =>
-        project3D(rotate3D(rotate3D(v, -spinPhase, -spinPhase * 1.2), pitch, yaw), w, h, fov, camDist)
-      );
-      ctx.strokeStyle = pal.valid;
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      innerBox.e.forEach(([a, b]) => {
-        ctx.moveTo(boxProj[a].x, boxProj[a].y);
-        ctx.lineTo(boxProj[b].x, boxProj[b].y);
-      });
-      ctx.stroke();
-
-      // Draw Outer Octahedron Core
-      const octProj = coreOct.v.map((v) =>
-        project3D(rotate3D(rotate3D(v, spinPhase * 0.4, spinPhase * 0.8), pitch, yaw), w, h, fov, camDist)
-      );
-      ctx.strokeStyle = pal.ink;
-      ctx.lineWidth = 1.65;
-      ctx.beginPath();
-      coreOct.e.forEach(([a, b]) => {
-        ctx.moveTo(octProj[a].x, octProj[a].y);
-        ctx.lineTo(octProj[b].x, octProj[b].y);
-      });
-      ctx.stroke();
-
-      // Draw Orbiting Satellites
-      ctx.font = '700 9.5px "Commit Mono", monospace';
-      satellites.forEach((s, idx) => {
-        if (!prefersReducedMotion) s.angle += s.speed;
-        let pt;
-        if (s.plane === 'xz') pt = { x: Math.cos(s.angle) * s.radius, y: 0, z: Math.sin(s.angle) * s.radius };
-        else if (s.plane === 'xy') pt = { x: Math.cos(s.angle) * s.radius, y: Math.sin(s.angle) * s.radius, z: 0 };
-        else pt = { x: 0, y: Math.cos(s.angle) * s.radius, z: Math.sin(s.angle) * s.radius };
-
-        const pr = project3D(rotate3D(pt, pitch, yaw), w, h, fov, camDist);
-        ctx.fillStyle = idx % 2 === 0 ? pal.signal : pal.valid;
-        ctx.beginPath();
-        ctx.arc(pr.x, pr.y, 3.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = pal.ink;
-        ctx.fillText(s.label, pr.x + 5, pr.y + 3);
-      });
-
-      if (readout) {
-        const degY = Math.round(((yaw * 180) / Math.PI) % 360);
-        const degP = Math.round((pitch * 180) / Math.PI);
-        readout.textContent = `ROT: ${degY}°/${degP}° · DRAG 3D`;
-      }
-
-      if (!prefersReducedMotion) {
-        requestAnimationFrame(draw);
-      }
-    };
-
-    draw();
-  }
-
-  /* ========================================================================
-     2. INTERACTIVE 3D ENTERPRISE TOPOLOGY STAGE (#cad3dTopologyCanvas)
-     ======================================================================== */
-  function initTopology3dStage() {
-    const stageWrap = document.getElementById('blueprint3dStage');
-    const box = document.getElementById('cad3dTopologyBox');
-    const canvas = document.getElementById('cad3dTopologyCanvas');
-    const coordsEl = document.getElementById('cad3dTelemetryCoords');
-    const readoutEl = document.getElementById('cad3dNodeReadout');
-    if (!stageWrap || !box || !canvas) return;
-
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let w = 900;
-    let h = 360;
-
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      w = Math.max(box.clientWidth, 300);
-      h = Math.max(box.clientHeight, 300);
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
-    resize();
-    window.addEventListener('resize', resize);
-
-    // 5 Enterprise Nodes in 3D World Coordinates
-    const nodes = {
-      sap: {
-        id: 'sap',
-        name: '01 // SAP B1 ERP (MSSQL OWOR)',
-        pos: { x: -5.2, y: 0.2, z: 0.6 },
-        mesh: makeCylinderWireframe(1.05, 1.85, 12),
-        colorKey: 'ink',
-        rotSpeed: 0.008
-      },
-      sync: {
-        id: 'sync',
-        name: '02 // SYNC MIDDLEWARE (NODE.JS + .NET 8)',
-        pos: { x: 0, y: 0.35, z: 0 },
-        mesh: makeOctahedronWireframe(1.45),
-        colorKey: 'signal',
-        rotSpeed: 0.014
-      },
-      gmp: {
-        id: 'gmp',
-        name: '03 // EBR & MANHOUR GMP SHOP FLOOR',
-        pos: { x: 5.2, y: 0.2, z: 0.6 },
-        mesh: makeBoxWireframe(0.95, 0.95, 0.95),
-        colorKey: 'valid',
-        rotSpeed: -0.009
-      },
-      aws: {
-        id: 'aws',
-        name: '04 // AWS ECS FARGATE & AURORA DB',
-        pos: { x: -2.4, y: 1.85, z: -2.5 },
-        mesh: makeOctahedronWireframe(1.1),
-        colorKey: 'ink',
-        rotSpeed: 0.011
-      },
-      edge: {
-        id: 'edge',
-        name: '05 // ANDROID AUTO (MG S5 EV) & IOT',
-        pos: { x: 2.5, y: -0.5, z: 2.6 },
-        mesh: makeCylinderWireframe(0.95, 1.4, 6),
-        colorKey: 'valid',
-        rotSpeed: 0.012
-      }
-    };
-
-    const links = [
-      { from: 'sap', to: 'sync', accent: 'signal' },
-      { from: 'sync', to: 'gmp', accent: 'valid' },
-      { from: 'sync', to: 'aws', accent: 'signal' },
-      { from: 'aws', to: 'gmp', accent: 'valid' },
-      { from: 'sync', to: 'edge', accent: 'valid' }
-    ];
-
-    const packets = links.map((lk, idx) => ({
-      link: lk,
-      t: (idx * 0.23) % 1,
-      speed: 0.005 + idx * 0.0007
-    }));
-
-    let targetYaw = 0.48;
-    let targetPitch = 0.42;
-    let curYaw = targetYaw;
-    let curPitch = targetPitch;
-    let autoOrbit = !prefersReducedMotion;
-    let isDragging = false;
-    let prevX = 0;
-    let prevY = 0;
-    let localRot = 0;
-
-    box.addEventListener('pointerdown', (e) => {
-      if (e.target.closest('.cad3d-label')) return;
-      isDragging = true;
-      prevX = e.clientX;
-      prevY = e.clientY;
-      box.setPointerCapture(e.pointerId);
-    });
-
-    box.addEventListener('pointermove', (e) => {
-      if (!isDragging) return;
-      const dx = e.clientX - prevX;
-      const dy = e.clientY - prevY;
-      prevX = e.clientX;
-      prevY = e.clientY;
-      targetYaw -= dx * 0.0075;
-      targetPitch = Math.max(0.08, Math.min(1.38, targetPitch + dy * 0.0065));
+      velY = dx * 0.013;
+      velX = dy * 0.013;
+      rotY += velY;
+      rotX = Math.max(-1.35, Math.min(1.35, rotX + velX));
     });
 
     const stopDrag = () => {
       isDragging = false;
     };
-    box.addEventListener('pointerup', stopDrag);
-    box.addEventListener('pointercancel', stopDrag);
+    wrap.addEventListener('pointerup', stopDrag);
+    wrap.addEventListener('pointercancel', stopDrag);
 
-    // Camera Preset Buttons
-    const camBtns = stageWrap.querySelectorAll('.cad3d-btn[data-cam]');
-    const orbitBtn = document.getElementById('cad3dOrbitBtn');
+    const projVec = new THREE.Vector3();
+    const centerVec = new THREE.Vector3();
+
+    function renderFrame(now) {
+      const t = now * 0.001;
+
+      if (!isDragging) {
+        rotY += velY;
+        rotX += velX;
+        velX *= 0.94;
+        velY = velY * 0.96 + (prefersReducedMotion ? 0 : 0.0085) * 0.04;
+        rotX += (-0.28 - rotX) * 0.03;
+      }
+
+      // Smooth explode transition
+      const targetExplode = isExploded ? 1 : 0;
+      explodeProgress += (targetExplode - explodeProgress) * 0.1;
+
+      rootGroup.rotation.x = rotX;
+      rootGroup.rotation.y = rotY;
+
+      // Animate inner core & shield plates
+      const pulse = 1 + Math.sin(t * 3.2) * 0.05 + explodeProgress * 0.14;
+      innerCoreMesh.scale.setScalar(pulse);
+      innerCoreMesh.rotation.y = -t * 0.9;
+      innerCoreMesh.rotation.z = t * 0.5;
+
+      outerCageWire.scale.setScalar(1 + explodeProgress * 0.35);
+      outerCageWire.rotation.y = t * 0.35;
+
+      shieldPlates.forEach((p, idx) => {
+        const dist = 0.72 + explodeProgress * 0.62 + Math.sin(t * 2.2 + idx) * 0.03;
+        p.mesh.position.copy(p.dir).multiplyScalar(dist);
+      });
+
+      // Counter-rotate gimbal rings
+      ring1.rotation.z = t * 0.7;
+      ring1.scale.setScalar(1 + explodeProgress * 0.18);
+      ring2.rotation.x = -Math.PI * 0.2 + t * 0.55;
+      ring2.scale.setScalar(1 + explodeProgress * 0.24);
+      ring3.rotation.y = t * -0.48;
+      ring3.scale.setScalar(1 + explodeProgress * 0.3);
+
+      // Update orbital satellites
+      satellites.forEach((s) => {
+        const angle = t * s.speed + s.phase;
+        const r = s.radius * (1 + explodeProgress * 0.16);
+        const x = Math.cos(angle) * r;
+        const z = Math.sin(angle) * r;
+        const y = Math.sin(angle * 1.5) * 0.45;
+        s.mesh.position.set(
+          x,
+          y * Math.cos(s.tiltX) - z * Math.sin(s.tiltX),
+          y * Math.sin(s.tiltX) + z * Math.cos(s.tiltX)
+        );
+        s.mesh.rotation.x = t * 1.8;
+        s.mesh.rotation.y = t * 1.4;
+      });
+
+      renderer.render(scene, camera);
+
+      // Render crisp 2D HUD Telemetry & Leader Callouts
+      hudCtx.clearRect(0, 0, width, height);
+
+      // Corner drafting reticles
+      hudCtx.strokeStyle = pal.inkMuted;
+      hudCtx.lineWidth = 1;
+      const b = 7;
+      const m = 6;
+      hudCtx.beginPath();
+      hudCtx.moveTo(m, m + b);
+      hudCtx.lineTo(m, m);
+      hudCtx.lineTo(m + b, m);
+      hudCtx.moveTo(width - m - b, m);
+      hudCtx.lineTo(width - m, m);
+      hudCtx.lineTo(width - m, m + b);
+      hudCtx.moveTo(m, height - m - b);
+      hudCtx.lineTo(m, height - m);
+      hudCtx.lineTo(m + b, height - m);
+      hudCtx.moveTo(width - m - b, height - m);
+      hudCtx.lineTo(width - m, height - m);
+      hudCtx.lineTo(width - m, height - m - b);
+      hudCtx.stroke();
+
+      // Project satellite labels
+      centerVec.set(0, 0, 0).project(camera);
+      const cx = (centerVec.x * 0.5 + 0.5) * width;
+      const cy = (-centerVec.y * 0.5 + 0.5) * height;
+
+      hudCtx.font = '700 9.5px "Commit Mono", monospace';
+      satellites.forEach((s) => {
+        s.mesh.getWorldPosition(projVec);
+        projVec.project(camera);
+        if (projVec.z > 1) return;
+        const sx = (projVec.x * 0.5 + 0.5) * width;
+        const sy = (-projVec.y * 0.5 + 0.5) * height;
+
+        // Subtle leader line from core center
+        hudCtx.strokeStyle = s.isSignal ? pal.signalSoft : pal.inkFaint;
+        hudCtx.beginPath();
+        hudCtx.moveTo(cx, cy);
+        hudCtx.lineTo(sx, sy);
+        hudCtx.stroke();
+
+        // Callout tag
+        const tw = hudCtx.measureText(s.label).width + 8;
+        hudCtx.fillStyle = pal.sheet;
+        hudCtx.fillRect(sx + 5, sy - 7, tw, 13);
+        hudCtx.strokeStyle = s.isSignal ? pal.signal : pal.inkMuted;
+        hudCtx.strokeRect(sx + 5, sy - 7, tw, 13);
+        hudCtx.fillStyle = s.isSignal ? pal.signal : pal.ink;
+        hudCtx.fillText(s.label, sx + 9, sy + 2.5);
+      });
+
+      if (readout) {
+        const degX = Math.round((rotX * 180) / Math.PI);
+        const degY = Math.round(((rotY * 180) / Math.PI) % 360);
+        const modeTag = isExploded ? 'EXPLODED' : 'WEBGL 3D';
+        readout.textContent = `${modeTag} · X:${degX}° Y:${degY}°`;
+      }
+
+      if (!prefersReducedMotion) {
+        requestAnimationFrame(renderFrame);
+      }
+    }
+
+    requestAnimationFrame(renderFrame);
+  }
+
+  /* ==========================================================================
+     2. ENTERPRISE 3D WEBGL DIGITAL TWIN STAGE (#cad3dTopologyCanvas)
+     ========================================================================== */
+  function initEnterprise3DTopology() {
+    const canvas = document.getElementById('cad3dTopologyCanvas');
+    const box = document.getElementById('cad3dTopologyBox');
+    const readout = document.getElementById('cad3dNodeReadout');
+    const telemetry = document.getElementById('cad3dTelemetryCoords');
+    const camBtns = document.querySelectorAll('.cad3d-btn[data-cam]');
+    const wireBtn = document.getElementById('cad3dWireBtn');
+    const explodeBtn = document.getElementById('cad3dExplodeBtn');
+    const labelBtns = document.querySelectorAll('.cad3d-label[data-node]');
+    if (!canvas || !box) return;
+
+    const THREE = window.THREE;
+    if (!THREE) return;
+
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (e) {
+      return;
+    }
+
+    let pal = getThemePalette();
+    const scene = new THREE.Scene();
+
+    const camera = new THREE.PerspectiveCamera(36, 16 / 9, 0.1, 120);
+    const camTarget = new THREE.Vector3(0, 0.25, 0);
+
+    // Lighting Setup
+    const ambient = new THREE.AmbientLight(0xffffff, 0.78);
+    scene.add(ambient);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 0.95);
+    keyLight.position.set(8, 14, 10);
+    scene.add(keyLight);
+
+    const rimLight = new THREE.DirectionalLight(pal.signalHex, 0.55);
+    rimLight.position.set(-10, 6, -8);
+    scene.add(rimLight);
+
+    const syncCoreLight = new THREE.PointLight(pal.signalHex, 1.5, 9);
+    syncCoreLight.position.set(0, 1.2, 0);
+    scene.add(syncCoreLight);
+
+    // Master World Group
+    const worldGroup = new THREE.Group();
+    scene.add(worldGroup);
+
+    // 2A. 3D Architectural Drafting Floor & Radar Rings
+    const floorGroup = new THREE.Group();
+    worldGroup.add(floorGroup);
+
+    const gridVerts = [];
+    const gridExtent = 6.5;
+    const gridStep = 0.65;
+    for (let i = -gridExtent; i <= gridExtent + 0.001; i += gridStep) {
+      gridVerts.push(-gridExtent, 0, i, gridExtent, 0, i);
+      gridVerts.push(i, 0, -gridExtent, i, 0, gridExtent);
+    }
+    const gridGeo = new THREE.BufferGeometry();
+    gridGeo.setAttribute('position', new THREE.Float32BufferAttribute(gridVerts, 3));
+    const gridMat = new THREE.LineBasicMaterial({
+      color: pal.gridHex,
+      transparent: true,
+      opacity: 0.42
+    });
+    const gridLines = new THREE.LineSegments(gridGeo, gridMat);
+    floorGroup.add(gridLines);
+
+    // Outer perimeter drafting frame on floor
+    const borderGeo = new THREE.EdgesGeometry(new THREE.BoxGeometry(gridExtent * 2, 0.02, gridExtent * 2));
+    const borderMat = new THREE.LineBasicMaterial({
+      color: pal.inkHex,
+      transparent: true,
+      opacity: 0.65
+    });
+    const borderFrame = new THREE.LineSegments(borderGeo, borderMat);
+    floorGroup.add(borderFrame);
+
+    // Concentric elevation radar rings around central SYNC node
+    const radarRingGeo1 = new THREE.RingGeometry(1.35, 1.38, 64);
+    radarRingGeo1.rotateX(-Math.PI / 2);
+    const radarRingMat1 = new THREE.MeshBasicMaterial({
+      color: pal.signalHex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.45
+    });
+    const radarRing1 = new THREE.Mesh(radarRingGeo1, radarRingMat1);
+    radarRing1.position.y = 0.01;
+    floorGroup.add(radarRing1);
+
+    const radarRingGeo2 = new THREE.RingGeometry(2.8, 2.83, 64);
+    radarRingGeo2.rotateX(-Math.PI / 2);
+    const radarRingMat2 = new THREE.MeshBasicMaterial({
+      color: pal.inkHex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.22
+    });
+    const radarRing2 = new THREE.Mesh(radarRingGeo2, radarRingMat2);
+    radarRing2.position.y = 0.01;
+    floorGroup.add(radarRing2);
+
+    // 2B. Node Specifications & Custom 3D Monument Builders
+    const nodeSpecs = [
+      {
+        id: 'sap',
+        title: '01 // SAP BUSINESS ONE (MSSQL)',
+        pos: new THREE.Vector3(-3.6, 0, -1.35),
+        spec: 'SAP B1 ERP: Production Orders (OWOR), BOM Routing & Inventory MSSQL Database',
+        role: 'standard'
+      },
+      {
+        id: 'sync',
+        title: '02 // SYNC ENGINE (.NET 8 / NODE)',
+        pos: new THREE.Vector3(0, 0.15, 0),
+        spec: 'BIDIRECTIONAL SYNC CORE: Node.js ESM Cron + ASP.NET Core 8 Web API & Serilog',
+        role: 'core'
+      },
+      {
+        id: 'gmp',
+        title: '03 // EBR & MANHOUR GMP PLANT',
+        pos: new THREE.Vector3(3.6, 0, -1.35),
+        spec: 'PHARMA GMP SHOP FLOOR: Laravel 12 + Next.js 16 Digital Batch Record & Audit Trail',
+        role: 'valid'
+      },
+      {
+        id: 'aws',
+        title: '04 // AWS ECS FARGATE & AURORA',
+        pos: new THREE.Vector3(-2.4, 0, 1.95),
+        spec: 'CLOUD INFRASTRUCTURE: Multi-AZ Aurora PostgreSQL, ECS Containers, Cognito PKCE & SAM IaC',
+        role: 'standard'
+      },
+      {
+        id: 'edge',
+        title: '05 // ANDROID AUTO & EDGE IOT',
+        pos: new THREE.Vector3(2.4, 0, 1.95),
+        spec: 'EDGE & AUTOMOTIVE: Kotlin 60fps Wireless Projection (MG S5 EV) & Industrial RS-232/RFID',
+        role: 'valid'
+      }
+    ];
+
+    const allCadMeshes = [];
+    const nodeMap = {};
+    const raycastTargets = [];
+
+    function registerCadPart(cadGroup, tierIndex, role) {
+      cadGroup.userData.tierIndex = tierIndex || 0;
+      cadGroup.userData.baseY = cadGroup.position.y;
+      cadGroup.userData.role = role || 'standard';
+      allCadMeshes.push(cadGroup);
+      if (cadGroup.userData.solid) {
+        raycastTargets.push(cadGroup.userData.solid);
+      }
+    }
+
+    nodeSpecs.forEach((spec) => {
+      const monument = new THREE.Group();
+      monument.position.copy(spec.pos);
+      worldGroup.add(monument);
+
+      // Base foundation pad on the drafting grid
+      const padGeo = new THREE.BoxGeometry(1.75, 0.08, 1.45);
+      const pad = createCadMesh(
+        padGeo,
+        { color: pal.surfaceHex, roughness: 0.7 },
+        pal.inkHex,
+        0.65
+      );
+      pad.position.y = 0.04;
+      monument.add(pad);
+      registerCadPart(pad, 0, 'pad');
+
+      const parts = [pad];
+
+      if (spec.id === 'sap') {
+        // SAP B1: 3-tier Cylindrical Database Platter Stack + Outer Cage
+        for (let i = 0; i < 3; i++) {
+          const cylGeo = new THREE.CylinderGeometry(0.58, 0.58, 0.26, 20);
+          const cyl = createCadMesh(
+            cylGeo,
+            { color: i === 2 ? pal.elevatedHex : pal.surfaceHex, metalness: 0.25 },
+            pal.inkHex,
+            0.85
+          );
+          cyl.position.y = 0.26 + i * 0.34;
+          monument.add(cyl);
+          registerCadPart(cyl, i + 1, 'standard');
+          parts.push(cyl);
+        }
+        const capRingGeo = new THREE.TorusGeometry(0.66, 0.02, 8, 32);
+        capRingGeo.rotateX(Math.PI / 2);
+        const capRing = createCadMesh(
+          capRingGeo,
+          { color: pal.signalHex, emissive: pal.signalHex, emissiveIntensity: 0.2 },
+          pal.signalHex,
+          0.9
+        );
+        capRing.position.y = 1.18;
+        monument.add(capRing);
+        registerCadPart(capRing, 4, 'core');
+        parts.push(capRing);
+        monument.userData.rotor = capRing;
+      } else if (spec.id === 'sync') {
+        // SYNC ENGINE: Stepped Core Pedestal + Floating Octahedral Reactor + Dual Gimbal Frames
+        const baseStepGeo = new THREE.CylinderGeometry(0.68, 0.82, 0.24, 8);
+        const baseStep = createCadMesh(
+          baseStepGeo,
+          { color: pal.surfaceHex, metalness: 0.3 },
+          pal.inkHex,
+          0.85
+        );
+        baseStep.position.y = 0.2;
+        monument.add(baseStep);
+        registerCadPart(baseStep, 1, 'standard');
+        parts.push(baseStep);
+
+        const coreGeo = new THREE.OctahedronGeometry(0.52, 0);
+        const core = createCadMesh(
+          coreGeo,
+          {
+            color: pal.signalHex,
+            emissive: pal.signalHex,
+            emissiveIntensity: 0.32,
+            roughness: 0.25,
+            metalness: 0.45
+          },
+          pal.inkHex,
+          0.95
+        );
+        core.position.y = 0.92;
+        monument.add(core);
+        registerCadPart(core, 2, 'core');
+        parts.push(core);
+        monument.userData.rotor = core;
+
+        const frameGeo = new THREE.TorusGeometry(0.82, 0.025, 6, 24);
+        const frame = createCadMesh(
+          frameGeo,
+          { color: pal.inkHex, metalness: 0.5 },
+          pal.signalHex,
+          0.85
+        );
+        frame.position.y = 0.92;
+        monument.add(frame);
+        registerCadPart(frame, 3, 'core');
+        parts.push(frame);
+        monument.userData.secondaryRotor = frame;
+      } else if (spec.id === 'gmp') {
+        // GMP PLANT: Modular Cleanroom Complex + Validation Tower
+        const mainHallGeo = new THREE.BoxGeometry(1.32, 0.48, 0.98);
+        const mainHall = createCadMesh(
+          mainHallGeo,
+          { color: pal.surfaceHex },
+          pal.inkHex,
+          0.85
+        );
+        mainHall.position.y = 0.32;
+        monument.add(mainHall);
+        registerCadPart(mainHall, 1, 'standard');
+        parts.push(mainHall);
+
+        for (let b = -1; b <= 1; b++) {
+          const bayGeo = new THREE.BoxGeometry(0.36, 0.32, 0.84);
+          const bay = createCadMesh(
+            bayGeo,
+            { color: pal.elevatedHex },
+            pal.validHex,
+            0.85
+          );
+          bay.position.set(b * 0.42, 0.72, 0);
+          monument.add(bay);
+          registerCadPart(bay, 2, 'valid');
+          parts.push(bay);
+        }
+
+        const beaconGeo = new THREE.OctahedronGeometry(0.22, 0);
+        const beacon = createCadMesh(
+          beaconGeo,
+          { color: pal.validHex, emissive: pal.validHex, emissiveIntensity: 0.3 },
+          pal.inkHex,
+          0.9
+        );
+        beacon.position.y = 1.15;
+        monument.add(beacon);
+        registerCadPart(beacon, 3, 'valid');
+        parts.push(beacon);
+        monument.userData.rotor = beacon;
+      } else if (spec.id === 'aws') {
+        // AWS CLOUD: 3 Horizontal Server Rack Blades + Multi-AZ Halo
+        for (let l = 0; l < 3; l++) {
+          const bladeGeo = new THREE.BoxGeometry(1.24, 0.2, 0.88);
+          const blade = createCadMesh(
+            bladeGeo,
+            { color: l === 2 ? pal.elevatedHex : pal.surfaceHex, metalness: 0.3 },
+            pal.inkHex,
+            0.85
+          );
+          blade.position.y = 0.24 + l * 0.3;
+          monument.add(blade);
+          registerCadPart(blade, l + 1, 'standard');
+          parts.push(blade);
+        }
+        const cloudHaloGeo = new THREE.TorusGeometry(0.68, 0.02, 8, 32);
+        cloudHaloGeo.rotateX(Math.PI / 2);
+        const cloudHalo = createCadMesh(
+          cloudHaloGeo,
+          { color: pal.validHex, emissive: pal.validHex, emissiveIntensity: 0.2 },
+          pal.validHex,
+          0.85
+        );
+        cloudHalo.position.y = 1.12;
+        monument.add(cloudHalo);
+        registerCadPart(cloudHalo, 4, 'valid');
+        parts.push(cloudHalo);
+        monument.userData.rotor = cloudHalo;
+      } else if (spec.id === 'edge') {
+        // ANDROID AUTO & IOT: Pedestal + Tilted 12.8" Cockpit Display + Telemetry Dish
+        const dockGeo = new THREE.BoxGeometry(1.1, 0.26, 0.8);
+        const dock = createCadMesh(
+          dockGeo,
+          { color: pal.surfaceHex },
+          pal.inkHex,
+          0.85
+        );
+        dock.position.y = 0.21;
+        monument.add(dock);
+        registerCadPart(dock, 1, 'standard');
+        parts.push(dock);
+
+        const screenGeo = new THREE.BoxGeometry(1.18, 0.62, 0.09);
+        const screen = createCadMesh(
+          screenGeo,
+          { color: pal.elevatedHex, metalness: 0.35 },
+          pal.validHex,
+          0.9
+        );
+        screen.position.y = 0.72;
+        screen.rotation.x = -0.24;
+        monument.add(screen);
+        registerCadPart(screen, 2, 'valid');
+        parts.push(screen);
+
+        const emitterGeo = new THREE.OctahedronGeometry(0.18, 0);
+        const emitter = createCadMesh(
+          emitterGeo,
+          { color: pal.signalHex, emissive: pal.signalHex, emissiveIntensity: 0.28 },
+          pal.inkHex,
+          0.9
+        );
+        emitter.position.y = 1.22;
+        monument.add(emitter);
+        registerCadPart(emitter, 3, 'core');
+        parts.push(emitter);
+        monument.userData.rotor = emitter;
+      }
+
+      // Attach nodeId to all child solid meshes for Raycasting
+      monument.traverse((child) => {
+        child.userData.nodeId = spec.id;
+      });
+
+      nodeMap[spec.id] = {
+        spec,
+        group: monument,
+        parts,
+        hoverLift: 0
+      };
+    });
+
+    // 2C. 3D Curved Bezier Data Conduits & Flowing Telemetry Packets
+    const conduitDefs = [
+      { from: 'sap', to: 'sync', peak: 1.85, isPrimary: true },
+      { from: 'sync', to: 'gmp', peak: 1.85, isPrimary: true },
+      { from: 'sync', to: 'aws', peak: 1.55, isPrimary: true },
+      { from: 'sync', to: 'edge', peak: 1.55, isPrimary: false },
+      { from: 'aws', to: 'gmp', peak: 1.4, isPrimary: false },
+      { from: 'sap', to: 'aws', peak: 1.35, isPrimary: false }
+    ];
+
+    const conduits = [];
+    const packets = [];
+    const packetGeo = new THREE.OctahedronGeometry(0.085, 0);
+
+    conduitDefs.forEach((def, cIdx) => {
+      const p0 = nodeMap[def.from].spec.pos.clone().add(new THREE.Vector3(0, 0.75, 0));
+      const p2 = nodeMap[def.to].spec.pos.clone().add(new THREE.Vector3(0, 0.75, 0));
+      const mid = p0.clone().add(p2).multiplyScalar(0.5);
+      mid.y = def.peak;
+
+      const curve = new THREE.QuadraticBezierCurve3(p0, mid, p2);
+      const pts = curve.getPoints(40);
+      const lineGeo = new THREE.BufferGeometry().setFromPoints(pts);
+      const lineMat = new THREE.LineBasicMaterial({
+        color: def.isPrimary ? pal.signalHex : pal.inkSubHex,
+        transparent: true,
+        opacity: def.isPrimary ? 0.75 : 0.42
+      });
+      const line = new THREE.Line(lineGeo, lineMat);
+      worldGroup.add(line);
+
+      conduits.push({ def, curve, line, lineMat });
+
+      // Spawn 3 bi-directional 3D packets per conduit
+      for (let k = 0; k < 3; k++) {
+        const isReverse = k === 1;
+        const pktMat = new THREE.MeshBasicMaterial({
+          color: def.isPrimary ? pal.signalHex : pal.validHex
+        });
+        const pktMesh = new THREE.Mesh(packetGeo, pktMat);
+        worldGroup.add(pktMesh);
+
+        packets.push({
+          mesh: pktMesh,
+          mat: pktMat,
+          curve,
+          from: def.from,
+          to: def.to,
+          isPrimary: def.isPrimary,
+          t: (k * 0.33 + cIdx * 0.14) % 1,
+          speed: (0.24 + (k % 2) * 0.08) * (isReverse ? -1 : 1)
+        });
+      }
+    });
+
+    // 2D. X-Ray Wireframe & Explode Mode States
+    let isWireframeMode = false;
+    let isExplodeMode = false;
+    let explodeAmount = 0;
+    let focusedNodeId = null;
+
+    function syncMaterialsToTheme() {
+      gridMat.color.setHex(pal.gridHex);
+      borderMat.color.setHex(pal.inkHex);
+      radarRingMat1.color.setHex(pal.signalHex);
+      radarRingMat2.color.setHex(pal.inkHex);
+      rimLight.color.setHex(pal.signalHex);
+      syncCoreLight.color.setHex(pal.signalHex);
+
+      allCadMeshes.forEach((cadGroup) => {
+        const role = cadGroup.userData.role;
+        const solidMat = cadGroup.userData.solid.material;
+        const wireMat = cadGroup.userData.wire.material;
+
+        if (role === 'core') {
+          solidMat.color.setHex(pal.signalHex);
+          solidMat.emissive.setHex(pal.signalHex);
+          solidMat.emissiveIntensity = 0.28;
+        } else if (role === 'valid') {
+          solidMat.color.setHex(pal.elevatedHex);
+          solidMat.emissive.setHex(pal.validHex);
+          solidMat.emissiveIntensity = 0.12;
+        } else {
+          solidMat.color.setHex(pal.surfaceHex);
+          solidMat.emissive.setHex(0x000000);
+        }
+
+        solidMat.transparent = isWireframeMode;
+        solidMat.opacity = isWireframeMode ? 0.14 : 0.94;
+        wireMat.color.setHex(role === 'core' ? pal.signalHex : pal.inkHex);
+        wireMat.opacity = isWireframeMode ? 0.95 : 0.78;
+      });
+
+      conduits.forEach((c) => {
+        c.lineMat.color.setHex(c.def.isPrimary ? pal.signalHex : pal.inkSubHex);
+      });
+      packets.forEach((p) => {
+        p.mat.color.setHex(p.isPrimary ? pal.signalHex : pal.validHex);
+      });
+    }
+
+    onThemeChange((newPal) => {
+      pal = newPal;
+      syncMaterialsToTheme();
+    });
+
+    if (wireBtn) {
+      wireBtn.addEventListener('click', () => {
+        isWireframeMode = !isWireframeMode;
+        wireBtn.classList.toggle('active', isWireframeMode);
+        syncMaterialsToTheme();
+      });
+    }
+
+    if (explodeBtn) {
+      explodeBtn.addEventListener('click', () => {
+        isExplodeMode = !isExplodeMode;
+        explodeBtn.classList.toggle('active', isExplodeMode);
+      });
+    }
+
+    // 2E. Camera Orbit & Preset Controls
+    let camSpherical = {
+      radius: 10.6,
+      theta: 0.58,
+      phi: 1.06
+    };
+    let targetSpherical = {
+      radius: 10.6,
+      theta: 0.58,
+      phi: 1.06
+    };
+    let autoOrbit = !prefersReducedMotion;
+    let isDragging = false;
+    let dragStartX = 0;
+    let dragStartY = 0;
+
     camBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         const mode = btn.getAttribute('data-cam');
@@ -438,369 +1097,754 @@
           return;
         }
         camBtns.forEach((b) => {
-          if (b !== orbitBtn) b.classList.remove('active');
+          if (b.getAttribute('data-cam') !== 'orbit') b.classList.remove('active');
         });
         btn.classList.add('active');
+
         if (mode === 'iso') {
-          targetYaw = 0.52;
-          targetPitch = 0.44;
+          targetSpherical.phi = 1.06;
+          targetSpherical.theta = 0.58;
+          targetSpherical.radius = 10.6;
         } else if (mode === 'top') {
-          targetYaw = 0.0;
-          targetPitch = 1.32;
+          targetSpherical.phi = 0.22;
+          targetSpherical.theta = 0.0;
+          targetSpherical.radius = 11.4;
+          autoOrbit = false;
+          const ob = document.getElementById('cad3dOrbitBtn');
+          if (ob) ob.classList.remove('active');
         } else if (mode === 'front') {
-          targetYaw = 0.0;
-          targetPitch = 0.1;
+          targetSpherical.phi = 1.44;
+          targetSpherical.theta = 0.0;
+          targetSpherical.radius = 10.2;
+          autoOrbit = false;
+          const ob = document.getElementById('cad3dOrbitBtn');
+          if (ob) ob.classList.remove('active');
         }
       });
     });
 
-    const labelEls = Array.from(stageWrap.querySelectorAll('.cad3d-label[data-node]'));
-    labelEls.forEach((lbl) => {
-      lbl.addEventListener('pointerenter', () => {
-        const key = lbl.getAttribute('data-node');
-        if (nodes[key] && readoutEl) {
-          readoutEl.textContent = `ACTIVE NODE // ${nodes[key].name}`;
-        }
+    // Label & Raycast Node Focus
+    function setFocusedNode(nodeId) {
+      if (focusedNodeId === nodeId) return;
+      focusedNodeId = nodeId;
+
+      labelBtns.forEach((b) => {
+        b.classList.toggle('is-focused', b.getAttribute('data-node') === nodeId);
       });
+
+      if (nodeId && nodeMap[nodeId]) {
+        const n = nodeMap[nodeId];
+        if (readout) {
+          readout.textContent = `${n.spec.title} — ${n.spec.spec}`;
+        }
+      } else if (readout) {
+        readout.textContent = '3D WEBGL DIGITAL TWIN // DRAG TO ORBIT · CLICK NODE OR X-RAY / EXPLODE';
+      }
+    }
+
+    labelBtns.forEach((btn) => {
+      const nid = btn.getAttribute('data-node');
+      btn.addEventListener('pointerenter', () => setFocusedNode(nid));
+      btn.addEventListener('pointerleave', () => setFocusedNode(null));
+      btn.addEventListener('focus', () => setFocusedNode(nid));
+      btn.addEventListener('blur', () => setFocusedNode(null));
     });
 
-    const sampleCurve = (pA, pB, t) => {
-      const mid = {
-        x: (pA.x + pB.x) * 0.5,
-        y: (pA.y + pB.y) * 0.5 + 0.95,
-        z: (pA.z + pB.z) * 0.5
-      };
-      const u = 1 - t;
-      return {
-        x: u * u * pA.x + 2 * u * t * mid.x + t * t * pB.x,
-        y: u * u * pA.y + 2 * u * t * mid.y + t * t * pB.y,
-        z: u * u * pA.z + 2 * u * t * mid.z + t * t * pB.z
-      };
-    };
+    // Pointer Drag + Raycast Hover/Click on 3D Monuments
+    const raycaster = new THREE.Raycaster();
+    const mouseNDC = new THREE.Vector2();
+    let pointerDownPos = { x: 0, y: 0 };
 
-    const renderStage = () => {
-      const pal = getPalette();
-      ctx.clearRect(0, 0, w, h);
-
-      if (autoOrbit && !isDragging && !prefersReducedMotion) {
-        targetYaw += 0.003;
+    box.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('.cad3d-label')) return;
+      isDragging = true;
+      dragStartX = e.clientX;
+      dragStartY = e.clientY;
+      pointerDownPos = { x: e.clientX, y: e.clientY };
+      if (box.setPointerCapture) {
+        try {
+          box.setPointerCapture(e.pointerId);
+        } catch (_) {}
       }
-      localRot += 0.015;
-      curYaw += (targetYaw - curYaw) * 0.1;
-      curPitch += (targetPitch - curPitch) * 0.1;
+    });
 
-      const fov = Math.min(w, 960) * 0.68;
-      const camDist = 13.5;
-      const floorY = -2.1;
+    box.addEventListener('pointermove', (e) => {
+      const rect = box.getBoundingClientRect();
+      mouseNDC.x = ((e.clientX - rect.left) / Math.max(rect.width, 1)) * 2 - 1;
+      mouseNDC.y = -((e.clientY - rect.top) / Math.max(rect.height, 1)) * 2 + 1;
 
-      // 1. Draw 3D CAD Floor Grid
-      ctx.strokeStyle = pal.grid;
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      for (let g = -8; g <= 8; g += 1) {
-        const p1 = project3D(rotate3D({ x: g, y: floorY, z: -6 }, curPitch, curYaw), w, h, fov, camDist);
-        const p2 = project3D(rotate3D({ x: g, y: floorY, z: 6 }, curPitch, curYaw), w, h, fov, camDist);
-        ctx.moveTo(p1.x, p1.y);
-        ctx.lineTo(p2.x, p2.y);
+      if (isDragging) {
+        const dx = e.clientX - dragStartX;
+        const dy = e.clientY - dragStartY;
+        dragStartX = e.clientX;
+        dragStartY = e.clientY;
+        targetSpherical.theta -= dx * 0.0075;
+        targetSpherical.phi = Math.max(0.2, Math.min(1.48, targetSpherical.phi - dy * 0.0065));
+        return;
+      }
 
-        if (g >= -6 && g <= 6) {
-          const p3 = project3D(rotate3D({ x: -8, y: floorY, z: g }, curPitch, curYaw), w, h, fov, camDist);
-          const p4 = project3D(rotate3D({ x: 8, y: floorY, z: g }, curPitch, curYaw), w, h, fov, camDist);
-          ctx.moveTo(p3.x, p3.y);
-          ctx.lineTo(p4.x, p4.y);
+      // Raycast hover when not dragging
+      if (!e.target.closest('.cad3d-label')) {
+        raycaster.setFromCamera(mouseNDC, camera);
+        const hits = raycaster.intersectObjects(raycastTargets, false);
+        if (hits.length > 0 && hits[0].object.userData.nodeId) {
+          setFocusedNode(hits[0].object.userData.nodeId);
+          box.style.cursor = 'pointer';
+        } else {
+          setFocusedNode(null);
+          box.style.cursor = 'grab';
         }
       }
-      ctx.stroke();
+    });
 
-      // 2. Draw Polar Reference Ring on Floor
-      ctx.strokeStyle = pal.gridStrong;
-      ctx.lineWidth = 1.25;
-      ctx.beginPath();
-      for (let i = 0; i <= 64; i++) {
-        const a = (i / 64) * Math.PI * 2;
-        const rp = project3D(
-          rotate3D({ x: Math.cos(a) * 5.8, y: floorY, z: Math.sin(a) * 5.8 }, curPitch, curYaw),
-          w,
-          h,
-          fov,
-          camDist
-        );
-        if (i === 0) ctx.moveTo(rp.x, rp.y);
-        else ctx.lineTo(rp.x, rp.y);
-      }
-      ctx.stroke();
-
-      // 3. Draw Arched 3D Conduits & Telemetry Packets
-      links.forEach((lk) => {
-        const pA = nodes[lk.from].pos;
-        const pB = nodes[lk.to].pos;
-        ctx.save();
-        ctx.strokeStyle = pal.inkMuted;
-        ctx.lineWidth = 1.4;
-        ctx.setLineDash([5, 4]);
-        ctx.beginPath();
-        for (let s = 0; s <= 24; s++) {
-          const pt = sampleCurve(pA, pB, s / 24);
-          const pr = project3D(rotate3D(pt, curPitch, curYaw), w, h, fov, camDist);
-          if (s === 0) ctx.moveTo(pr.x, pr.y);
-          else ctx.lineTo(pr.x, pr.y);
+    const endDrag = (e) => {
+      if (isDragging && e && e.type === 'pointerup') {
+        const moved = Math.hypot(e.clientX - pointerDownPos.x, e.clientY - pointerDownPos.y);
+        if (moved < 5 && focusedNodeId) {
+          const matchingBtn = document.querySelector(`.cad3d-label[data-node="${focusedNodeId}"]`);
+          if (matchingBtn) matchingBtn.click();
         }
-        ctx.stroke();
-        ctx.restore();
-      });
-
-      packets.forEach((pkt) => {
-        if (!prefersReducedMotion) pkt.t = (pkt.t + pkt.speed) % 1;
-        const pA = nodes[pkt.link.from].pos;
-        const pB = nodes[pkt.link.to].pos;
-        const pos = sampleCurve(pA, pB, pkt.t);
-        const pr = project3D(rotate3D(pos, curPitch, curYaw), w, h, fov, camDist);
-
-        ctx.fillStyle = pkt.link.accent === 'signal' ? pal.signal : pal.valid;
-        ctx.beginPath();
-        ctx.arc(pr.x, pr.y, 4.5, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // 4. Draw 5 3D Enterprise Nodes & Pedestals
-      Object.values(nodes).forEach((node) => {
-        // Pedestal drop-line to floor
-        const topP = project3D(rotate3D(node.pos, curPitch, curYaw), w, h, fov, camDist);
-        const botP = project3D(rotate3D({ x: node.pos.x, y: floorY, z: node.pos.z }, curPitch, curYaw), w, h, fov, camDist);
-
-        ctx.strokeStyle = pal.gridStrong;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.moveTo(topP.x, topP.y);
-        ctx.lineTo(botP.x, botP.y);
-        ctx.stroke();
-
-        // Floor anchor cross
-        ctx.beginPath();
-        ctx.arc(botP.x, botP.y, 3, 0, Math.PI * 2);
-        ctx.stroke();
-
-        // Transform & project wireframe vertices
-        const nAngle = localRot * (node.rotSpeed * 60);
-        const projVerts = node.mesh.v.map((v) => {
-          const local = rotate3D(v, nAngle * 0.35, nAngle);
-          const worldPt = {
-            x: local.x + node.pos.x,
-            y: local.y + node.pos.y,
-            z: local.z + node.pos.z
-          };
-          return project3D(rotate3D(worldPt, curPitch, curYaw), w, h, fov, camDist);
-        });
-
-        ctx.strokeStyle = pal[node.colorKey];
-        ctx.lineWidth = node.id === 'sync' ? 1.85 : 1.45;
-        ctx.beginPath();
-        node.mesh.e.forEach(([a, b]) => {
-          ctx.moveTo(projVerts[a].x, projVerts[a].y);
-          ctx.lineTo(projVerts[b].x, projVerts[b].y);
-        });
-        ctx.stroke();
-      });
-
-      // 5. Update Projected 2D Positions of HTML Node Labels
-      labelEls.forEach((lbl) => {
-        const key = lbl.getAttribute('data-node');
-        const node = nodes[key];
-        if (!node) return;
-        const labelWorld = { x: node.pos.x, y: node.pos.y + 1.35, z: node.pos.z };
-        const pr = project3D(rotate3D(labelWorld, curPitch, curYaw), w, h, fov, camDist);
-        const cx = Math.max(92, Math.min(w - 92, pr.x));
-        const cy = Math.max(24, Math.min(h - 52, pr.y));
-        lbl.style.transform = `translate3d(${cx.toFixed(1)}px, ${cy.toFixed(1)}px, 0) translate(-50%, -50%)`;
-      });
-
-      if (coordsEl) {
-        const degY = Math.round(((curYaw * 180) / Math.PI) % 360);
-        const degP = Math.round((curPitch * 180) / Math.PI);
-        coordsEl.textContent = `AZIMUTH: ${degY}° / ELEV: +${degP}° · 5 NODES ACTIVE`;
       }
-
-      if (!prefersReducedMotion) {
-        requestAnimationFrame(renderStage);
-      }
+      isDragging = false;
     };
+    box.addEventListener('pointerup', endDrag);
+    box.addEventListener('pointercancel', endDrag);
 
-    renderStage();
-  }
-
-  /* ========================================================================
-     3. AMBIENT SCROLL-REACTIVE 3D CAD BACKGROUND (#cad3d-bg-canvas)
-     ======================================================================== */
-  function initBackgroundCadEngine() {
-    const canvas = document.getElementById('cad3d-bg-canvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    let dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-    let w = window.innerWidth;
-    let h = window.innerHeight;
-
-    const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 1.75);
-      w = window.innerWidth;
-      h = window.innerHeight;
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    };
+    // Sizing
+    let width = 800;
+    let height = 420;
+    function resize() {
+      const rect = box.getBoundingClientRect();
+      width = Math.max(rect.width || 800, 280);
+      height = Math.max(rect.height || 420, 260);
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      renderer.setPixelRatio(dpr);
+      renderer.setSize(width, height, false);
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+    }
     resize();
     window.addEventListener('resize', resize);
 
-    const leftPoly = makeOctahedronWireframe(2.6);
-    const rightPoly = makeBoxWireframe(1.8, 1.8, 1.8);
+    let isVisible = true;
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            isVisible = entry.isIntersecting;
+          });
+        },
+        { threshold: 0.05 }
+      );
+      io.observe(box);
+    }
 
-    let scrollY = window.scrollY;
-    let smoothScroll = scrollY;
-    let pointerX = 0;
-    let pointerY = 0;
+    const labelVec = new THREE.Vector3();
 
-    window.addEventListener('scroll', () => {
-      scrollY = window.scrollY;
-    }, { passive: true });
+    function renderTopology(now) {
+      const t = now * 0.001;
 
-    window.addEventListener('pointermove', (e) => {
-      pointerX = (e.clientX / window.innerWidth - 0.5) * 2;
-      pointerY = (e.clientY / window.innerHeight - 0.5) * 2;
-    }, { passive: true });
+      if (isVisible) {
+        if (autoOrbit && !isDragging) {
+          targetSpherical.theta += 0.0032;
+        }
 
-    const renderBg = () => {
-      const pal = getPalette();
-      ctx.clearRect(0, 0, w, h);
+        camSpherical.theta += (targetSpherical.theta - camSpherical.theta) * 0.09;
+        camSpherical.phi += (targetSpherical.phi - camSpherical.phi) * 0.09;
+        camSpherical.radius += (targetSpherical.radius - camSpherical.radius) * 0.09;
 
-      smoothScroll += (scrollY - smoothScroll) * 0.08;
-      const sAngle = smoothScroll * 0.0018;
+        camera.position.x =
+          camSpherical.radius * Math.sin(camSpherical.phi) * Math.sin(camSpherical.theta);
+        camera.position.y = camSpherical.radius * Math.cos(camSpherical.phi);
+        camera.position.z =
+          camSpherical.radius * Math.sin(camSpherical.phi) * Math.cos(camSpherical.theta);
+        camera.lookAt(camTarget);
 
-      const drawAssembly = (mesh, centerX, centerY, rx, ry, color) => {
-        const proj = mesh.v.map((v) => {
-          const r = rotate3D(v, rx, ry);
-          const scale = 42;
-          return { x: centerX + r.x * scale, y: centerY - r.y * scale };
+        // Smooth explode factor
+        const targetExplode = isExplodeMode ? 1 : 0;
+        explodeAmount += (targetExplode - explodeAmount) * 0.1;
+
+        // Animate radar rings
+        radarRing1.scale.setScalar(1 + Math.sin(t * 2.5) * 0.04);
+        radarRing2.rotation.z = t * 0.2;
+
+        // Animate monuments & exploded tiers
+        Object.keys(nodeMap).forEach((id) => {
+          const item = nodeMap[id];
+          const isFocused = focusedNodeId === id;
+          const targetLift = isFocused ? 0.28 : 0;
+          item.hoverLift += (targetLift - item.hoverLift) * 0.14;
+          item.group.position.y = item.spec.pos.y + item.hoverLift;
+
+          item.parts.forEach((part) => {
+            const tier = part.userData.tierIndex || 0;
+            const nodeExplode = explodeAmount + (isFocused ? 0.35 : 0);
+            part.position.y = part.userData.baseY + tier * 0.26 * nodeExplode;
+          });
+
+          if (item.group.userData.rotor) {
+            item.group.userData.rotor.rotation.y = t * (id === 'sync' ? 1.25 : 0.8);
+            if (id === 'sync') {
+              item.group.userData.rotor.rotation.z = Math.sin(t * 1.5) * 0.3;
+            }
+          }
+          if (item.group.userData.secondaryRotor) {
+            item.group.userData.secondaryRotor.rotation.x = t * 0.9;
+            item.group.userData.secondaryRotor.rotation.y = -t * 0.6;
+          }
         });
-        ctx.strokeStyle = color;
-        ctx.lineWidth = 1.1;
+
+        // Animate 3D packets along conduits
+        packets.forEach((pkt) => {
+          pkt.t += pkt.speed * 0.011;
+          if (pkt.t > 1) pkt.t -= 1;
+          if (pkt.t < 0) pkt.t += 1;
+          pkt.curve.getPoint(pkt.t, pkt.mesh.position);
+
+          const isHighlighted =
+            focusedNodeId && (pkt.from === focusedNodeId || pkt.to === focusedNodeId);
+          pkt.mesh.scale.setScalar(isHighlighted ? 1.45 : 1.0);
+          pkt.mesh.rotation.y = t * 3;
+        });
+
+        renderer.render(scene, camera);
+
+        // Project 3D monument tops to HTML .cad3d-label coordinates
+        labelBtns.forEach((btn) => {
+          const nid = btn.getAttribute('data-node');
+          const item = nodeMap[nid];
+          if (!item) return;
+
+          labelVec.copy(item.group.position);
+          labelVec.y += 1.65 + explodeAmount * 0.75;
+          labelVec.project(camera);
+
+          const sx = (labelVec.x * 0.5 + 0.5) * width;
+          const sy = (-labelVec.y * 0.5 + 0.5) * height;
+          const clampedX = Math.max(85, Math.min(width - 85, sx));
+          const clampedY = Math.max(24, Math.min(height - 56, sy));
+          btn.style.transform = `translate3d(${clampedX.toFixed(1)}px, ${clampedY.toFixed(1)}px, 0) translate(-50%, -100%)`;
+        });
+
+        if (telemetry) {
+          const degPhi = Math.round(90 - (camSpherical.phi * 180) / Math.PI);
+          const degTheta = Math.round(((camSpherical.theta * 180) / Math.PI) % 360);
+          const modeLabel = isExplodeMode
+            ? 'EXPLODED AXONOMETRIC'
+            : isWireframeMode
+            ? 'X-RAY BLUEPRINT'
+            : 'WEBGL SOLID+WIRE';
+          telemetry.textContent = `MODE: ${modeLabel} · PITCH: ${degPhi}° · YAW: ${degTheta}°`;
+        }
+      }
+
+      if (!prefersReducedMotion) {
+        requestAnimationFrame(renderTopology);
+      }
+    }
+
+    syncMaterialsToTheme();
+    requestAnimationFrame(renderTopology);
+  }
+
+  /* ==========================================================================
+     3. FULL-VIEWPORT 3D SPATIAL BLUEPRINT HORIZON (#cad3d-bg-canvas)
+     ========================================================================== */
+  function initSpatialBackgroundCanvas() {
+    let canvas = document.getElementById('cad3d-bg-canvas');
+    if (!canvas) {
+      canvas = document.createElement('canvas');
+      canvas.id = 'cad3d-bg-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      document.body.prepend(canvas);
+    }
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+    function resize() {
+      width = window.innerWidth;
+      height = window.innerHeight;
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // Margin 3D architectural wireframe solids
+    const solids = [
+      { side: -1, yRatio: 0.2, z: 140, radius: 38, speedX: 0.007, speedY: 0.011 },
+      { side: 1, yRatio: 0.35, z: 170, radius: 44, speedX: -0.008, speedY: 0.009 },
+      { side: -1, yRatio: 0.68, z: 150, radius: 34, speedX: 0.01, speedY: -0.007 },
+      { side: 1, yRatio: 0.82, z: 130, radius: 40, speedX: -0.006, speedY: -0.01 }
+    ];
+
+    const octaVerts = [
+      [0, 1, 0],
+      [0, -1, 0],
+      [1, 0, 0],
+      [-1, 0, 0],
+      [0, 0, 1],
+      [0, 0, -1]
+    ];
+    const octaEdges = [
+      [0, 2], [0, 3], [0, 4], [0, 5],
+      [1, 2], [1, 3], [1, 4], [1, 5],
+      [2, 4], [4, 3], [3, 5], [5, 2]
+    ];
+
+    function renderBg(now) {
+      const t = now * 0.001;
+      const prevSmooth = smoothScroll;
+      smoothScroll += (scrollY - smoothScroll) * 0.09;
+      scrollVelocity = smoothScroll - prevSmooth;
+      pointer.nx += (pointer.tx - pointer.nx) * 0.06;
+      pointer.ny += (pointer.ty - pointer.ny) * 0.06;
+
+      ctx.clearRect(0, 0, width, height);
+      if (width < 1100) {
+        if (!prefersReducedMotion) requestAnimationFrame(renderBg);
+        return;
+      }
+
+      const pal = getThemePalette();
+      const fov = 560;
+      const cx = width * 0.5 + pointer.nx * 24;
+      const cy = height * 0.5 + pointer.ny * 16;
+
+      // Render margin 3D drafting solids
+      solids.forEach((s, idx) => {
+        const marginX = s.side < 0 ? 64 : width - 64;
+        const sy = ((s.yRatio * height - smoothScroll * 0.14) % (height + 180));
+        const finalY = sy < -90 ? sy + height + 180 : sy;
+
+        const rx = t * s.speedX * 55 + smoothScroll * 0.003 + idx;
+        const ry = t * s.speedY * 55 + pointer.nx * 0.4;
+
+        const cosX = Math.cos(rx), sinX = Math.sin(rx);
+        const cosY = Math.cos(ry), sinY = Math.sin(ry);
+
+        const pts = octaVerts.map((v) => {
+          let x = v[0] * s.radius;
+          let y = v[1] * s.radius;
+          let z = v[2] * s.radius;
+
+          const y1 = y * cosX - z * sinX;
+          const z1 = y * sinX + z * cosX;
+          const x2 = x * cosY + z1 * sinY;
+          const z2 = -x * sinY + z1 * cosY + s.z;
+
+          const scale = fov / Math.max(fov + z2, 60);
+          return {
+            x: marginX + x2 * scale,
+            y: finalY + y1 * scale
+          };
+        });
+
+        ctx.strokeStyle = idx % 2 === 0 ? pal.inkMuted : pal.signalSoft;
+        ctx.lineWidth = 1;
         ctx.beginPath();
-        mesh.e.forEach(([a, b]) => {
-          ctx.moveTo(proj[a].x, proj[a].y);
-          ctx.lineTo(proj[b].x, proj[b].y);
+        octaEdges.forEach((e) => {
+          ctx.moveTo(pts[e[0]].x, pts[e[0]].y);
+          ctx.lineTo(pts[e[1]].x, pts[e[1]].y);
         });
         ctx.stroke();
-      };
 
-      drawAssembly(leftPoly, 70, h * 0.28, sAngle + pointerY * 0.3, sAngle * 1.3 + pointerX * 0.3, pal.gridStrong);
-      drawAssembly(rightPoly, w - 70, h * 0.72, -sAngle + pointerY * 0.3, -sAngle * 1.1 + pointerX * 0.3, pal.gridStrong);
+        // Dimension crosshair at center
+        ctx.fillStyle = pal.signal;
+        ctx.fillRect(marginX - 1.5, finalY - 1.5, 3, 3);
+      });
+
+      // Subtle architectural coordinate tick marks along outer left/right rails
+      ctx.fillStyle = pal.inkFaint;
+      for (let y = 40; y < height; y += 64) {
+        const offset = (y - (smoothScroll * 0.25) % 64);
+        ctx.fillRect(12, offset, 8, 1);
+        ctx.fillRect(width - 20, offset, 8, 1);
+      }
 
       if (!prefersReducedMotion) {
         requestAnimationFrame(renderBg);
       }
-    };
+    }
 
-    renderBg();
+    requestAnimationFrame(renderBg);
   }
 
-  /* ========================================================================
-     4. SPRING-PHYSICS SPATIAL 3D DEPTH CARDS (Z-Axis Parallax)
-     ======================================================================== */
-  function initSpatial3dCards() {
-    if (prefersReducedMotion) return;
-    const cards = document.querySelectorAll('.portrait-plate-wrap, .spec-cell, .portfolio-item, .blueprint-node');
+  /* ==========================================================================
+     4. MULTI-PLANE 3D HOLOGRAPHIC CARD SPRING PHYSICS & SCROLL 3D SHEETS
+     ========================================================================== */
+  function initSpatialCardPhysics() {
+    if (prefersReducedMotion || isCoarsePointer) return;
+
+    const selectors = [
+      '.portrait-plate-wrap',
+      '.spec-cell',
+      '.portfolio-item',
+      '.blueprint-node',
+      '.blueprint-mini-card',
+      '.tech-category',
+      '.special-item',
+      '.skill'
+    ];
+
+    const cards = document.querySelectorAll(selectors.join(','));
 
     cards.forEach((card) => {
       card.classList.add('spatial-3d-card');
-      let targetRx = 0;
-      let targetRy = 0;
-      let curRx = 0;
-      let curRy = 0;
-      let vx = 0;
-      let vy = 0;
+
+      const maxTilt = card.classList.contains('portrait-plate-wrap') ? 9 : 5.5;
+      let targetRX = 0;
+      let targetRY = 0;
+      let targetZ = 0;
+      let currRX = 0;
+      let currRY = 0;
+      let currZ = 0;
+      let velRX = 0;
+      let velRY = 0;
+      let velZ = 0;
       let rafId = 0;
       let hovered = false;
 
-      const stepSpring = () => {
-        const stiffness = 0.14;
-        const damping = 0.76;
+      function stepSpring() {
+        const stiffness = 0.15;
+        const damping = 0.74;
 
-        vx = (vx + (targetRx - curRx) * stiffness) * damping;
-        vy = (vy + (targetRy - curRy) * stiffness) * damping;
-        curRx += vx;
-        curRy += vy;
+        velRX = (velRX + (targetRX - currRX) * stiffness) * damping;
+        velRY = (velRY + (targetRY - currRY) * stiffness) * damping;
+        velZ = (velZ + (targetZ - currZ) * stiffness) * damping;
 
-        card.style.transform = `perspective(950px) rotateX(${curRx.toFixed(2)}deg) rotateY(${curRy.toFixed(2)}deg)`;
+        currRX += velRX;
+        currRY += velRY;
+        currZ += velZ;
 
-        const moving =
-          Math.abs(curRx - targetRx) > 0.03 ||
-          Math.abs(curRy - targetRy) > 0.03 ||
-          Math.abs(vx) > 0.03 ||
-          Math.abs(vy) > 0.03;
-        if (hovered || moving) {
+        card.style.transform = `perspective(1050px) rotateX(${currRX.toFixed(2)}deg) rotateY(${currRY.toFixed(2)}deg) translateZ(${currZ.toFixed(1)}px)`;
+        card.style.setProperty('--shadow-x', `${(-currRY * 1.6).toFixed(1)}px`);
+        card.style.setProperty('--shadow-y', `${(8 + currRX * 1.4).toFixed(1)}px`);
+
+        const stillMoving =
+          Math.abs(velRX) > 0.01 ||
+          Math.abs(velRY) > 0.01 ||
+          Math.abs(targetRX - currRX) > 0.02 ||
+          Math.abs(targetRY - currRY) > 0.02 ||
+          Math.abs(targetZ - currZ) > 0.05;
+
+        if (hovered || stillMoving) {
           rafId = requestAnimationFrame(stepSpring);
         } else {
           card.style.transform = '';
           card.classList.remove('is-tilting');
           rafId = 0;
         }
-      };
+      }
 
       card.addEventListener('pointerenter', () => {
         hovered = true;
+        targetZ = 8;
         card.classList.add('is-tilting');
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
 
       card.addEventListener('pointermove', (e) => {
         const rect = card.getBoundingClientRect();
-        const nx = (e.clientX - rect.left) / rect.width - 0.5;
-        const ny = (e.clientY - rect.top) / rect.height - 0.5;
-        const maxDeg = card.classList.contains('portrait-plate-wrap') ? 10 : 6.5;
-        targetRy = nx * maxDeg * 2;
-        targetRx = -ny * maxDeg * 2;
+        const px = (e.clientX - rect.left) / Math.max(rect.width, 1);
+        const py = (e.clientY - rect.top) / Math.max(rect.height, 1);
+        targetRY = (px - 0.5) * maxTilt * 2;
+        targetRX = (0.5 - py) * maxTilt * 2;
+        card.style.setProperty('--mouse-x', `${(px * 100).toFixed(1)}%`);
+        card.style.setProperty('--mouse-y', `${(py * 100).toFixed(1)}%`);
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
 
       card.addEventListener('pointerleave', () => {
         hovered = false;
-        targetRx = 0;
-        targetRy = 0;
+        targetRX = 0;
+        targetRY = 0;
+        targetZ = 0;
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
     });
+
+    // Subtle Scroll-Driven 3D Sheet Entrance Perspective
+    const sheets = document.querySelectorAll('.folio-sheet:not(.hero)');
+    sheets.forEach((sheet) => sheet.classList.add('sheet-3d-stage'));
+
+    function updateSheetPerspective() {
+      const vh = window.innerHeight;
+      sheets.forEach((sheet) => {
+        const rect = sheet.getBoundingClientRect();
+        if (rect.top > vh * 0.92) {
+          sheet.style.transform = 'perspective(1600px) rotateX(3.5deg) translateY(14px)';
+        } else {
+          sheet.style.transform = 'perspective(1600px) rotateX(0deg) translateY(0px)';
+        }
+      });
+    }
+    window.addEventListener('scroll', updateSheetPerspective, { passive: true });
+    updateSheetPerspective();
   }
 
-  /* ========================================================================
-     5. VIEW TRANSITIONS API ENHANCEMENT FOR FILTER TABS
-     ======================================================================== */
-  function initViewTransitions() {
-    if (!document.startViewTransition || prefersReducedMotion) return;
-    const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
-    filterBtns.forEach((btn) => {
-      btn.addEventListener(
-        'click',
-        (e) => {
-          if (e.isTrusted && document.startViewTransition) {
-            document.startViewTransition(() => {});
+  /* ==========================================================================
+     5. INTERACTIVE 3D ARCHITECTURE PIPELINE IN PROJECT MODAL (#projectDetailModal)
+     ========================================================================== */
+  function initModal3DArchitectureHook() {
+    const origOpen = window.openProjectDetail;
+    if (typeof origOpen !== 'function') return;
+
+    let activeModalRAF = 0;
+    let activeModalRenderer = null;
+
+    function cleanupModal3D() {
+      if (activeModalRAF) {
+        cancelAnimationFrame(activeModalRAF);
+        activeModalRAF = 0;
+      }
+      if (activeModalRenderer) {
+        try {
+          activeModalRenderer.dispose();
+        } catch (_) {}
+        activeModalRenderer = null;
+      }
+    }
+
+    const origClose = window.closeProjectDetailModal;
+    if (typeof origClose === 'function') {
+      window.closeProjectDetailModal = function () {
+        cleanupModal3D();
+        return origClose.apply(this, arguments);
+      };
+    }
+
+    window.openProjectDetail = function (projectId) {
+      cleanupModal3D();
+      origOpen.apply(this, arguments);
+
+      const THREE = window.THREE;
+      const contentEl = document.getElementById('projectDetailContent');
+      const diagramBox = contentEl ? contentEl.querySelector('.modal-diagram-box') : null;
+      if (!THREE || !contentEl || !diagramBox) return;
+
+      // Extract bracketed node names from ASCII diagram to build a custom 3D pipeline
+      const rawDiagram = diagramBox.textContent || '';
+      const matches = [];
+      const regex = /\[([^\]]+)\]/g;
+      let m;
+      while ((m = regex.exec(rawDiagram)) !== null) {
+        if (matches.length < 5) matches.push(m[1]);
+      }
+      const nodeLabels =
+        matches.length >= 2
+          ? matches
+          : ['Client Interface', 'Application Engine', 'Core Database', 'Cloud / Storage'];
+
+      // Create 3D stage wrapper above the ASCII diagram
+      const stageWrap = document.createElement('div');
+      stageWrap.className = 'modal-3d-stage-wrap';
+      stageWrap.innerHTML = `
+        <div class="modal-3d-stage-bar">
+          <span><i class="fas fa-cube"></i> 3D INTERACTIVE SYSTEM PIPELINE // ${String(projectId).toUpperCase()}</span>
+          <span>DRAG TO ORBIT 3D</span>
+        </div>
+        <div class="modal-3d-canvas-host" id="modal3dCanvasHost">
+          <canvas id="modal3dProjectCanvas"></canvas>
+        </div>
+      `;
+      diagramBox.parentNode.insertBefore(stageWrap, diagramBox);
+
+      const host = document.getElementById('modal3dCanvasHost');
+      const canvas = document.getElementById('modal3dProjectCanvas');
+      if (!host || !canvas) return;
+
+      let renderer;
+      try {
+        renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+        activeModalRenderer = renderer;
+      } catch (e) {
+        return;
+      }
+
+      const pal = getThemePalette();
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(36, 3, 0.1, 100);
+
+      scene.add(new THREE.AmbientLight(0xffffff, 0.8));
+      const dLight = new THREE.DirectionalLight(0xffffff, 0.9);
+      dLight.position.set(5, 8, 6);
+      scene.add(dLight);
+
+      const group = new THREE.Group();
+      scene.add(group);
+
+      // Floor grid
+      const gridHelper = new THREE.GridHelper(9, 14, pal.inkHex, pal.gridHex);
+      gridHelper.position.y = -0.55;
+      group.add(gridHelper);
+
+      const count = nodeLabels.length;
+      const spacing = Math.min(2.1, 6.8 / Math.max(count - 1, 1));
+      const startX = -((count - 1) * spacing) * 0.5;
+      const nodePositions = [];
+      const nodeMeshes = [];
+
+      nodeLabels.forEach((lbl, idx) => {
+        const x = startX + idx * spacing;
+        const z = idx % 2 === 0 ? -0.35 : 0.35;
+        const pos = new THREE.Vector3(x, 0, z);
+        nodePositions.push(pos);
+
+        const geo =
+          idx === 0
+            ? new THREE.BoxGeometry(0.75, 0.55, 0.55)
+            : idx === count - 1
+            ? new THREE.CylinderGeometry(0.42, 0.42, 0.65, 16)
+            : new THREE.OctahedronGeometry(0.45, 0);
+
+        const mesh = createCadMesh(
+          geo,
+          {
+            color: idx === 1 ? pal.signalHex : pal.surfaceHex,
+            emissive: idx === 1 ? pal.signalHex : 0x000000,
+            emissiveIntensity: idx === 1 ? 0.25 : 0
+          },
+          pal.inkHex,
+          0.9
+        );
+        mesh.position.copy(pos);
+        group.add(mesh);
+        nodeMeshes.push(mesh);
+      });
+
+      // Conduits & packets between sequential pipeline nodes
+      const modalPackets = [];
+      const pktGeo = new THREE.OctahedronGeometry(0.08, 0);
+      for (let i = 0; i < nodePositions.length - 1; i++) {
+        const p0 = nodePositions[i];
+        const p2 = nodePositions[i + 1];
+        const mid = p0.clone().add(p2).multiplyScalar(0.5);
+        mid.y += 0.75;
+        const curve = new THREE.QuadraticBezierCurve3(p0, mid, p2);
+        const lineGeo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(28));
+        const line = new THREE.Line(
+          lineGeo,
+          new THREE.LineBasicMaterial({ color: pal.signalHex })
+        );
+        group.add(line);
+
+        for (let k = 0; k < 2; k++) {
+          const pkt = new THREE.Mesh(
+            pktGeo,
+            new THREE.MeshBasicMaterial({ color: k === 0 ? pal.signalHex : pal.validHex })
+          );
+          group.add(pkt);
+          modalPackets.push({ mesh: pkt, curve, t: k * 0.5 });
+        }
+      }
+
+      let rotY = 0.28;
+      let rotX = 0.36;
+      let dragging = false;
+      let lx = 0;
+      let ly = 0;
+
+      host.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        lx = e.clientX;
+        ly = e.clientY;
+      });
+      host.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        rotY += (e.clientX - lx) * 0.01;
+        rotX = Math.max(0.1, Math.min(1.1, rotX + (e.clientY - ly) * 0.01));
+        lx = e.clientX;
+        ly = e.clientY;
+      });
+      window.addEventListener('pointerup', () => {
+        dragging = false;
+      });
+
+      function resizeModalCanvas() {
+        const rect = host.getBoundingClientRect();
+        const w = Math.max(rect.width || 640, 260);
+        const h = Math.max(rect.height || 220, 180);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        renderer.setSize(w, h, false);
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+      }
+      setTimeout(resizeModalCanvas, 20);
+
+      function animateModal(now) {
+        const t = now * 0.001;
+        if (!dragging) rotY += 0.0035;
+
+        camera.position.set(
+          Math.sin(rotY) * 6.8 * Math.cos(rotX),
+          Math.sin(rotX) * 6.8 + 0.6,
+          Math.cos(rotY) * 6.8 * Math.cos(rotX)
+        );
+        camera.lookAt(0, 0, 0);
+
+        nodeMeshes.forEach((m, idx) => {
+          m.position.y = Math.sin(t * 2 + idx) * 0.08;
+          if (idx > 0 && idx < nodeMeshes.length - 1) {
+            m.rotation.y = t * 0.9;
           }
-        },
-        { capture: true }
-      );
-    });
+        });
+
+        modalPackets.forEach((p) => {
+          p.t = (p.t + 0.008) % 1;
+          p.curve.getPoint(p.t, p.mesh.position);
+        });
+
+        renderer.render(scene, camera);
+        activeModalRAF = requestAnimationFrame(animateModal);
+      }
+
+      resizeModalCanvas();
+      activeModalRAF = requestAnimationFrame(animateModal);
+    };
   }
 
-  function bootOverdrive() {
-    initHero3dCore();
-    initTopology3dStage();
-    initBackgroundCadEngine();
-    initSpatial3dCards();
-    initViewTransitions();
+  /* ==========================================================================
+     BOOT SEQUENCE INITIALIZATION (WITH AUTOMATIC THREE.JS FALLBACK LOADER)
+     ========================================================================== */
+  function startAll3DEngines() {
+    initSpatialBackgroundCanvas();
+    initHero3DCore();
+    initEnterprise3DTopology();
+    initSpatialCardPhysics();
+    initModal3DArchitectureHook();
+  }
+
+  function boot() {
+    if (window.THREE) {
+      startAll3DEngines();
+      return;
+    }
+    // Dynamic fallback if Three.js script is still loading
+    const existingScript = document.querySelector('script[src*="three"]');
+    if (existingScript) {
+      existingScript.addEventListener('load', startAll3DEngines, { once: true });
+      setTimeout(() => {
+        if (window.THREE) startAll3DEngines();
+      }, 800);
+    } else {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+      s.onload = startAll3DEngines;
+      document.head.appendChild(s);
+    }
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', bootOverdrive, { once: true });
+    document.addEventListener('DOMContentLoaded', boot);
   } else {
-    bootOverdrive();
+    boot();
   }
 })();
