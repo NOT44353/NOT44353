@@ -241,43 +241,92 @@
   pointer-events: none;
 }
 
-/* Spatial 3D Multi-Plane Depth Cards & Specular Glare Surface Shader */
+/* Spatial 3D Multi-Plane Depth Cards, CAD Corner HUD, Laser Scan & Specular Glare */
+@keyframes cadLaserScan {
+  0% {
+    top: -12%;
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.85;
+  }
+  85% {
+    opacity: 0.85;
+  }
+  100% {
+    top: 108%;
+    opacity: 0;
+  }
+}
+
+@keyframes skillBarShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
 .spatial-3d-card {
   position: relative;
   transform-style: preserve-3d;
   will-change: transform, box-shadow;
-  transition: box-shadow 220ms var(--ease-out), border-color 220ms var(--ease-out);
+  transition:
+    box-shadow 240ms var(--ease-out),
+    border-color 240ms var(--ease-out),
+    background-color 240ms var(--ease-out);
   --mouse-x: 50%;
   --mouse-y: 50%;
   --shadow-x: 0px;
   --shadow-y: 0px;
+  --bevel-x: 0px;
+  --bevel-y: 0px;
 }
 
+/* Scroll-Triggered 3D Unfold Choreography for Individual Boxes */
+.spatial-3d-card.card-3d-init {
+  opacity: 0;
+  transform: perspective(1100px) rotateX(-16deg) rotateY(4deg) translateY(34px) translateZ(-36px) scale(0.96);
+}
+
+.spatial-3d-card.card-3d-visible {
+  opacity: 1;
+  transform: perspective(1100px) rotateX(0deg) rotateY(0deg) translateY(0px) translateZ(0px) scale(1);
+  transition:
+    transform 620ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0ms),
+    box-shadow 240ms var(--ease-out),
+    border-color 240ms var(--ease-out),
+    background-color 240ms var(--ease-out);
+}
+
+/* Specular Spotlight + Architectural Micro-Grid Reveal */
 .spatial-3d-card::after {
   content: "";
   position: absolute;
   inset: 0;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 250ms var(--ease-out);
+  transition: opacity 240ms var(--ease-out);
   background:
     radial-gradient(
-      360px circle at var(--mouse-x) var(--mouse-y),
-      rgba(154, 52, 18, 0.12),
-      rgba(16, 34, 56, 0.04) 45%,
-      transparent 75%
+      380px circle at var(--mouse-x) var(--mouse-y),
+      rgba(154, 52, 18, 0.16),
+      rgba(16, 34, 56, 0.05) 48%,
+      transparent 78%
     ),
     repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 19px,
-      rgba(16, 34, 56, 0.035) 20px
+      transparent 15px,
+      rgba(16, 34, 56, 0.045) 16px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
-      transparent 19px,
-      rgba(16, 34, 56, 0.035) 20px
+      transparent 15px,
+      rgba(16, 34, 56, 0.045) 16px
     );
   z-index: 1;
 }
@@ -285,69 +334,206 @@
 [data-theme="dark"] .spatial-3d-card::after {
   background:
     radial-gradient(
-      380px circle at var(--mouse-x) var(--mouse-y),
-      rgba(249, 115, 22, 0.18),
-      rgba(52, 211, 153, 0.06) 45%,
-      transparent 75%
+      400px circle at var(--mouse-x) var(--mouse-y),
+      rgba(249, 115, 22, 0.22),
+      rgba(52, 211, 153, 0.08) 48%,
+      transparent 78%
     ),
     repeating-linear-gradient(
       0deg,
       transparent,
-      transparent 19px,
-      rgba(232, 228, 218, 0.04) 20px
+      transparent 15px,
+      rgba(232, 228, 218, 0.05) 16px
     ),
     repeating-linear-gradient(
       90deg,
       transparent,
-      transparent 19px,
-      rgba(232, 228, 218, 0.04) 20px
+      transparent 15px,
+      rgba(232, 228, 218, 0.05) 16px
     );
 }
 
+/* Holographic Laser Scanline Sweep on Hover */
+.spatial-3d-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -12%;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--signal) 25%,
+    var(--valid) 50%,
+    var(--signal) 75%,
+    transparent 100%
+  );
+  box-shadow: 0 0 12px var(--signal);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.spatial-3d-card.is-tilting::before {
+  animation: cadLaserScan 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* 3D Extruded Slab Bevel + Deep Floating Shadow */
 .spatial-3d-card.is-tilting {
-  z-index: 8;
+  z-index: 15;
+  border-color: var(--signal) !important;
   box-shadow:
-    var(--shadow-x, 0px) var(--shadow-y, 12px) 26px -6px rgba(16, 34, 56, 0.24),
-    0 0 0 1px var(--signal);
+    var(--bevel-x, 4px) var(--bevel-y, 4px) 0px var(--signal),
+    calc(var(--bevel-x, 4px) * 1.6) calc(var(--bevel-y, 4px) * 1.6) 0px var(--ink),
+    var(--shadow-x, 0px) var(--shadow-y, 18px) 34px -6px rgba(16, 34, 56, 0.32);
 }
 
 [data-theme="dark"] .spatial-3d-card.is-tilting {
   box-shadow:
-    var(--shadow-x, 0px) var(--shadow-y, 14px) 30px -4px rgba(0, 0, 0, 0.55),
-    0 0 0 1px var(--signal);
+    var(--bevel-x, 4px) var(--bevel-y, 4px) 0px var(--signal),
+    calc(var(--bevel-x, 4px) * 1.6) calc(var(--bevel-y, 4px) * 1.6) 0px rgba(52, 211, 153, 0.55),
+    var(--shadow-x, 0px) var(--shadow-y, 20px) 38px -4px rgba(0, 0, 0, 0.72);
 }
 
 .spatial-3d-card.is-tilting::after {
   opacity: 1;
 }
 
-.spatial-3d-card > * {
+/* CAD Corner Reticles & Live 3D Telemetry Stamp Inside Each Box */
+.cad-box-hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+  overflow: hidden;
+  transform: translateZ(30px);
+}
+
+.cad-corner {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-color: var(--signal);
+  border-style: solid;
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out), transform 240ms var(--ease-out);
+}
+
+.cad-corner.tl {
+  top: 5px;
+  left: 5px;
+  border-width: 2px 0 0 2px;
+  transform: translate(-4px, -4px);
+}
+
+.cad-corner.tr {
+  top: 5px;
+  right: 5px;
+  border-width: 2px 2px 0 0;
+  transform: translate(4px, -4px);
+}
+
+.cad-corner.bl {
+  bottom: 5px;
+  left: 5px;
+  border-width: 0 0 2px 2px;
+  transform: translate(-4px, 4px);
+}
+
+.cad-corner.br {
+  bottom: 5px;
+  right: 5px;
+  border-width: 0 2px 2px 0;
+  transform: translate(4px, 4px);
+}
+
+.spatial-3d-card.is-tilting .cad-corner {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+.cad-box-coords {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  padding: 1px 6px;
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #ffffff;
+  background: var(--signal);
+  opacity: 0;
+  transform: translateY(-6px);
+  transition: opacity 180ms var(--ease-out), transform 200ms var(--ease-out);
+  font-variant-numeric: tabular-nums;
+}
+
+.spatial-3d-card.is-tilting .cad-box-coords {
+  opacity: 0.94;
+  transform: translateY(0);
+}
+
+/* Deep Multi-Plane preserve-3d Z-Layering for Box Contents */
+.spatial-3d-card > *:not(.cad-box-hud) {
   position: relative;
   z-index: 2;
-  transition: transform 240ms var(--ease-out);
+  transform-style: preserve-3d;
+  transition: transform 240ms var(--ease-out), text-shadow 240ms var(--ease-out);
 }
 
 .spatial-3d-card.is-tilting .profile-img,
 .spatial-3d-card.is-tilting .project-card-header,
 .spatial-3d-card.is-tilting .node-head,
 .spatial-3d-card.is-tilting .skill-head,
+.spatial-3d-card.is-tilting .mini-header,
+.spatial-3d-card.is-tilting .role-badge,
+.spatial-3d-card.is-tilting .counter-val,
 .spatial-3d-card.is-tilting h3,
 .spatial-3d-card.is-tilting h4 {
-  transform: translateZ(24px);
+  transform: translateZ(32px);
+}
+
+.spatial-3d-card.is-tilting .counter-val {
+  color: var(--signal);
+  transform: translateZ(36px) scale(1.06);
 }
 
 .spatial-3d-card.is-tilting .plate-caption,
 .spatial-3d-card.is-tilting .project-arch-pill,
 .spatial-3d-card.is-tilting .bar,
 .spatial-3d-card.is-tilting .node-tags,
-.spatial-3d-card.is-tilting .project-tags {
-  transform: translateZ(16px);
+.spatial-3d-card.is-tilting .project-tags,
+.spatial-3d-card.is-tilting .sys-tag,
+.spatial-3d-card.is-tilting .timeline-date,
+.spatial-3d-card.is-tilting .status-stamp {
+  transform: translateZ(24px);
 }
 
 .spatial-3d-card.is-tilting .spec-cell-foot,
 .spatial-3d-card.is-tilting .btn-project-detail,
-.spatial-3d-card.is-tilting .project-metrics {
-  transform: translateZ(28px);
+.spatial-3d-card.is-tilting .project-metrics,
+.spatial-3d-card.is-tilting .skill-pct {
+  transform: translateZ(38px);
+}
+
+.spatial-3d-card.is-tilting p,
+.spatial-3d-card.is-tilting ul,
+.spatial-3d-card.is-tilting .company-line {
+  transform: translateZ(14px);
+}
+
+/* Animated 3D Energy Shimmer on Hovered Skill Bars */
+.skill.spatial-3d-card.is-tilting .progress {
+  background: linear-gradient(
+    90deg,
+    var(--ink) 0%,
+    var(--signal) 50%,
+    var(--valid) 100%
+  );
+  background-size: 200% 100%;
+  animation: skillBarShimmer 1.6s linear infinite;
 }
 
 /* Scroll-Driven 3D Architectural Sheet Perspective */

@@ -1478,14 +1478,15 @@
   }
 
   /* ==========================================================================
-     4. MULTI-PLANE 3D HOLOGRAPHIC CARD SPRING PHYSICS & SCROLL 3D SHEETS
+     4. MULTI-PLANE 3D HOLOGRAPHIC CARD SPRING PHYSICS, CAD HUD & SCROLL 3D
      ========================================================================== */
   function initSpatialCardPhysics() {
-    if (prefersReducedMotion || isCoarsePointer) return;
-
     const selectors = [
       '.portrait-plate-wrap',
       '.spec-cell',
+      '.metric-box',
+      '.sheet-cell',
+      '.timeline-item',
       '.portfolio-item',
       '.blueprint-node',
       '.blueprint-mini-card',
@@ -1496,37 +1497,120 @@
 
     const cards = document.querySelectorAll(selectors.join(','));
 
-    cards.forEach((card) => {
+    // Staggered 3D Scroll Unfold Choreography Observer
+    const revealCards = document.querySelectorAll(
+      '.portfolio-item, .blueprint-node, .blueprint-mini-card, .tech-category, .special-item, .skill, .timeline-item, .sheet-cell'
+    );
+
+    if (!prefersReducedMotion && 'IntersectionObserver' in window) {
+      revealCards.forEach((c, idx) => {
+        c.style.setProperty('--stagger-delay', `${(idx % 4) * 65}ms`);
+        c.classList.add('card-3d-init');
+      });
+
+      const cardObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove('card-3d-init');
+              entry.target.classList.add('card-3d-visible');
+              cardObserver.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+      );
+
+      revealCards.forEach((c) => cardObserver.observe(c));
+
+      // Replay 3D unfold choreography when portfolio filter tabs are clicked
+      const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
+      filterBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const visibleItems = document.querySelectorAll('.portfolio-item:not(.is-hidden)');
+          visibleItems.forEach((item, i) => {
+            item.style.setProperty('--stagger-delay', `${(i % 3) * 60}ms`);
+            item.classList.remove('card-3d-visible');
+            item.classList.add('card-3d-init');
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                item.classList.remove('card-3d-init');
+                item.classList.add('card-3d-visible');
+              });
+            });
+          });
+        });
+      });
+    }
+
+    if (prefersReducedMotion || isCoarsePointer) return;
+
+    cards.forEach((card, index) => {
       card.classList.add('spatial-3d-card');
 
-      const maxTilt = card.classList.contains('portrait-plate-wrap') ? 9 : 5.5;
+      // Inject CAD Corner Target Brackets & Live 3D Coordinate Readout HUD
+      let coordsBadge = null;
+      if (!card.querySelector('.cad-box-hud')) {
+        const hud = document.createElement('div');
+        hud.className = 'cad-box-hud';
+        hud.setAttribute('aria-hidden', 'true');
+        hud.innerHTML =
+          '<span class="cad-corner tl"></span>' +
+          '<span class="cad-corner tr"></span>' +
+          '<span class="cad-corner bl"></span>' +
+          '<span class="cad-corner br"></span>' +
+          `<span class="cad-box-coords">3D // BOX-${String(index + 1).padStart(2, '0')}</span>`;
+        card.appendChild(hud);
+        coordsBadge = hud.querySelector('.cad-box-coords');
+      }
+
+      const isWideBox =
+        card.classList.contains('timeline-item') || card.classList.contains('sheet-cell');
+      const maxTilt = card.classList.contains('portrait-plate-wrap')
+        ? 11
+        : isWideBox
+        ? 4.5
+        : 8.5;
+      const liftTarget = isWideBox ? 12 : 18;
+
       let targetRX = 0;
       let targetRY = 0;
       let targetZ = 0;
+      let targetScale = 1;
       let currRX = 0;
       let currRY = 0;
       let currZ = 0;
+      let currScale = 1;
       let velRX = 0;
       let velRY = 0;
       let velZ = 0;
+      let velScale = 0;
       let rafId = 0;
       let hovered = false;
 
       function stepSpring() {
-        const stiffness = 0.15;
+        const stiffness = 0.16;
         const damping = 0.74;
 
         velRX = (velRX + (targetRX - currRX) * stiffness) * damping;
         velRY = (velRY + (targetRY - currRY) * stiffness) * damping;
         velZ = (velZ + (targetZ - currZ) * stiffness) * damping;
+        velScale = (velScale + (targetScale - currScale) * stiffness) * damping;
 
         currRX += velRX;
         currRY += velRY;
         currZ += velZ;
+        currScale += velScale;
 
-        card.style.transform = `perspective(1050px) rotateX(${currRX.toFixed(2)}deg) rotateY(${currRY.toFixed(2)}deg) translateZ(${currZ.toFixed(1)}px)`;
-        card.style.setProperty('--shadow-x', `${(-currRY * 1.6).toFixed(1)}px`);
-        card.style.setProperty('--shadow-y', `${(8 + currRX * 1.4).toFixed(1)}px`);
+        card.style.transform = `perspective(1050px) rotateX(${currRX.toFixed(2)}deg) rotateY(${currRY.toFixed(2)}deg) translateZ(${currZ.toFixed(1)}px) scale(${currScale.toFixed(3)})`;
+        card.style.setProperty('--bevel-x', `${(-currRY * 0.65).toFixed(1)}px`);
+        card.style.setProperty('--bevel-y', `${(4 + currRX * 0.65).toFixed(1)}px`);
+        card.style.setProperty('--shadow-x', `${(-currRY * 2.1).toFixed(1)}px`);
+        card.style.setProperty('--shadow-y', `${(14 + currRX * 1.8).toFixed(1)}px`);
+
+        if (coordsBadge && hovered) {
+          coordsBadge.textContent = `3D // X:${currRX >= 0 ? '+' : ''}${currRX.toFixed(1)}° Y:${currRY >= 0 ? '+' : ''}${currRY.toFixed(1)}° Z:${Math.round(currZ)}mm`;
+        }
 
         const stillMoving =
           Math.abs(velRX) > 0.01 ||
@@ -1546,7 +1630,8 @@
 
       card.addEventListener('pointerenter', () => {
         hovered = true;
-        targetZ = 8;
+        targetZ = liftTarget;
+        targetScale = isWideBox ? 1.006 : 1.016;
         card.classList.add('is-tilting');
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
@@ -1567,6 +1652,7 @@
         targetRX = 0;
         targetRY = 0;
         targetZ = 0;
+        targetScale = 1;
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
     });
