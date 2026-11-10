@@ -2107,6 +2107,763 @@
   }
 
   /* ==========================================================================
+     6. LIVE ENTERPRISE ARCHITECTURE TRANSACTION SIMULATOR (#archWorkflowSim)
+     ========================================================================== */
+  function initArchitectureWorkflowSimulator() {
+    const container = document.getElementById('archWorkflowSim');
+    const stepsEl = document.getElementById('archSimSteps');
+    const logEl = document.getElementById('archSimLog');
+    const badgeEl = document.getElementById('archSimLatencyBadge');
+    if (!container || !stepsEl || !logEl) return;
+
+    const SCENARIOS = {
+      iam: {
+        totalLatency: '14ms · ZERO-PASSWORD IAM VERIFIED',
+        cadNode: 'aws',
+        steps: [
+          {
+            title: 'ECS Fargate Task Role (IAM)',
+            desc: 'Requests temporary credentials via AWS Task Metadata Endpoint v4',
+            latency: '3ms',
+            log: '[00:00.003] IAM_ROLE > Assumed EbrTaskRole (ap-southeast-7) via STS'
+          },
+          {
+            title: '@aws-sdk/rds-signer Token Engine',
+            desc: 'Signs cryptographic SigV4 DB token (15-min TTL, port 5432)',
+            latency: '4ms',
+            log: '[00:00.007] RDS_SIGNER > Generated ephemeral SigV4 auth token (rds-db:connect)'
+          },
+          {
+            title: 'Prisma 7.9 (@prisma/adapter-pg)',
+            desc: 'Establishes TLS 1.3 connection pool to Aurora without static password',
+            latency: '5ms',
+            log: '[00:00.012] PRISMA_7 > TLS 1.3 handshake verified with Aurora PostgreSQL 16'
+          },
+          {
+            title: 'Aurora PostgreSQL Multi-AZ Commit',
+            desc: 'Executes GMP Batch Record transaction with immutable audit log',
+            latency: '2ms',
+            log: '[00:00.014] AURORA_DB > COMMIT OK (0 static passwords stored in env/secrets)'
+          }
+        ]
+      },
+      sap: {
+        totalLatency: '22ms · 2-WAY SAP B1 SYNC OK',
+        cadNode: 'sap',
+        steps: [
+          {
+            title: 'SAP Business One MSSQL (OWOR / ITT1)',
+            desc: 'Extracts active Production Orders, BOM components & Route Stages',
+            latency: '6ms',
+            log: '[00:00.006] SAP_MSSQL > Polled 48 active OWOR production orders (lock-free read)'
+          },
+          {
+            title: 'Node.js ESM Delta Sync Engine',
+            desc: 'Computes idempotent hash diff and normalizes routing stages',
+            latency: '5ms',
+            log: '[00:00.011] NODE_SYNC > Delta computed: 12 updated stages, 0 schema conflicts'
+          },
+          {
+            title: 'Laravel 12 / PHP 8.4 ManHour API',
+            desc: 'Broadcasts shop-floor QR job queues & caches state in Redis 7',
+            latency: '4ms',
+            log: '[00:00.015] LARAVEL_12 > Synced ManHour MySQL & invalidated shop-floor cache'
+          },
+          {
+            title: 'ASP.NET Core 8 SAP Write-Back',
+            desc: 'Commits actual labor hours & yield metrics back to SAP B1',
+            latency: '7ms',
+            log: '[00:00.022] DOTNET8_API > 2-Way SAP write-back verified (Serilog audit recorded)'
+          }
+        ]
+      },
+      mcp: {
+        totalLatency: '34ms · MCP CONTEXT STREAMED',
+        cadNode: 'gmp',
+        steps: [
+          {
+            title: 'Central Cognito OIDC PKCE Auth',
+            desc: 'Validates jose JWT session & Cross-App Department RBAC permissions',
+            latency: '3ms',
+            log: '[00:00.003] COGNITO_SSO > Verified OIDC PKCE session & department RBAC scope'
+          },
+          {
+            title: 'TP Drug Connect (Next.js 16 / React 19)',
+            desc: 'Dispatches structured tool request to internal MCP Server',
+            latency: '4ms',
+            log: '[00:00.007] NEXTJS_16 > Invoking MCP tool: sharepoint.search_documents()'
+          },
+          {
+            title: 'SharePoint MCP & M365 Graph API',
+            desc: 'Retrieves authorized SOP PDFs & organizational calendar slots',
+            latency: '9ms',
+            log: '[00:00.016] MCP_SERVER > Retrieved 5 GMP SOP documents & M365 calendar feed'
+          },
+          {
+            title: 'Hybrid AI Agent Synthesis (Vercel AI SDK)',
+            desc: 'Streams grounded engineering answer with zero token leakage',
+            latency: '18ms',
+            log: '[00:00.034] AI_AGENT > Streamed cited response via Vercel AI SDK (HttpOnly safe)'
+          }
+        ]
+      },
+      devsecops: {
+        totalLatency: '30ms · QUALITY GATE PASSED',
+        cadNode: 'sync',
+        steps: [
+          {
+            title: 'Polyglot Docker DevContainer Matrix',
+            desc: 'Spins up isolated Postgres 15, MySQL 8, MSSQL 2022 & Redis 7 test beds',
+            latency: '8ms',
+            log: '[00:00.008] DEVCONTAINER > Multi-DB test containers healthy (Postgres/MySQL/MSSQL)'
+          },
+          {
+            title: 'SonarQube 26.10 SAST Security Gate',
+            desc: 'Scans TypeScript, PHP 8.4 & C# for vulnerabilities and code smells',
+            latency: '6ms',
+            log: '[00:00.014] SONARQUBE_26 > Quality Gate PASSED (0 Bugs, 0 Security Hotspots)'
+          },
+          {
+            title: 'Playwright 1.61 Automated E2E Suite',
+            desc: 'Executes headless browser verification of EBR digital signatures & PDFs',
+            latency: '11ms',
+            log: '[00:00.025] PLAYWRIGHT_E2E > 42/42 E2E specs passed (Batch Record + PDF export)'
+          },
+          {
+            title: 'GitHub OIDC -> AWS CDK / IIS Watcher',
+            desc: 'Deploys changed stacks & dispatches Microsoft Teams Webhook alert',
+            latency: '5ms',
+            log: '[00:00.030] DEPLOY_OPS > Zero-downtime rollout complete + Teams notification sent'
+          }
+        ]
+      }
+    };
+
+    let timers = [];
+    function clearSimTimers() {
+      timers.forEach((id) => clearTimeout(id));
+      timers = [];
+    }
+
+    function runScenario(key) {
+      const data = SCENARIOS[key] || SCENARIOS.iam;
+      clearSimTimers();
+
+      container.querySelectorAll('.arch-sim-btn').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-sim') === key);
+      });
+
+      if (badgeEl) {
+        badgeEl.textContent = 'SIMULATING PACKET FLOW...';
+      }
+
+      stepsEl.innerHTML = data.steps
+        .map(
+          (s, i) => `
+          <div class="arch-sim-step" data-step-idx="${i}">
+            <span class="arch-step-num">0${i + 1}</span>
+            <div class="arch-step-info">
+              <strong>${s.title}</strong>
+              <span>${s.desc}</span>
+            </div>
+            <span class="arch-step-latency">${s.latency}</span>
+          </div>
+        `
+        )
+        .join('');
+
+      logEl.textContent = `>>> INIT SCENARIO [${key.toUpperCase()}] // STREAMING TELEMETRY...\n`;
+
+      const stepNodes = stepsEl.querySelectorAll('.arch-sim-step');
+      data.steps.forEach((s, idx) => {
+        const tId = setTimeout(() => {
+          stepNodes.forEach((node, nIdx) => {
+            node.classList.toggle('is-active', nIdx === idx);
+            node.classList.toggle('is-done', nIdx < idx);
+          });
+          logEl.textContent += s.log + '\n';
+          logEl.scrollTop = logEl.scrollHeight;
+
+          if (idx === data.steps.length - 1) {
+            const doneId = setTimeout(() => {
+              stepNodes.forEach((node) => {
+                node.classList.remove('is-active');
+                node.classList.add('is-done');
+              });
+              if (badgeEl) badgeEl.textContent = 'LATENCY: ' + data.totalLatency;
+              logEl.textContent += `>>> STATUS: TRANSACTION VERIFIED (100% INTEGRITY)\n`;
+            }, 360);
+            timers.push(doneId);
+          }
+        }, idx * 420 + 80);
+        timers.push(tId);
+      });
+    }
+
+    container.querySelectorAll('.arch-sim-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.getAttribute('data-sim');
+        if (key) runScenario(key);
+      });
+    });
+
+    // Expose global trigger so Command Palette can launch simulations
+    window.triggerArchSimulation = function (key) {
+      const archSection = document.getElementById('architecture');
+      if (archSection) archSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      runScenario(key);
+    };
+
+    runScenario('iam');
+  }
+
+  /* ==========================================================================
+     7. INTERACTIVE 60FPS T-SHAPED COMPETENCY RADAR & TRACEABILITY INSPECTOR
+     ========================================================================== */
+  function initSkillRadarAndTraceability() {
+    const canvas = document.getElementById('skillRadarCanvas');
+    const titleEl = document.getElementById('traceSkillTitle');
+    const descEl = document.getElementById('traceSkillDesc');
+    const badgeEl = document.getElementById('traceDomainBadge');
+    const scoreEl = document.getElementById('traceScoreValue');
+    const archEl = document.getElementById('traceArchPattern');
+    const impactEl = document.getElementById('traceImpactMetric');
+    const pillsEl = document.getElementById('traceProjectPills');
+    const overlayLegend = document.getElementById('radarOverlayLegend');
+    if (!canvas || !titleEl || !pillsEl) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    const SKILL_DATA = {
+      csharp: {
+        badge: 'DOMAIN 01 // ENTERPRISE .NET & ERP',
+        score: '95% CALIBRATED',
+        title: 'C# / ASP.NET Core 8 & Enterprise ERP Sync',
+        desc: 'พัฒนา Web API ประสิทธิภาพสูงด้วย .NET 8 และ Entity Framework Core 8 สตรีมมิ่งไฟล์ PDF ขนาดใหญ่ผ่าน HTTP Range Requests, ซิงค์ข้อมูลกับ SAP Business One และเชื่อมต่อหัวชั่งรถบรรทุก RS-232',
+        arch: 'ASP.NET Core 8 Web API · EF Core 8 · PdfProxy Streaming · RS-232 Serial',
+        impact: 'Sub-second QR PDF Streaming · 24/7 SAP Sync · Zero Weighbridge Fraud',
+        radarIdx: 2,
+        projects: [
+          { id: 'leaflet', name: 'E-Leaflet (.NET 8 + PdfProxy)' },
+          { id: 'manhour', name: 'ManHour SAP B1 Sync API' },
+          { id: 'ants', name: 'ANTS SMS Platform' },
+          { id: 'truckscale', name: 'IoT Truck Scale System' }
+        ]
+      },
+      php: {
+        badge: 'DOMAIN 02 // MANUFACTURING BACKEND',
+        score: '88% CALIBRATED',
+        title: 'PHP 8.4 / Laravel 12 Manufacturing Ecosystem',
+        desc: 'ออกแบบระบบคำนวณชั่วโมงแรงงานและต้นทุนสายการผลิตโรงงานยาด้วย Laravel 12, PHP 8.4, Blade และ Vite 7 พร้อม Queue Workers, Sanctum Auth และ Yajra DataTables',
+        arch: 'Laravel 12 REST API · Blade + Vite 7 · Redis Queue · MySQL 8 Indexing',
+        impact: '99.9% Shop-Floor Uptime · >70% Faster Labor Cost Calculation',
+        radarIdx: 0,
+        projects: [
+          { id: 'manhour', name: 'ManHour Production Ecosystem' },
+          { id: 'hongthong', name: 'Enterprise HR & Payroll Engine' }
+        ]
+      },
+      ts: {
+        badge: 'DOMAIN 03 // CLOUD IaC & TYPESCRIPT 5',
+        score: '92% CALIBRATED',
+        title: 'TypeScript 5 & AWS CDK (7-Stack Cloud IaC)',
+        desc: 'เขียนโครงสร้างพื้นฐาน Cloud ทั้งหมดด้วย AWS CDK (TypeScript) แยก 7 Stacks พร้อมระบบเชื่อมต่อฐานข้อมูล Aurora แบบไร้รหัสผ่าน (@aws-sdk/rds-signer) และ Type-safe Zod 4 Validation',
+        arch: 'AWS CDK (TypeScript) · @aws-sdk/rds-signer · GitHub OIDC Matrix · Zod 4',
+        impact: '0 Static DB Passwords · 65% Faster Selective CI/CD Deployments',
+        radarIdx: 1,
+        projects: [
+          { id: 'aws', name: 'AWS CDK 7-Stack Infrastructure' },
+          { id: 'ebr', name: 'Electronic Batch Record (EBR)' },
+          { id: 'corporate', name: '4-App SSO & SharePoint MCP' },
+          { id: 'jarvis', name: 'JARVIS AI Agent OS' }
+        ]
+      },
+      nextjs: {
+        badge: 'DOMAIN 04 // MODERN FULL-STACK & SSR',
+        score: '90% CALIBRATED',
+        title: 'Next.js 16 / React 19 Compiler / Bun 1.3',
+        desc: 'สร้างเว็บแอปพลิเคชันระดับ Enterprise ด้วย Next.js 16 App Router, React 19 Compiler และ Bun 1.3 Runtime เชื่อมต่อฐานข้อมูลผ่าน Prisma 7.9 และสร้างเอกสาร PDF ฝั่งเซิร์ฟเวอร์ด้วย pdf-lib',
+        arch: 'Next.js 16 SSR · React 19 Compiler · Bun 1.3 · Prisma 7.9 · Cognito OIDC',
+        impact: '100% Paperless GMP Batch Record · 4 Unified Intranet Apps',
+        radarIdx: 0,
+        projects: [
+          { id: 'ebr', name: 'Electronic Batch Record (EBR)' },
+          { id: 'corporate', name: 'TP Drug Connect & Employee SSO' },
+          { id: 'tdmaster', name: 'TD Master Quant Journal' },
+          { id: 'crossmatch', name: 'CrossMatch Multi-Branch POS' }
+        ]
+      },
+      kotlin: {
+        badge: 'DOMAIN 05 // AUTOMOTIVE & REAL-TIME DSP',
+        score: '88% CALIBRATED',
+        title: 'Android Kotlin (Android Auto) & 60fps Acoustic DSP',
+        desc: 'พัฒนา Native Android (Kotlin) สื่อสารกับ Android Auto SDK เพื่อยิงภาพหน้าจอขึ้นจอรถ MG S5 EV 12.8" แบบไร้สาย และพัฒนาเอนจินวิเคราะห์เสียงเครื่องยนต์ 60fps FFT Spectrogram',
+        arch: 'Kotlin CarAppService · MediaProjection · Web Audio 2048-Bin FFT DSP',
+        impact: 'Zero-Hotspot 60fps In-Car Projection · Real-Time 8-Fault Engine AI',
+        radarIdx: 5,
+        projects: [
+          { id: 'carshare', name: 'Car Share Mirror (MG S5 EV)' },
+          { id: 'acousticar', name: 'AcoustiCar AI (60fps FFT DSP)' }
+        ]
+      },
+      node: {
+        badge: 'DOMAIN 06 // ETL MIDDLEWARE & MCP SERVERS',
+        score: '88% CALIBRATED',
+        title: 'Node.js (ESM) Sync & Model Context Protocol (MCP)',
+        desc: 'พัฒนาสคริปต์ซิงค์ข้อมูล 2 ทิศทางระหว่าง SAP Business One (MSSQL) กับ MySQL แบบ Idempotent และสร้าง SharePoint MCP Server (@modelcontextprotocol/sdk) เชื่อมต่อเอกสารองค์กร',
+        arch: 'Node.js ESM ETL · @modelcontextprotocol/sdk · SharePoint & M365 Graph',
+        impact: '24/7 Lock-Free SAP ERP Sync · Enterprise-Ready AI Context',
+        radarIdx: 4,
+        projects: [
+          { id: 'corporate', name: 'SharePoint MCP & Connect Intranet' },
+          { id: 'manhour', name: 'SAP Business One 2-Way Sync' },
+          { id: 'jarvis', name: 'JARVIS MCP Tool Runner' }
+        ]
+      },
+      go: {
+        badge: 'DOMAIN 07 // DEVSECOPS & CONTAINERS',
+        score: '90% CALIBRATED',
+        title: 'DevSecOps Quality Gates, Docker & High-Concurrency APIs',
+        desc: 'ยกระดับคุณภาพโค้ดด้วย SonarQube 26.10 SAST, ชุดทดสอบ Playwright 1.61 E2E และสร้าง Polyglot Docker DevContainer ที่รัน Postgres, MySQL, MSSQL และ Redis พร้อมกันในคำสั่งเดียว',
+        arch: 'SonarQube 26 SAST · Playwright 1.61 E2E · Polyglot Docker DevContainer',
+        impact: '1-Command Developer Onboarding · Automated Zero-Downtime Rollback',
+        radarIdx: 3,
+        projects: [
+          { id: 'devtools', name: 'SonarQube & Docker DevContainer' },
+          { id: 'ebr', name: 'Playwright E2E Verified EBR' },
+          { id: 'aws', name: 'ECS Fargate Container Infra' }
+        ]
+      },
+      python: {
+        badge: 'DOMAIN 08 // AI AGENTS, VISION & CLOUD LAMBDA',
+        score: '89% CALIBRATED',
+        title: 'AI Agents, Hybrid LLM (Ollama/Groq) & Cloud Automation',
+        desc: 'ผสานโมเดล AI ทั้งแบบ Local (Ollama qwen3.6:27b) และ Cloud (Groq llama-3.3-70b) เข้ากับระบบตรวจจับท่าทางมือ MediaPipe Vision, Three.js 3D และ AWS Lambda',
+        arch: 'Vercel AI SDK · Ollama / Groq · MediaPipe Tasks Vision · Python Lambda',
+        impact: 'Multimodal Voice/Gesture AI Control · Automated Cloud DB Bootstrap',
+        radarIdx: 4,
+        projects: [
+          { id: 'jarvis', name: 'JARVIS Multimodal AI OS' },
+          { id: 'acousticar', name: 'AcoustiCar AI Diagnostics' },
+          { id: 'tdmaster', name: 'TD Master TradingView MCP' }
+        ]
+      }
+    };
+
+    const RADAR_AXES = [
+      { label: 'Full-Stack Web', short: 'NEXT16 / L12', value: 0.94, skillKey: 'nextjs' },
+      { label: 'Cloud & CDK IaC', short: 'AWS CDK / IAM', value: 0.92, skillKey: 'ts' },
+      { label: 'ERP & .NET 8', short: 'SAP B1 / C#', value: 0.95, skillKey: 'csharp' },
+      { label: 'DevSecOps & QA', short: 'SONAR / E2E', value: 0.90, skillKey: 'go' },
+      { label: 'AI & MCP SDK', short: 'MCP / LLM', value: 0.89, skillKey: 'python' },
+      { label: 'Automotive & DSP', short: 'KOTLIN / FFT', value: 0.88, skillKey: 'kotlin' }
+    ];
+
+    const OVERLAYS = {
+      none: null,
+      frontend: [0.92, 0.35, 0.30, 0.48, 0.45, 0.25],
+      devops: [0.40, 0.92, 0.42, 0.88, 0.38, 0.20]
+    };
+
+    let activeOverlay = 'none';
+    let selectedRadarIdx = 2; // Starts on C# / .NET 8
+
+    function selectSkill(key) {
+      const info = SKILL_DATA[key];
+      if (!info) return;
+
+      selectedRadarIdx = info.radarIdx;
+      if (badgeEl) badgeEl.textContent = info.badge;
+      if (scoreEl) scoreEl.textContent = info.score;
+      titleEl.textContent = info.title;
+      if (descEl) descEl.textContent = info.desc;
+      if (archEl) archEl.textContent = info.arch;
+      if (impactEl) impactEl.textContent = info.impact;
+
+      pillsEl.innerHTML = info.projects
+        .map(
+          (p) =>
+            `<button type="button" class="trace-proj-pill" onclick="openProjectDetail('${p.id}')"><i class="fas fa-cube"></i> ${p.name} →</button>`
+        )
+        .join('');
+
+      document.querySelectorAll('.skill[data-skill-key]').forEach((el) => {
+        el.classList.toggle('is-selected', el.getAttribute('data-skill-key') === key);
+      });
+    }
+
+    document.querySelectorAll('.skill[data-skill-key]').forEach((el) => {
+      el.addEventListener('click', () => {
+        const key = el.getAttribute('data-skill-key');
+        if (key) selectSkill(key);
+      });
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          const key = el.getAttribute('data-skill-key');
+          if (key) selectSkill(key);
+        }
+      });
+    });
+
+    document.querySelectorAll('.radar-cmp-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        activeOverlay = btn.getAttribute('data-overlay') || 'none';
+        document.querySelectorAll('.radar-cmp-btn').forEach((b) => {
+          b.classList.toggle('active', b === btn);
+        });
+        if (overlayLegend) {
+          overlayLegend.hidden = activeOverlay === 'none';
+        }
+      });
+    });
+
+    // Click on Radar Canvas vertex to inspect that domain
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      const mx = ((e.clientX - rect.left) / Math.max(rect.width, 1)) * canvas.width;
+      const my = ((e.clientY - rect.top) / Math.max(rect.height, 1)) * canvas.height;
+      const cx = canvas.width * 0.5;
+      const cy = canvas.height * 0.52;
+      const angle = Math.atan2(my - cy, mx - cx);
+      let norm = angle + Math.PI * 0.5;
+      if (norm < 0) norm += Math.PI * 2;
+      const step = (Math.PI * 2) / RADAR_AXES.length;
+      const idx = Math.round(norm / step) % RADAR_AXES.length;
+      const axis = RADAR_AXES[idx];
+      if (axis) selectSkill(axis.skillKey);
+    });
+
+    function renderRadar(now) {
+      const t = now * 0.001;
+      const pal = getThemePalette();
+      const w = canvas.width;
+      const h = canvas.height;
+      const cx = w * 0.5;
+      const cy = h * 0.52;
+      const maxR = Math.min(w, h) * 0.34;
+
+      ctx.clearRect(0, 0, w, h);
+
+      // Draw concentric hexagonal rings
+      for (let ring = 1; ring <= 4; ring++) {
+        const r = (maxR * ring) / 4;
+        ctx.beginPath();
+        RADAR_AXES.forEach((_, idx) => {
+          const a = (idx * Math.PI * 2) / RADAR_AXES.length - Math.PI * 0.5;
+          const x = cx + Math.cos(a) * r;
+          const y = cy + Math.sin(a) * r;
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.strokeStyle = ring === 4 ? pal.inkMuted : pal.inkFaint;
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      }
+
+      // Axis spokes
+      RADAR_AXES.forEach((axis, idx) => {
+        const a = (idx * Math.PI * 2) / RADAR_AXES.length - Math.PI * 0.5;
+        const x = cx + Math.cos(a) * maxR;
+        const y = cy + Math.sin(a) * maxR;
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = idx === selectedRadarIdx ? pal.signal : pal.inkFaint;
+        ctx.lineWidth = idx === selectedRadarIdx ? 1.5 : 1;
+        ctx.stroke();
+      });
+
+      // Optional comparison overlay polygon
+      const ov = OVERLAYS[activeOverlay];
+      if (ov) {
+        ctx.beginPath();
+        ov.forEach((val, idx) => {
+          const a = (idx * Math.PI * 2) / RADAR_AXES.length - Math.PI * 0.5;
+          const r = maxR * val;
+          const x = cx + Math.cos(a) * r;
+          const y = cy + Math.sin(a) * r;
+          if (idx === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = 'rgba(245, 158, 11, 0.14)';
+        ctx.fill();
+        ctx.strokeStyle = '#f59e0b';
+        ctx.lineWidth = 1.6;
+        ctx.setLineDash([4, 4]);
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Primary T-Shaped Polygon
+      ctx.beginPath();
+      const pts = RADAR_AXES.map((axis, idx) => {
+        const a = (idx * Math.PI * 2) / RADAR_AXES.length - Math.PI * 0.5;
+        const pulse = Math.sin(t * 2.2 + idx) * 0.015;
+        const r = maxR * (axis.value + pulse);
+        const x = cx + Math.cos(a) * r;
+        const y = cy + Math.sin(a) * r;
+        if (idx === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+        return { x, y, a, axis, idx };
+      });
+      ctx.closePath();
+      ctx.fillStyle = pal.signalSoft;
+      ctx.fill();
+      ctx.strokeStyle = pal.signal;
+      ctx.lineWidth = 2.2;
+      ctx.stroke();
+
+      // Vertices & Labels
+      ctx.font = '700 10px "Commit Mono", monospace';
+      ctx.textAlign = 'center';
+      pts.forEach((p) => {
+        const isSel = p.idx === selectedRadarIdx;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, isSel ? 5.5 : 3.8, 0, Math.PI * 2);
+        ctx.fillStyle = isSel ? pal.valid : pal.signal;
+        ctx.fill();
+
+        const lx = cx + Math.cos(p.a) * (maxR + 28);
+        const ly = cy + Math.sin(p.a) * (maxR + 22);
+        ctx.fillStyle = isSel ? pal.signal : pal.ink;
+        ctx.fillText(p.axis.label, lx, ly);
+        ctx.fillStyle = pal.inkMuted;
+        ctx.fillText(`${Math.round(p.axis.value * 100)}%`, lx, ly + 12);
+      });
+
+      if (!prefersReducedMotion) {
+        requestAnimationFrame(renderRadar);
+      }
+    }
+
+    selectSkill('csharp');
+    requestAnimationFrame(renderRadar);
+  }
+
+  /* ==========================================================================
+     8. EXECUTIVE COMMAND PALETTE & PERSONA LENS (Ctrl+K)
+     ========================================================================== */
+  function initExecutiveCommandPalette() {
+    const floatBtn = document.getElementById('execCmdFloatingBtn');
+    const modal = document.getElementById('execCommandModal');
+    const backdrop = document.getElementById('execCmdBackdrop');
+    const closeBtn = document.getElementById('execCmdCloseBtn');
+    const input = document.getElementById('execCmdInput');
+    const resultsEl = document.getElementById('execCmdResults');
+    const lensPills = document.querySelectorAll('.exec-lens-pill');
+    if (!modal || !resultsEl || !input) return;
+
+    const COMMAND_ITEMS = [
+      {
+        title: 'Simulate: Zero-Password IAM DB Handshake (@aws-sdk/rds-signer)',
+        sub: 'Live Interactive Architecture Trace · Aurora PostgreSQL 16 + ECS Fargate',
+        tag: 'LIVE SIMULATOR',
+        icon: 'fa-shield-alt',
+        lens: 'cto',
+        action: () => window.triggerArchSimulation && window.triggerArchSimulation('iam')
+      },
+      {
+        title: 'Simulate: SAP Business One 2-Way Production Sync (OWOR)',
+        sub: 'Live Interactive Architecture Trace · MSSQL ↔ Node.js ↔ Laravel 12 ↔ .NET 8',
+        tag: 'LIVE SIMULATOR',
+        icon: 'fa-sync-alt',
+        lens: 'erp',
+        action: () => window.triggerArchSimulation && window.triggerArchSimulation('sap')
+      },
+      {
+        title: 'Simulate: SharePoint MCP Server & Hybrid AI Agent Call',
+        sub: 'Live Interactive Architecture Trace · Cognito OIDC ↔ Next.js 16 ↔ MCP SDK',
+        tag: 'LIVE SIMULATOR',
+        icon: 'fa-robot',
+        lens: 'fullstack',
+        action: () => window.triggerArchSimulation && window.triggerArchSimulation('mcp')
+      },
+      {
+        title: 'Simulate: SonarQube 26 SAST + Playwright E2E Quality Gate',
+        sub: 'Live Interactive Architecture Trace · Docker DevContainer ↔ GitHub OIDC',
+        tag: 'LIVE SIMULATOR',
+        icon: 'fa-check-double',
+        lens: 'cto',
+        action: () => window.triggerArchSimulation && window.triggerArchSimulation('devsecops')
+      },
+      {
+        title: 'Electronic Batch Record (EBR) — GMP Digital Manufacturing',
+        sub: 'Next.js 16 · React 19 Compiler · Bun 1.3 · Prisma 7.9 · RDS IAM Signer · Playwright E2E',
+        tag: 'PROJECT #01',
+        icon: 'fa-pills',
+        lens: 'erp',
+        action: () => window.openProjectDetail && window.openProjectDetail('ebr')
+      },
+      {
+        title: 'Enterprise AWS CDK (TypeScript) 7-Stack Cloud Infrastructure',
+        sub: 'CloudFront+ACM · Multi-Tier VPC · ECS Fargate · Aurora IAM DB · GitHub OIDC',
+        tag: 'PROJECT #09',
+        icon: 'fa-cloud',
+        lens: 'cto',
+        action: () => window.openProjectDetail && window.openProjectDetail('aws')
+      },
+      {
+        title: 'TP Drug 4-App Intranet, Central Cognito SSO & SharePoint MCP',
+        sub: 'Employee IdP · AppCenter Portal · Connect Intranet · M365 Graph · Cross-App RBAC',
+        tag: 'PROJECT #08',
+        icon: 'fa-network-wired',
+        lens: 'fullstack',
+        action: () => window.openProjectDetail && window.openProjectDetail('corporate')
+      },
+      {
+        title: 'ManHour Production Ecosystem & SAP Business One Sync',
+        sub: 'Laravel 12 · PHP 8.4 · MySQL · SAP MSSQL · Node.js ESM · ASP.NET Core 8',
+        tag: 'PROJECT #02',
+        icon: 'fa-industry',
+        lens: 'erp',
+        action: () => window.openProjectDetail && window.openProjectDetail('manhour')
+      },
+      {
+        title: 'JARVIS AI — Multimodal Agentic OS & MCP Engine',
+        sub: 'Vercel AI SDK · @modelcontextprotocol/sdk · Ollama Qwen 3.6 · React Three Fiber 3D',
+        tag: 'PROJECT #06',
+        icon: 'fa-microchip',
+        lens: 'fullstack',
+        action: () => window.openProjectDetail && window.openProjectDetail('jarvis')
+      },
+      {
+        title: 'AcoustiCar AI™ — 60fps FFT Vehicle Acoustic Diagnostics',
+        sub: 'Web Audio API Raw DSP · Waterfall Spectrogram · Polar Radar · 8-Fault Synthesizer',
+        tag: 'PROJECT #13',
+        icon: 'fa-wave-square',
+        lens: 'fullstack',
+        action: () => window.openProjectDetail && window.openProjectDetail('acousticar')
+      },
+      {
+        title: 'DevSecOps Quality Gates & Polyglot Docker DevContainer',
+        sub: 'SonarQube 26 SAST · Playwright 1.61 E2E · 1-Command Multi-DB Docker · IIS Watcher',
+        tag: 'PROJECT #14',
+        icon: 'fa-cubes',
+        lens: 'cto',
+        action: () => window.openProjectDetail && window.openProjectDetail('devtools')
+      },
+      {
+        title: 'Car Share Mirror — Wireless Android Auto (MG S5 EV 12.8")',
+        sub: 'Native Android Kotlin · Android Auto SDK · MediaProjection 60fps Streaming',
+        tag: 'PROJECT #04',
+        icon: 'fa-car',
+        lens: 'fullstack',
+        action: () => window.openProjectDetail && window.openProjectDetail('carshare')
+      },
+      {
+        title: 'E-Leaflet — Smart Drug Registration & Patient QR Streaming',
+        sub: 'C# ASP.NET Core 8 · EF Core 8 · HTTP Range Request PdfProxy · Expiry Alerts',
+        tag: 'PROJECT #03',
+        icon: 'fa-qrcode',
+        lens: 'erp',
+        action: () => window.openProjectDetail && window.openProjectDetail('leaflet')
+      },
+      {
+        title: 'Launch Interactive Mini-Projects Lab (Cyber Strike Game, E-Commerce, Mobile UI)',
+        sub: 'Open live playable showcase modal',
+        tag: 'INTERACTIVE LAB',
+        icon: 'fa-flask',
+        lens: 'all',
+        action: () => window.openProjectsModal && window.openProjectsModal()
+      }
+    ];
+
+    let activeLens = 'all';
+
+    function applyPortfolioLensHighlight(lens) {
+      const map = {
+        cto: ['aws', 'devtools', 'ebr', 'corporate'],
+        fullstack: ['ebr', 'jarvis', 'corporate', 'acousticar', 'carshare', 'tdmaster'],
+        erp: ['ebr', 'manhour', 'leaflet', 'hongthong', 'truckscale', 'ants']
+      };
+      const priorityIds = map[lens] || [];
+      document.querySelectorAll('.portfolio-item[data-project-id]').forEach((card) => {
+        const pid = card.getAttribute('data-project-id');
+        card.classList.toggle('lens-priority', priorityIds.includes(pid));
+      });
+    }
+
+    function renderResults() {
+      const q = (input.value || '').trim().toLowerCase();
+      const filtered = COMMAND_ITEMS.filter((item) => {
+        const matchesLens = activeLens === 'all' || item.lens === activeLens || item.lens === 'all';
+        const matchesQuery =
+          !q ||
+          item.title.toLowerCase().includes(q) ||
+          item.sub.toLowerCase().includes(q) ||
+          item.tag.toLowerCase().includes(q);
+        return matchesLens && matchesQuery;
+      });
+
+      resultsEl.innerHTML = filtered
+        .map(
+          (item, idx) => `
+          <button type="button" class="exec-cmd-item ${idx === 0 ? 'is-focused' : ''}" data-cmd-idx="${idx}">
+            <div class="exec-cmd-item-left">
+              <span class="exec-cmd-icon"><i class="fas ${item.icon}"></i></span>
+              <div>
+                <span class="exec-cmd-item-title">${item.title}</span>
+                <span class="exec-cmd-item-sub">${item.sub}</span>
+              </div>
+            </div>
+            <span class="exec-cmd-tag">${item.tag}</span>
+          </button>
+        `
+        )
+        .join('');
+
+      resultsEl.querySelectorAll('.exec-cmd-item').forEach((btn, idx) => {
+        btn.addEventListener('click', () => {
+          const chosen = filtered[idx];
+          closePalette();
+          if (chosen && typeof chosen.action === 'function') chosen.action();
+        });
+      });
+    }
+
+    function openPalette() {
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      input.value = '';
+      renderResults();
+      setTimeout(() => input.focus(), 40);
+    }
+
+    function closePalette() {
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (floatBtn) floatBtn.addEventListener('click', openPalette);
+    if (backdrop) backdrop.addEventListener('click', closePalette);
+    if (closeBtn) closeBtn.addEventListener('click', closePalette);
+    input.addEventListener('input', renderResults);
+
+    lensPills.forEach((pill) => {
+      pill.addEventListener('click', () => {
+        activeLens = pill.getAttribute('data-lens') || 'all';
+        lensPills.forEach((p) => p.classList.toggle('active', p === pill));
+        applyPortfolioLensHighlight(activeLens);
+        renderResults();
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (modal.classList.contains('is-open')) closePalette();
+        else openPalette();
+      } else if (e.key === 'Escape' && modal.classList.contains('is-open')) {
+        closePalette();
+      }
+    });
+  }
+
+  /* ==========================================================================
      BOOT SEQUENCE INITIALIZATION (WITH AUTOMATIC THREE.JS FALLBACK LOADER)
      ========================================================================== */
   function startAll3DEngines() {
@@ -2115,6 +2872,9 @@
     initEnterprise3DTopology();
     initSpatialCardPhysics();
     initModal3DArchitectureHook();
+    initArchitectureWorkflowSimulator();
+    initSkillRadarAndTraceability();
+    initExecutiveCommandPalette();
   }
 
   function boot() {

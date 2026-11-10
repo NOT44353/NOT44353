@@ -587,6 +587,41 @@
           </div>
         </div>
 
+        <!-- LIVE ENTERPRISE TRANSACTION & PACKET SIMULATOR -->
+        <div class="arch-sim-console" id="archWorkflowSim" aria-label="Interactive Enterprise Architecture Packet Simulator">
+          <div class="arch-sim-header">
+            <div class="arch-sim-title">
+              <span class="pulse-dot"></span>
+              <strong>LIVE SYSTEM TRANSACTION SIMULATOR</strong>
+              <span class="arch-sim-sub">คลิกจำลองการทำงานจริงของสถาปัตยกรรมระดับ Enterprise แบบ Step-by-Step</span>
+            </div>
+            <div class="arch-sim-actions" role="tablist" aria-label="Simulation Scenarios">
+              <button type="button" class="arch-sim-btn active" data-sim="iam">
+                <i class="fas fa-shield-alt"></i> Zero-Password IAM DB
+              </button>
+              <button type="button" class="arch-sim-btn" data-sim="sap">
+                <i class="fas fa-sync-alt"></i> SAP B1 2-Way Sync
+              </button>
+              <button type="button" class="arch-sim-btn" data-sim="mcp">
+                <i class="fas fa-robot"></i> SharePoint MCP Agent
+              </button>
+              <button type="button" class="arch-sim-btn" data-sim="devsecops">
+                <i class="fas fa-check-double"></i> SonarQube + Playwright CI/CD
+              </button>
+            </div>
+          </div>
+          <div class="arch-sim-body">
+            <div class="arch-sim-steps" id="archSimSteps"></div>
+            <div class="arch-sim-terminal">
+              <div class="arch-sim-term-bar">
+                <span>TELEMETRY TRACE // LIVE PACKET LOG</span>
+                <span id="archSimLatencyBadge">LATENCY: 14ms · STATUS: VERIFIED</span>
+              </div>
+              <pre class="arch-sim-log" id="archSimLog"></pre>
+            </div>
+          </div>
+        </div>
+
         <div class="blueprint-grid">
           <div class="blueprint-node">
             <div class="node-head">
@@ -1036,13 +1071,57 @@
       <div class="sheet-section-header">
         <div>
           <h3>CORE PROGRAMMING LANGUAGES &amp; RUNTIMES</h3>
-          <p class="section-subtitle">ระดับความเชี่ยวชาญในการพัฒนาซอฟต์แวร์พร้อมการอ้างอิงระบบที่ใช้งานจริงในสายการผลิต</p>
+          <p class="section-subtitle">ระดับความเชี่ยวชาญในการพัฒนาซอฟต์แวร์พร้อมเรดาร์วิเคราะห์ศักยภาพ T-Shaped และการอ้างอิงระบบที่ใช้งานจริงในสายการผลิต</p>
         </div>
         <span class="sheet-ref">MATRIX // RUNTIME-CALIBRATION</span>
       </div>
 
+      <!-- INTERACTIVE 60FPS T-SHAPED COMPETENCY RADAR & TRACEABILITY INSPECTOR -->
+      <div class="skill-radar-console" id="skillRadarStage">
+        <div class="skill-radar-canvas-col">
+          <div class="skill-radar-toolbar">
+            <span class="radar-title-badge"><i class="fas fa-crosshairs"></i> 6-AXIS T-SHAPED TELEMETRY</span>
+            <div class="radar-compare-btns" role="group" aria-label="Compare Competency Profile">
+              <button type="button" class="radar-cmp-btn active" data-overlay="none">My T-Shape</button>
+              <button type="button" class="radar-cmp-btn" data-overlay="frontend">vs Frontend Dev</button>
+              <button type="button" class="radar-cmp-btn" data-overlay="devops">vs Cloud DevOps</button>
+            </div>
+          </div>
+          <div class="skill-radar-canvas-wrap">
+            <canvas id="skillRadarCanvas" width="380" height="320" aria-label="6-Axis Engineering Competency Radar"></canvas>
+          </div>
+          <div class="skill-radar-legend">
+            <span class="legend-item primary"><i class="legend-dot"></i> Thanapat (Full-Stack + Cloud + ERP + AI)</span>
+            <span class="legend-item secondary" id="radarOverlayLegend" hidden><i class="legend-dot"></i> Typical Single-Specialty Role</span>
+          </div>
+        </div>
+
+        <div class="skill-trace-inspector" id="skillTraceInspector">
+          <div class="trace-inspector-head">
+            <span class="trace-badge" id="traceDomainBadge">ACTIVE DOMAIN // 01</span>
+            <span class="trace-score" id="traceScoreValue">95% CALIBRATED</span>
+          </div>
+          <h4 id="traceSkillTitle">C# / ASP.NET Core 8 &amp; Enterprise ERP</h4>
+          <p id="traceSkillDesc">สถาปัตยกรรมระบบหลังบ้านความเร็วสูง เชื่อมต่อฐานข้อมูล SQL Server / MySQL, สตรีมมิ่งไฟล์ PDF ขนาดใหญ่ผ่าน HTTP Range Requests และซิงค์ข้อมูลใบสั่งผลิตกับ SAP Business One</p>
+          <div class="trace-meta-grid">
+            <div class="trace-meta-box">
+              <span class="trace-meta-label">CORE ARCHITECTURE PATTERN</span>
+              <strong id="traceArchPattern">Clean Web API · EF Core 8 · Background Hosted Services · RS-232 Serial</strong>
+            </div>
+            <div class="trace-meta-box">
+              <span class="trace-meta-label">VERIFIED BUSINESS IMPACT</span>
+              <strong id="traceImpactMetric">Sub-second QR PDF Streaming · 24/7 SAP Sync · Zero Weighbridge Fraud</strong>
+            </div>
+          </div>
+          <div class="trace-projects-wrap">
+            <span class="trace-meta-label">CLICK PRODUCTION SYSTEM TO INSPECT 3D TOPOLOGY:</span>
+            <div class="trace-project-pills" id="traceProjectPills"></div>
+          </div>
+        </div>
+      </div>
+
       <div class="skill-bars">
-        <div class="skill">
+        <div class="skill is-selected" data-skill-key="csharp" tabindex="0" role="button" aria-label="Inspect C# and .NET 8 Core projects">
           <div class="skill-head">
             <span>C# / .NET 8 Core</span>
             <small>E-Leaflet · SAP Sync API · ANTS · Truck Scale</small>
@@ -1050,7 +1129,7 @@
           <div class="bar"><div class="progress csharp" style="width:95%"></div></div>
           <em class="skill-pct">95%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="php" tabindex="0" role="button" aria-label="Inspect PHP 8.4 and Laravel 12 projects">
           <div class="skill-head">
             <span>PHP 8.4 / Laravel 12</span>
             <small>ManHour Production Ecosystem &amp; Shop Floor</small>
@@ -1058,50 +1137,50 @@
           <div class="bar"><div class="progress php" style="width:88%"></div></div>
           <em class="skill-pct">88%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="ts" tabindex="0" role="button" aria-label="Inspect TypeScript 5 and AWS CDK projects">
           <div class="skill-head">
-            <span>TypeScript 5 / JavaScript</span>
-            <small>EBR GMP · Corporate CMS · CrossMatch · JARVIS</small>
+            <span>TypeScript 5 / AWS CDK (IaC)</span>
+            <small>7-Stack Cloud IaC · EBR GMP · Connect MCP · JARVIS</small>
           </div>
           <div class="bar"><div class="progress js" style="width:92%"></div></div>
           <em class="skill-pct">92%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="nextjs" tabindex="0" role="button" aria-label="Inspect Next.js 16, React 19 and Bun 1.3 projects">
           <div class="skill-head">
             <span>Next.js 16 / React 19 / Bun 1.3</span>
-            <small>Electronic Batch Record · TP Drug Intranet · TD Master</small>
+            <small>Electronic Batch Record · 4-App SSO Intranet · TD Master</small>
           </div>
           <div class="bar"><div class="progress react" style="width:90%"></div></div>
           <em class="skill-pct">90%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="kotlin" tabindex="0" role="button" aria-label="Inspect Android Kotlin and Automotive DSP projects">
           <div class="skill-head">
-            <span>Android Kotlin / Android Auto</span>
-            <small>Car Share Mirror (MG S5 EV 12.8" Projection)</small>
+            <span>Android Kotlin / Automotive DSP</span>
+            <small>Car Share Mirror (MG S5 EV 12.8") · AcoustiCar AI FFT</small>
           </div>
           <div class="bar"><div class="progress kotlin" style="width:88%"></div></div>
           <em class="skill-pct">88%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="node" tabindex="0" role="button" aria-label="Inspect Node.js ESM and MCP Server projects">
           <div class="skill-head">
-            <span>Node.js (ESM) / Express</span>
-            <small>SAP Business One Bidirectional Sync Engine</small>
+            <span>Node.js (ESM) / MCP SDK</span>
+            <small>SAP B1 Bidirectional Sync · SharePoint MCP Server</small>
           </div>
           <div class="bar"><div class="progress node" style="width:88%"></div></div>
           <em class="skill-pct">88%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="go" tabindex="0" role="button" aria-label="Inspect Go and DevSecOps projects">
           <div class="skill-head">
-            <span>Go / Echo Framework</span>
-            <small>High-Concurrency Microservices &amp; Backend APIs</small>
+            <span>Go / Docker DevSecOps</span>
+            <small>High-Concurrency APIs · SonarQube 26 · DevContainers</small>
           </div>
           <div class="bar"><div class="progress go" style="width:85%"></div></div>
           <em class="skill-pct">85%</em>
         </div>
-        <div class="skill">
+        <div class="skill" data-skill-key="python" tabindex="0" role="button" aria-label="Inspect Python 3, AWS Lambda and AI projects">
           <div class="skill-head">
-            <span>Python 3 / AWS Lambda</span>
-            <small>AWS SAM Cloud Bootstrap &amp; AI Automation</small>
+            <span>Python 3 / AWS Lambda &amp; AI</span>
+            <small>Cloud Bootstrap · Hybrid LLM · MediaPipe Vision</small>
           </div>
           <div class="bar"><div class="progress python" style="width:75%"></div></div>
           <em class="skill-pct">75%</em>
@@ -1382,6 +1461,39 @@
       <div class="modal-body">
         <div class="projects-loader" id="projectsLoader">Loading Lab...</div>
         <iframe id="projectsFrame" title="Mini Projects Showcase" hidden></iframe>
+      </div>
+    </div>
+  </div>
+
+  <!-- Executive Command Palette Floating Pill & Modal (Ctrl+K) -->
+  <button id="execCmdFloatingBtn" class="exec-cmd-floating-btn" type="button" aria-label="Open Executive Command Palette (Ctrl+K)">
+    <span class="pulse-dot"></span>
+    <span class="exec-cmd-btn-text"><i class="fas fa-terminal"></i> Executive Console</span>
+    <kbd class="exec-cmd-kbd">Ctrl+K</kbd>
+  </button>
+
+  <div id="execCommandModal" class="exec-cmd-modal" aria-hidden="true">
+    <div class="exec-cmd-backdrop" id="execCmdBackdrop"></div>
+    <div class="exec-cmd-dialog" role="dialog" aria-modal="true" aria-label="Executive Command & Persona Lens Console">
+      <div class="exec-cmd-top">
+        <i class="fas fa-search exec-cmd-search-icon"></i>
+        <input id="execCmdInput" type="text" class="exec-cmd-input" placeholder="Search 14 production systems, AWS CDK, SAP B1, MCP, or run live simulations..." autocomplete="off" />
+        <button type="button" class="exec-cmd-close" id="execCmdCloseBtn">ESC</button>
+      </div>
+      <div class="exec-lens-bar">
+        <span class="exec-lens-label">EXECUTIVE PERSONA LENS:</span>
+        <div class="exec-lens-pills" id="execLensPills">
+          <button type="button" class="exec-lens-pill active" data-lens="all">All Systems</button>
+          <button type="button" class="exec-lens-pill" data-lens="cto">☁️ CTO / Cloud &amp; Security</button>
+          <button type="button" class="exec-lens-pill" data-lens="fullstack">🚀 Product / Full-Stack &amp; AI</button>
+          <button type="button" class="exec-lens-pill" data-lens="erp">🏭 Enterprise ERP &amp; GMP</button>
+        </div>
+      </div>
+      <div class="exec-cmd-results" id="execCmdResults"></div>
+      <div class="exec-cmd-footer">
+        <span><kbd>↑</kbd> <kbd>↓</kbd> Navigate</span>
+        <span><kbd>Enter</kbd> Execute / Inspect</span>
+        <span><kbd>Ctrl+K</kbd> Toggle Console</span>
       </div>
     </div>
   </div>
