@@ -22,6 +22,18 @@ class InteractiveShowcase {
         this.setupMessaging();
         this.setupGameModal();
         this.initEtlSimulator();
+        this.initBentoSpotlights();
+    }
+
+    initBentoSpotlights() {
+        const cards = document.querySelectorAll('.skill-card, .game-card, .project-card, .simulator-panel');
+        cards.forEach((card) => {
+            card.addEventListener('pointermove', (e) => {
+                const rect = card.getBoundingClientRect();
+                card.style.setProperty('--spot-x', `${(e.clientX - rect.left).toFixed(1)}px`);
+                card.style.setProperty('--spot-y', `${(e.clientY - rect.top).toFixed(1)}px`);
+            });
+        });
     }
 
     detectEmbedded() {
@@ -31,19 +43,17 @@ class InteractiveShowcase {
     }
 
     initTheme() {
-        const saved = localStorage.getItem('cvTheme') || localStorage.getItem('tp_theme') || localStorage.getItem('theme') || 'light';
-        this.applyTheme(saved === 'dark' ? 'dark' : 'light');
+        const saved = localStorage.getItem('cvThemeFuturistic') || 'dark';
+        this.applyTheme(saved === 'light' ? 'light' : 'dark');
 
         const toggleBtn = document.getElementById('labThemeToggle');
         if (toggleBtn) {
             toggleBtn.addEventListener('click', () => {
-                const current = document.documentElement.getAttribute('data-theme') || 'light';
+                const current = document.documentElement.getAttribute('data-theme') || 'dark';
                 const next = current === 'dark' ? 'light' : 'dark';
                 this.applyTheme(next);
                 try {
-                    localStorage.setItem('cvTheme', next);
-                    localStorage.setItem('tp_theme', next);
-                    localStorage.setItem('theme', next);
+                    localStorage.setItem('cvThemeFuturistic', next);
                 } catch (_) {}
             });
         }
@@ -155,15 +165,29 @@ class InteractiveShowcase {
         ];
 
         // Spawn baseline packets
-        for (let i = 0; i < 8; i++) {
+        for (let i = 0; i < 9; i++) {
             this.simPackets.push({
                 seg: i % 3,
                 t: Math.random(),
                 speed: 0.008 + Math.random() * 0.006,
-                color: i % 2 === 0 ? '#C84B31' : '#1B7A43',
-                size: 3.5
+                color: i % 3 === 0 ? '#818cf8' : (i % 3 === 1 ? '#38bdf8' : '#34d399'),
+                size: 3.8
             });
         }
+
+        const drawRoundRect = (x, y, width, height, radius) => {
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + width - radius, y);
+            ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+            ctx.lineTo(x + width, y + height - radius);
+            ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+            ctx.lineTo(x + radius, y + height);
+            ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.closePath();
+        };
 
         const resize = () => {
             const rect = canvas.parentElement.getBoundingClientRect();
@@ -178,12 +202,11 @@ class InteractiveShowcase {
         const render = () => {
             const w = canvas.width / Math.min(window.devicePixelRatio || 1, 2);
             const h = canvas.height / Math.min(window.devicePixelRatio || 1, 2);
-            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
 
             ctx.clearRect(0, 0, w, h);
 
-            // Subtle engineering grid
-            ctx.strokeStyle = isDark ? 'rgba(236,240,246,0.05)' : 'rgba(20,25,35,0.05)';
+            // Subtle spatial grid
+            ctx.strokeStyle = 'rgba(129, 140, 248, 0.06)';
             ctx.lineWidth = 1;
             for (let gx = 0; gx < w; gx += 24) {
                 ctx.beginPath();
@@ -198,7 +221,7 @@ class InteractiveShowcase {
                 ctx.stroke();
             }
 
-            // Draw conduits between nodes
+            // Draw glowing conduits between nodes
             for (let i = 0; i < nodes.length - 1; i++) {
                 const a = nodes[i];
                 const b = nodes[i + 1];
@@ -207,22 +230,23 @@ class InteractiveShowcase {
                 const bx = b.x * w;
                 const by = b.y * h;
 
-                ctx.strokeStyle = isDark ? '#3A4659' : '#C5BFB2';
-                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'rgba(129, 140, 248, 0.25)';
+                ctx.lineWidth = 1.5;
                 ctx.setLineDash([4, 4]);
                 ctx.beginPath();
-                ctx.moveTo(ax, ay - 6);
-                ctx.lineTo(bx, by - 6);
+                ctx.moveTo(ax, ay - 7);
+                ctx.lineTo(bx, by - 7);
                 ctx.stroke();
 
+                ctx.strokeStyle = 'rgba(56, 189, 248, 0.22)';
                 ctx.beginPath();
-                ctx.moveTo(ax, ay + 6);
-                ctx.lineTo(bx, by + 6);
+                ctx.moveTo(ax, ay + 7);
+                ctx.lineTo(bx, by + 7);
                 ctx.stroke();
                 ctx.setLineDash([]);
             }
 
-            // Update & draw packets
+            // Update & draw glowing telemetry packets
             for (let i = this.simPackets.length - 1; i >= 0; i--) {
                 const p = this.simPackets[i];
                 p.t += p.speed;
@@ -244,39 +268,44 @@ class InteractiveShowcase {
                 const a = nodes[p.seg];
                 const b = nodes[p.seg + 1];
                 const px = (a.x + (b.x - a.x) * p.t) * w;
-                const py = a.y * h + (p.reverse ? 6 : -6);
+                const py = a.y * h + (p.reverse ? 7 : -7);
 
+                ctx.save();
+                ctx.shadowColor = p.color;
+                ctx.shadowBlur = 10;
                 ctx.fillStyle = p.color;
                 ctx.beginPath();
-                ctx.arc(px, py, p.size || 3.5, 0, Math.PI * 2);
+                ctx.arc(px, py, p.size || 3.8, 0, Math.PI * 2);
                 ctx.fill();
+                ctx.restore();
             }
 
-            // Draw Node Boxes
+            // Draw Rounded Spatial Glass Node Cards
             nodes.forEach((n, idx) => {
                 const nx = n.x * w;
                 const ny = n.y * h;
-                const bw = Math.min(108, w * 0.21);
-                const bh = 54;
+                const bw = Math.min(110, w * 0.215);
+                const bh = 56;
 
-                ctx.fillStyle = isDark ? '#1C2430' : '#FFFFFF';
-                ctx.strokeStyle = idx === 1 ? '#C84B31' : (isDark ? '#58677D' : '#141923');
-                ctx.lineWidth = idx === 1 ? 2 : 1.5;
-                ctx.fillRect(nx - bw / 2, ny - bh / 2, bw, bh);
-                ctx.strokeRect(nx - bw / 2, ny - bh / 2, bw, bh);
+                drawRoundRect(nx - bw / 2, ny - bh / 2, bw, bh, 12);
+                ctx.fillStyle = 'rgba(17, 23, 41, 0.92)';
+                ctx.fill();
+                ctx.strokeStyle = idx === 1 ? '#818cf8' : 'rgba(255, 255, 255, 0.16)';
+                ctx.lineWidth = idx === 1 ? 1.8 : 1.2;
+                ctx.stroke();
 
                 // Status dot
-                ctx.fillStyle = '#1B7A43';
+                ctx.fillStyle = '#34d399';
                 ctx.beginPath();
-                ctx.arc(nx - bw / 2 + 8, ny - bh / 2 + 9, 3, 0, Math.PI * 2);
+                ctx.arc(nx - bw / 2 + 10, ny - bh / 2 + 10, 3, 0, Math.PI * 2);
                 ctx.fill();
 
-                ctx.fillStyle = isDark ? '#ECF0F6' : '#141923';
+                ctx.fillStyle = '#f8fafc';
                 ctx.font = '700 9.5px "JetBrains Mono", monospace';
                 ctx.textAlign = 'center';
                 ctx.fillText(n.label, nx, ny - 2);
 
-                ctx.fillStyle = isDark ? '#9BA7B8' : '#687385';
+                ctx.fillStyle = '#94a3b8';
                 ctx.font = '500 8px "JetBrains Mono", monospace';
                 ctx.fillText(n.sub, nx, ny + 13);
             });
@@ -310,7 +339,7 @@ class InteractiveShowcase {
                     seg: 0,
                     t: i * 0.12,
                     speed: 0.018,
-                    color: '#C84B31',
+                    color: '#818cf8',
                     size: 4.5,
                     burst: true
                 });
@@ -326,7 +355,7 @@ class InteractiveShowcase {
                     seg: i % 2,
                     t: Math.random() * 0.5,
                     speed: 0.022,
-                    color: '#B45309',
+                    color: '#fbbf24',
                     size: 4.5,
                     burst: true
                 });
@@ -348,7 +377,7 @@ class InteractiveShowcase {
                     seg: 0,
                     t: i * 0.15,
                     speed: 0.016,
-                    color: '#1B7A43',
+                    color: '#34d399',
                     size: 4.5,
                     burst: true
                 });
@@ -912,7 +941,7 @@ function openMobileApp() {
 
 const showcase = new InteractiveShowcase();
 
-// Injected Engineering Drill Styles
+// Injected Engineering Drill Styles (2026 Luxury Spatial Bento & Aurora Glass)
 const gameStyles = `
     .typing-game, .memory-game, .puzzle-game { text-align: left; }
     .drill-meta-row {
@@ -931,16 +960,22 @@ const gameStyles = `
         font-weight: 700;
         color: var(--accent-primary);
         letter-spacing: 0.06em;
+        padding: 0.25rem 0.7rem;
+        border-radius: 999px;
+        background: rgba(99, 102, 241, 0.12);
+        border: 1px solid rgba(129, 140, 248, 0.25);
     }
     .drill-skip-btn {
         font-family: var(--font-mono);
         font-size: 0.72rem;
         font-weight: 600;
-        padding: 0.35rem 0.7rem;
-        background: var(--bg-sheet);
+        padding: 0.38rem 0.85rem;
+        border-radius: 999px;
+        background: var(--bg-card);
         color: var(--ink-primary);
-        border: 1px solid var(--border-hairline);
+        border: 1px solid var(--border-strong);
         cursor: pointer;
+        transition: all 0.2s ease;
     }
     .drill-skip-btn:hover {
         border-color: var(--accent-primary);
@@ -956,9 +991,10 @@ const gameStyles = `
         font-family: var(--font-mono);
         font-size: 0.74rem;
         font-weight: 600;
-        padding: 0.35rem 0.65rem;
-        background: var(--bg-sheet);
-        border: 1px solid var(--border-hairline);
+        padding: 0.38rem 0.75rem;
+        border-radius: 999px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-strong);
         color: var(--ink-secondary);
     }
     .stat-pill span {
@@ -967,37 +1003,42 @@ const gameStyles = `
     }
     .code-display {
         background: var(--bg-code);
-        color: #DCE4F0;
-        padding: 1.15rem 1.25rem;
+        color: #e2e8f0;
+        padding: 1.2rem 1.35rem;
         border: 1px solid var(--border-strong);
+        border-radius: 16px;
         margin-bottom: 0.9rem;
         font-family: var(--font-mono);
         font-size: clamp(0.82rem, 1.8vw, 1rem);
         line-height: 1.6;
         word-break: break-all;
     }
-    .char-ok { color: #3FB950; font-weight: 700; }
+    .char-ok { color: #34d399; font-weight: 700; }
     .char-cursor {
-        background: #C84B31;
-        color: #FFFFFF;
-        padding: 0 1px;
+        background: #6366f1;
+        color: #ffffff;
+        padding: 0 2px;
+        border-radius: 3px;
     }
-    .char-rest { color: #8B97A8; }
+    .char-rest { color: #94a3b8; }
     .input-area input {
         width: 100%;
-        padding: 0.85rem 1rem;
+        padding: 0.85rem 1.1rem;
         font-family: var(--font-mono);
         font-size: 0.92rem;
-        border: 2px solid var(--border-strong);
-        background: var(--bg-elevated);
+        border-radius: 14px;
+        border: 1px solid var(--border-strong);
+        background: var(--bg-card);
         color: var(--ink-primary);
         outline: none;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
     .input-area input:focus {
         border-color: var(--accent-primary);
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
     }
     .input-area input.input-error {
-        border-color: #DC2626;
+        border-color: #f87171;
         animation: inputShake 0.16s ease;
     }
     @keyframes inputShake {
@@ -1006,22 +1047,25 @@ const gameStyles = `
     }
     .progress {
         width: 100%;
-        height: 6px;
-        background: var(--bg-sheet);
+        height: 8px;
+        border-radius: 999px;
+        background: var(--bg-card);
         border: 1px solid var(--border-hairline);
         margin-top: 0.75rem;
         overflow: hidden;
     }
     .progress-bar {
         height: 100%;
-        background: var(--accent-emerald);
+        border-radius: 999px;
+        background: var(--gradient-brand);
         width: 0%;
         transition: width 0.15s ease;
     }
     .arch-insight-bar {
-        padding: 0.65rem 0.85rem;
-        background: var(--bg-sheet);
-        border: 1px solid var(--border-hairline);
+        padding: 0.7rem 0.95rem;
+        border-radius: 12px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-strong);
         border-left: 3px solid var(--accent-primary);
         margin-bottom: 1rem;
         font-size: 0.82rem;
@@ -1035,10 +1079,10 @@ const gameStyles = `
     .memory-grid {
         display: grid;
         grid-template-columns: repeat(4, minmax(110px, 1fr));
-        gap: 0.6rem;
+        gap: 0.65rem;
     }
     .memory-card {
-        min-height: 78px;
+        min-height: 82px;
         border: none;
         background: transparent;
         cursor: pointer;
@@ -1050,32 +1094,33 @@ const gameStyles = `
     .memory-card.flipped { transform: rotateY(180deg); }
     .memory-card.matched .card-front {
         border-color: var(--accent-emerald);
-        background: rgba(27, 122, 67, 0.1);
+        background: rgba(52, 211, 153, 0.14);
     }
     .card-back, .card-front {
         position: absolute;
         inset: 0;
+        border-radius: 14px;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        padding: 0.5rem;
+        padding: 0.55rem;
         text-align: center;
         backface-visibility: hidden;
         border: 1px solid var(--border-strong);
     }
     .card-back {
-        background: var(--bg-sheet);
+        background: var(--bg-card);
         color: var(--ink-secondary);
         font-family: var(--font-mono);
     }
     .card-back small { font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ink-muted); }
-    .card-back strong { font-size: 0.95rem; color: var(--ink-primary); margin-top: 0.15rem; }
+    .card-back strong { font-size: 0.95rem; color: var(--accent-primary); margin-top: 0.15rem; }
     .card-front {
         transform: rotateY(180deg);
-        background: var(--bg-elevated);
+        background: var(--bg-card-hover);
         color: var(--ink-primary);
-        border: 2px solid var(--accent-primary);
+        border: 1.5px solid var(--accent-primary);
     }
     .pair-badge {
         font-family: var(--font-mono);
@@ -1099,46 +1144,50 @@ const gameStyles = `
     .puzzle-container {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.45rem;
-        padding: 1rem;
-        background: var(--bg-sheet);
-        border: 1px solid var(--border-hairline);
+        gap: 0.5rem;
+        padding: 1.1rem;
+        border-radius: 16px;
+        background: var(--bg-card);
+        border: 1px solid var(--border-strong);
         margin-bottom: 1rem;
     }
     .puzzle-block {
         border: 1px solid var(--border-strong);
-        background: var(--bg-elevated);
+        border-radius: 10px;
+        background: rgba(255, 255, 255, 0.04);
         color: var(--ink-primary);
-        padding: 0.55rem 0.8rem;
+        padding: 0.55rem 0.85rem;
         cursor: pointer;
         font-family: var(--font-mono);
         font-size: 0.84rem;
         font-weight: 600;
-        transition: all 0.15s ease;
+        transition: all 0.18s ease;
     }
     .puzzle-block.token-aligned {
         border-color: var(--accent-emerald);
         color: var(--accent-emerald);
+        background: rgba(52, 211, 153, 0.1);
     }
     .puzzle-block.selected {
-        background: var(--accent-primary);
-        border-color: var(--accent-primary);
-        color: #FFFFFF;
+        background: var(--gradient-brand);
+        border-color: transparent;
+        color: #ffffff;
     }
     .puzzle-target {
         background: var(--bg-code);
-        color: #DCE4F0;
-        padding: 0.9rem 1.1rem;
+        color: #e2e8f0;
+        padding: 1rem 1.15rem;
         border: 1px solid var(--border-strong);
+        border-radius: 14px;
         font-family: var(--font-mono);
     }
     .puzzle-target h4 {
         font-size: 0.68rem;
         letter-spacing: 0.08em;
-        color: #8B97A8;
+        color: #94a3b8;
         margin-bottom: 0.35rem;
     }
-    .puzzle-target code { color: #3FB950; font-size: 0.86rem; }
+    .puzzle-target code { color: #34d399; font-size: 0.86rem; }
     .game-result {
         text-align: center;
         padding: 1.5rem 1rem;

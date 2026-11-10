@@ -1,4 +1,6 @@
-/* Reset and Base Styles */
+/* ==========================================================================
+   HEALTHTRACKER TELEMETRY PWA — 2026 VISION-OS SPATIAL DARK BENTO SHELL
+   ========================================================================== */
 * {
     margin: 0;
     padding: 0;
@@ -6,15 +8,17 @@
 }
 
 body {
-    font-family: 'Sora', sans-serif;
-    background:
-        radial-gradient(ellipse 70% 50% at 20% 10%, rgba(44, 167, 224, 0.25), transparent 55%),
-        linear-gradient(160deg, #061526 0%, #0a2342 50%, #12375a 100%);
+    font-family: 'Sora', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: #06070d;
+    background-image:
+        radial-gradient(ellipse 75% 50% at 20% 10%, rgba(99, 102, 241, 0.22), transparent 55%),
+        radial-gradient(ellipse 65% 45% at 85% 85%, rgba(56, 189, 248, 0.16), transparent 55%);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 20px;
+    color: #f8fafc;
 }
 
 .demo-back {
@@ -25,28 +29,37 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 0.45rem;
-    padding: 0.55rem 0.9rem;
+    padding: 0.55rem 1rem;
     border-radius: 999px;
     text-decoration: none;
     font-size: 0.82rem;
     font-weight: 600;
-    color: #fff;
-    background: rgba(6, 21, 38, 0.88);
-    border: 1px solid rgba(94, 200, 245, 0.35);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+    color: #f8fafc;
+    background: rgba(15, 20, 36, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(129, 140, 248, 0.35);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.demo-back:hover {
+    border-color: #818cf8;
+    color: #a5b4fc;
+    transform: translateY(-2px);
 }
 
 #app {
     width: 100%;
-    max-width: 400px;
+    max-width: 410px;
     height: 100vh;
-    max-height: 800px;
-    background: #061526;
-    border-radius: 32px;
+    max-height: 820px;
+    background: rgba(12, 16, 29, 0.92);
+    border-radius: 38px;
     overflow: hidden;
     box-shadow:
-        0 30px 70px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(94, 200, 245, 0.2);
+        0 30px 80px rgba(0, 0, 0, 0.75),
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
 }
 
@@ -54,7 +67,9 @@ body {
 .mobile-frame {
     width: 100%;
     height: 100%;
-    background: #f4f8fb;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.22), transparent 55%),
+        #090d18;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -65,16 +80,16 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background: #000;
-    color: #fff;
-    font-size: 14px;
+    padding: 12px 22px;
+    background: rgba(6, 9, 18, 0.85);
+    color: #f8fafc;
+    font-size: 13px;
     font-weight: 600;
 }
 
 .status-icons {
     display: flex;
-    gap: 5px;
+    gap: 6px;
 }
 
 .status-icons i {
@@ -83,9 +98,10 @@ body {
 
 /* App Header */
 .app-header {
-    background: linear-gradient(145deg, #0a2342 0%, #12375a 55%, #2ca7e0 140%);
+    background: linear-gradient(135deg, rgba(99, 102, 241, 0.28) 0%, rgba(56, 189, 248, 0.16) 100%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     color: white;
-    padding: 20px;
+    padding: 18px 20px;
 }
 
 .header-content {
@@ -97,38 +113,35 @@ body {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 14px;
 }
 
 .avatar {
-    width: 50px;
-    height: 50px;
-    background: rgba(255, 255, 255, 0.2);
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #6366f1, #38bdf8);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 19px;
+    box-shadow: 0 6px 18px rgba(99, 102, 241, 0.4);
 }
 
 .user-details h2 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 5px;
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 3px;
 }
 
 .user-details p {
-    font-size: 14px;
-    opacity: 0.8;
-}
-
-.header-actions {
-    position: relative;
+    font-size: 13px;
+    color: #cbd5e1;
 }
 
 .notification-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     color: white;
     width: 40px;
     height: 40px;
@@ -142,96 +155,99 @@ body {
 
 .notification-badge {
     position: absolute;
-    top: -5px;
-    right: -5px;
-    background: #ff4757;
+    top: -4px;
+    right: -4px;
+    background: #f43f5e;
     color: white;
     border-radius: 50%;
-    width: 20px;
-    height: 20px;
+    width: 19px;
+    height: 19px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 12px;
-    font-weight: 600;
+    font-size: 11px;
+    font-weight: 700;
 }
 
 /* Main Content */
 .app-content {
     flex: 1;
-    padding: 20px;
+    padding: 18px;
     overflow-y: auto;
-    background: #f8f9fa;
+    background: transparent;
 }
 
 /* Stats Section */
 .stats-section {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 12px;
 }
 
 .stat-card {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    background: rgba(20, 26, 44, 0.78);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
 .stat-card:hover {
     transform: translateY(-2px);
+    border-color: rgba(129, 140, 248, 0.45);
 }
 
 .stat-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
+    width: 38px;
+    height: 38px;
+    border-radius: 11px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
-    font-size: 18px;
+    margin-bottom: 12px;
+    font-size: 17px;
     color: white;
 }
 
 .stat-card:nth-child(1) .stat-icon {
-    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    background: linear-gradient(135deg, #f43f5e, #fb7185);
 }
 
 .stat-card:nth-child(2) .stat-icon {
-    background: linear-gradient(45deg, #ffa726, #ff9800);
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
 }
 
 .stat-card:nth-child(3) .stat-icon {
-    background: linear-gradient(45deg, #66bb6a, #4caf50);
+    background: linear-gradient(135deg, #10b981, #34d399);
 }
 
 .stat-card:nth-child(4) .stat-icon {
-    background: linear-gradient(45deg, #42a5f5, #2196f3);
+    background: linear-gradient(135deg, #6366f1, #38bdf8);
 }
 
 .stat-info h3 {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 4px;
     font-weight: 500;
 }
 
 .stat-value {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
-    color: #333;
-    margin-bottom: 5px;
+    color: #f8fafc;
+    margin-bottom: 4px;
 }
 
 .stat-value span {
-    font-size: 14px;
-    color: #666;
+    font-size: 12px;
+    color: #94a3b8;
     font-weight: 400;
 }
 
@@ -244,79 +260,75 @@ body {
 }
 
 .stat-trend.up {
-    color: #4caf50;
+    color: #34d399;
 }
 
 .stat-trend.down {
-    color: #f44336;
+    color: #f87171;
 }
 
 /* Quick Actions */
 .quick-actions {
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 
-.quick-actions h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
+.quick-actions h3,
+.chart-section h3,
+.activities-section h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #f8fafc;
+    margin-bottom: 12px;
 }
 
 .actions-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
+    gap: 12px;
 }
 
 .action-btn {
-    background: white;
-    border: none;
-    border-radius: 15px;
-    padding: 20px;
+    background: rgba(20, 26, 44, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.25s ease;
+    color: #f8fafc;
 }
 
 .action-btn:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+    border-color: #818cf8;
+    background: rgba(99, 102, 241, 0.18);
 }
 
 .action-btn i {
-    font-size: 24px;
-    color: #2ca7e0;
+    font-size: 22px;
+    color: #38bdf8;
 }
 
 .action-btn span {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: #333;
+    color: #e2e8f0;
 }
 
 /* Chart Section */
 .chart-section {
-    margin-bottom: 30px;
-}
-
-.chart-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 24px;
 }
 
 .chart-container {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    height: 200px;
+    background: rgba(20, 26, 44, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 18px;
+    padding: 16px;
+    height: 190px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -328,28 +340,21 @@ body {
 }
 
 /* Activities Section */
-.activities-section h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
-}
-
 .activities-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
 }
 
 .activity-item {
-    background: white;
-    border-radius: 15px;
-    padding: 20px;
+    background: rgba(20, 26, 44, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
+    gap: 14px;
+    transition: transform 0.25s ease;
 }
 
 .activity-item:hover {
@@ -357,26 +362,26 @@ body {
 }
 
 .activity-icon {
-    width: 50px;
-    height: 50px;
+    width: 46px;
+    height: 46px;
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
+    font-size: 18px;
     color: white;
 }
 
 .activity-item:nth-child(1) .activity-icon {
-    background: linear-gradient(45deg, #66bb6a, #4caf50);
+    background: linear-gradient(135deg, #10b981, #34d399);
 }
 
 .activity-item:nth-child(2) .activity-icon {
-    background: linear-gradient(45deg, #ffa726, #ff9800);
+    background: linear-gradient(135deg, #f59e0b, #fbbf24);
 }
 
 .activity-item:nth-child(3) .activity-icon {
-    background: linear-gradient(45deg, #42a5f5, #2196f3);
+    background: linear-gradient(135deg, #6366f1, #38bdf8);
 }
 
 .activity-info {
@@ -384,35 +389,36 @@ body {
 }
 
 .activity-info h4 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 5px;
+    color: #f8fafc;
+    margin-bottom: 3px;
 }
 
 .activity-info p {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
+    font-size: 13px;
+    color: #94a3b8;
+    margin-bottom: 3px;
 }
 
 .activity-time {
-    font-size: 12px;
-    color: #999;
+    font-size: 11px;
+    color: #64748b;
 }
 
 .activity-calories {
-    font-size: 14px;
-    font-weight: 600;
-    color: #4caf50;
+    font-size: 13px;
+    font-weight: 700;
+    color: #34d399;
 }
 
 /* Bottom Navigation */
 .bottom-nav {
     display: flex;
-    background: white;
-    border-top: 1px solid #e0e0e0;
-    padding: 10px 0;
+    background: rgba(12, 16, 29, 0.95);
+    backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 8px 0;
 }
 
 .nav-item {
@@ -420,39 +426,36 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     text-decoration: none;
-    color: #666;
-    padding: 10px;
-    transition: color 0.3s ease;
+    color: #64748b;
+    padding: 8px;
+    transition: color 0.25s ease;
 }
 
 .nav-item.active {
-    color: #2ca7e0;
+    color: #38bdf8;
 }
 
 .nav-item i {
-    font-size: 20px;
+    font-size: 18px;
 }
 
 .nav-item span {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 11px;
+    font-weight: 600;
 }
 
 /* Modals */
 .modal {
     position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+    inset: 0;
+    background: rgba(4, 6, 14, 0.78);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    backdrop-filter: blur(5px);
+    backdrop-filter: blur(10px);
 }
 
 .modal.active {
@@ -460,118 +463,94 @@ body {
 }
 
 .modal-content {
-    background: white;
-    border-radius: 20px;
+    background: rgba(15, 20, 36, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 24px;
     width: 90%;
-    max-width: 400px;
+    max-width: 380px;
     max-height: 80vh;
     overflow-y: auto;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+    color: #f8fafc;
 }
 
 .modal-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 20px;
-    border-bottom: 1px solid #e0e0e0;
+    padding: 18px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .modal-header h3 {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
+    font-size: 17px;
+    font-weight: 700;
+    color: #f8fafc;
 }
 
 .close-btn {
     background: none;
     border: none;
     font-size: 20px;
-    color: #666;
+    color: #94a3b8;
     cursor: pointer;
     padding: 5px;
     border-radius: 50%;
-    transition: background-color 0.3s ease;
-}
-
-.close-btn:hover {
-    background-color: #f0f0f0;
 }
 
 .modal-body {
     padding: 20px;
 }
 
-/* Workout Options */
 .workout-options {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
+    gap: 12px;
 }
 
-.workout-option {
-    background: #f8f9fa;
-    border: none;
-    border-radius: 15px;
-    padding: 20px;
+.workout-option,
+.meal-option {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.2s ease;
+    color: #f8fafc;
 }
 
-.workout-option:hover {
-    background: #e9ecef;
+.workout-option:hover,
+.meal-option:hover {
+    background: rgba(99, 102, 241, 0.2);
+    border-color: #818cf8;
     transform: translateY(-2px);
 }
 
 .workout-option i {
-    font-size: 24px;
-    color: #2ca7e0;
+    font-size: 22px;
+    color: #38bdf8;
 }
 
-.workout-option span {
-    font-size: 14px;
-    font-weight: 600;
-    color: #333;
-}
-
-/* Meal Options */
 .meal-options {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-}
-
-.meal-option {
-    background: #f8f9fa;
-    border: none;
-    border-radius: 15px;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.meal-option:hover {
-    background: #e9ecef;
-    transform: translateY(-2px);
+    gap: 12px;
 }
 
 .meal-option i {
-    font-size: 24px;
-    color: #ffa726;
+    font-size: 22px;
+    color: #fbbf24;
 }
 
+.workout-option span,
 .meal-option span {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
-    color: #333;
+    color: #f8fafc;
 }
 
 /* Water Tracker */
@@ -580,46 +559,46 @@ body {
 }
 
 .water-goal h4 {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 600;
-    color: #333;
-    margin-bottom: 15px;
+    color: #f8fafc;
+    margin-bottom: 14px;
 }
 
 .water-progress {
     width: 100%;
-    height: 20px;
-    background: #e0e0e0;
-    border-radius: 10px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 999px;
     overflow: hidden;
     margin-bottom: 10px;
 }
 
 .water-fill {
     height: 100%;
-    background: linear-gradient(45deg, #42a5f5, #2196f3);
-    border-radius: 10px;
+    background: linear-gradient(90deg, #6366f1, #38bdf8);
+    border-radius: 999px;
     transition: width 0.3s ease;
 }
 
 .water-actions {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 18px;
 }
 
 .water-btn {
-    background: linear-gradient(45deg, #42a5f5, #2196f3);
+    background: linear-gradient(135deg, #6366f1, #38bdf8);
     color: white;
     border: none;
-    border-radius: 25px;
-    padding: 15px 25px;
+    border-radius: 999px;
+    padding: 12px 22px;
     display: flex;
     align-items: center;
     gap: 8px;
     cursor: pointer;
-    transition: transform 0.3s ease;
+    transition: transform 0.2s ease;
     font-weight: 600;
 }
 
@@ -627,30 +606,12 @@ body {
     transform: translateY(-2px);
 }
 
-/* Responsive Design */
 @media (max-width: 480px) {
     body {
         padding: 10px;
     }
-    
     #app {
         max-height: 100vh;
-        border-radius: 20px;
-    }
-    
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .actions-grid {
-        grid-template-columns: 1fr;
-    }
-    
-    .workout-options {
-        grid-template-columns: 1fr;
-    }
-    
-    .meal-options {
-        grid-template-columns: 1fr;
+        border-radius: 24px;
     }
 }
