@@ -733,50 +733,43 @@ class ResumeNarrator {
         สวัสดีครับ ผม ธนภัทร พิศวงศ์ (น๊อต) Full Stack Developer และ Cloud Systems Engineer
         
         ผมมีความเชี่ยวชาญในการออกแบบและพัฒนาระบบสถาปัตยกรรมระดับ Enterprise, ระบบโรงงานอุตสาหกรรมยาตามมาตรฐาน GMP, 
-        ระบบเชื่อมต่อ SAP Business One, ระบบควบคุมยานยนต์ Android Auto, และ Cloud Infrastructure บน AWS
+        Infrastructure as Code ด้วย AWS CDK TypeScript, ระบบเชื่อมต่อ SAP Business One, ระบบ AI Agent และ MCP Server, รวมถึงระบบวิศวกรรมยานยนต์ Android Auto
         
         ปัจจุบัน ผมปฏิบัติงานที่ บริษัท ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด ในตำแหน่ง Full Stack Developer และ Systems Engineer
-        รับผิดชอบการออกแบบและพัฒนาระบบ Electronic Batch Record หรือ EBR ด้วย Next.js 16, React 19, Bun, Prisma 7 และ PostgreSQL บน AWS ECS
-        พัฒนาระบบ ManHour สำหรับติดตามชั่วโมงทำงานและต้นทุนการผลิต ด้วย Laravel 12 และ PHP 8.4 พร้อม Sync ข้อมูลกับ SAP แบบ Real-time
-        พัฒนาระบบเอกสารกำกับยา E-Leaflet ด้วย .NET 8 Web API และสตรีมมิ่งผ่าน PdfProxy สำหรับการสแกน QR Code ของคนไข้
-        และวางโครงสร้างพื้นฐาน Cloud บน AWS ด้วย SAM และ GitHub Actions
+        รับผิดชอบการออกแบบและพัฒนาระบบ Electronic Batch Record หรือ EBR ด้วย Next.js 16, React 19 Compiler, Bun 1.3, Prisma 7 และ Aurora PostgreSQL แบบไร้รหัสผ่านด้วย AWS RDS IAM Signer พร้อมชุดทดสอบ Playwright E2E
+        ออกแบบโครงสร้างพื้นฐาน Cloud 7 Stacks ด้วย AWS CDK TypeScript และ GitHub Actions OIDC
+        พัฒนาระบบนิเวศอินทราเน็ต 4 แอปพลิเคชัน เชื่อมต่อ Central Cognito SSO, SharePoint MCP Server และ Microsoft 365
+        พัฒนาระบบ ManHour ด้วย Laravel 12 และ PHP 8.4 Sync ข้อมูลกับ SAP Business One แบบ Real-time และพัฒนาระบบ E-Leaflet ด้วย .NET 8 Web API
+        รวมถึงวางระบบ DevSecOps ด้วย SonarQube SAST และ Polyglot Docker DevContainer
         
-        นอกจากนี้ ผมยังได้พัฒนา Car Share Mirror แอพพลิเคชัน Native Android ด้วย Kotlin สำหรับส่งภาพขึ้นหน้าจอรถยนต์ MG S5 EV ผ่าน Android Auto ไร้สาย,
-        ระบบบันทึกและวิเคราะห์สถิติการเทรด TD Master เชื่อมต่อ MetaTrader 5 และ TradingView,
-        รวมถึง JARVIS AI Autonomous Engineer Dashboard
-        
-        ด้านประสบการณ์ก่อนหน้านี้ ผมเคยพัฒนาแพลตฟอร์ม ANTS SMS Marketing ขนาดใหญ่ที่ Advance Network Technology,
-        พัฒนาระบบ Geofencing, KPI และ Payroll ให้กับข้าวหงษ์ทอง เจียเม้งมาร์เก็ตติ้ง,
-        และพัฒนาระบบชั่งน้ำหนักรถบรรทุกเชื่อมต่อ IoT ที่ Software & Scale Engineering
+        นอกจากนี้ ผมยังได้พัฒนา Car Share Mirror สำหรับส่งภาพขึ้นหน้าจอรถยนต์ MG S5 EV ผ่าน Android Auto ไร้สาย,
+        AcoustiCar AI ระบบวิเคราะห์เสียงเครื่องยนต์ด้วยความถี่ FFT และเรดาร์ 60 เฟรมต่อวินาที,
+        JARVIS AI ระบบผู้ช่วยวิศวกรอัจฉริยะด้วย Vercel AI SDK, MCP Server, MediaPipe Vision และ Three.js 3D,
+        รวมถึงระบบวิเคราะห์สถิติการเทรด TD Master เชื่อมต่อ MetaTrader 5
         
         ผมสำเร็จการศึกษาจาก มหาวิทยาลัยเทคโนโลยีราชมงคลธัญบุรี สาขาวิชาเทคโนโลยีสารสนเทศ ด้วยเกรดเฉลี่ย 3.09
-        
-        เป้าหมายของผมคือการสร้างระบบซอฟต์แวร์ที่มีความปลอดภัย ประสิทธิภาพสูง และสร้างคุณค่าที่แท้จริงให้กับองค์กร
         ขอบคุณที่ให้ความสนใจในผลงานของผมครับ
       `,
       en: `
         Hello, I'm Thanapat Pisavong (Not), a Full Stack Developer and Cloud Systems Engineer.
         
         I specialize in architecting mission-critical enterprise platforms, pharmaceutical GMP-grade manufacturing systems,
-        SAP Business One bidirectional integrations, Android Auto in-car automotive engineering, and AWS cloud infrastructure.
+        AWS CDK TypeScript infrastructure as code, zero-trust passwordless database security, SAP Business One integrations, Model Context Protocol AI agents, and automotive engineering.
         
         Currently, I serve as Full Stack Developer & Systems Engineer at TP Drug Laboratories (1969) Co., Ltd.
-        I architect and develop the Electronic Batch Record (EBR) using Next.js 16, React 19, Bun, Prisma 7, and PostgreSQL on AWS ECS Fargate,
+        I architect the Electronic Batch Record (EBR) using Next.js 16, React 19 Compiler, Bun 1.3, Prisma 7, AWS RDS IAM Signer, and Playwright E2E automation,
+        a 7-stack AWS CDK TypeScript cloud infrastructure with GitHub Actions OIDC CI/CD,
+        a 4-app enterprise SSO and SharePoint MCP ecosystem,
         the ManHour Manufacturing Ecosystem with Laravel 12 and PHP 8.4 integrated real-time with SAP Business One,
-        the E-Leaflet Patient QR and drug registration platform with ASP.NET Core 8 Web API and PdfProxy streaming,
-        and enterprise Cloud Infrastructure using AWS SAM and GitHub Actions CI/CD.
+        the E-Leaflet Patient QR platform with ASP.NET Core 8 Web API,
+        and DevSecOps quality gates powered by SonarQube 26 and multi-database Docker DevContainers.
         
-        My portfolio also features Car Share Mirror, a native Android Kotlin application projecting phone displays wirelessly to MG S5 EV 12.8" screens via Android Auto SDK,
-        TD Master, an automated quantitative trading journal integrated with MetaTrader 5 and TradingView,
-        and JARVIS AI, an autonomous engineering assistant dashboard.
+        My portfolio also features Car Share Mirror for wireless Android Auto projection on MG S5 EV,
+        AcoustiCar AI for real-time 60fps FFT spectrogram and polar radar engine fault diagnostics,
+        JARVIS AI powered by Vercel AI SDK, MCP tools, MediaPipe computer vision, and React Three Fiber 3D,
+        and TD Master quantitative trading analytics.
         
-        My previous experience includes architecting the ANTS SMS marketing platform,
-        geofencing attendance, KPI and payroll engines for Hong Thong Rice,
-        and industrial IoT truck scale weight systems.
-        
-        I graduated from Rajamangala University of Technology Thanyaburi in Information Technology with a GPA of 3.09.
-        
-        Thank you for reviewing my portfolio and resume. Feel free to explore my system architectures or contact me directly.
+        Thank you for reviewing my portfolio and system architectures.
       `
     };
   }
@@ -904,34 +897,34 @@ document.addEventListener('DOMContentLoaded', function() {
 // ===== PROJECT DETAILS DATA & MODAL SYSTEM =====
 const PROJECT_DETAILS = {
   ebr: {
-    title: 'Electronic Batch Record (EBR)',
+    title: 'Electronic Batch Record (EBR) — GMP Digital Manufacturing',
     category: 'Pharma GMP & Digital Manufacturing',
-    tagline: 'ระบบบันทึกประวัติการผลิตยาแบบดิจิทัล (Digital Batch Record) ตามมาตรฐาน GMP / GxP Validation',
-    diagram: `[Operator / QA Web Client (React 19)]
-        │  (OIDC PKCE Authentication / Cognito)
+    tagline: 'ระบบบันทึกประวัติการผลิตยาแบบดิจิทัลตามมาตรฐาน GMP / GxP Validation พร้อม Passwordless IAM DB และ Playwright E2E',
+    diagram: `[Operator / QA Web Client (React 19 Compiler)]
+        │  (OIDC PKCE Authentication / AWS Cognito)
         ▼
-[Next.js 16 App Router + Bun 1.3 Container]
-        │  (Prisma 7 ORM / IAM Auth)
+[Next.js 16 App Router + Bun 1.3 + pdf-lib / @napi-rs/canvas]
+        │  (Prisma 7 ORM + @aws-sdk/rds-signer IAM Auth)
         ▼
-[AWS Aurora PostgreSQL (Multi-AZ Serverless)]
-        │  (Form Schemas, Audit Trail, Signatures)
+[AWS Aurora PostgreSQL (Multi-AZ Zero-Password DB)]
+        │  (Immutable Audit Trail, Digital Signatures, Playwright E2E)
         ▼
-[S3 Storage for Signed Batch PDFs & Attachments]`,
+[AWS S3 Encrypted Vault for Signed Batch PDFs]`,
     challenges: [
-      'โรงงานยาต้องปฏิบัติตามข้อกำหนด GMP / GxP อย่างเคร่งครัด ห้ามมีการแก้ไขข้อมูลย้อนหลังโดยไม่มี Audit Trail',
-      'ฟอร์มบันทึกข้อมูลในสายการผลิตยามีความซับซ้อนสูง (Dynamic Form Fields, Multi-step Approval, Formula Validation)',
-      'การรันระบบบน Cloud ต้องมีความปลอดภัยระดับสูงสุด ไม่มี Token รั่วไหลไปฝั่ง Client'
+      'โรงงานยาต้องปฏิบัติตามข้อกำหนด GMP / GxP อย่างเคร่งครัด ห้ามมีการแก้ไขข้อมูลย้อนหลังโดยไม่มี Audit Trail และต้องสร้างไฟล์ PDF พร้อมลายเซ็นอิเล็กทรอนิกส์ที่ตรวจสอบได้',
+      'ฟอร์มบันทึกข้อมูลในสายการผลิตยามีความซับซ้อนสูง (Dynamic Form Fields, Multi-step Approval, Formula Validation) และต้องผ่านการทดสอบ E2E อัตโนมัติทุกครั้งก่อนขึ้น Production',
+      'การรันระบบบน Cloud ต้องมีความปลอดภัยระดับสูงสุด ห้ามฝังรหัสผ่านฐานข้อมูลใน Environment Variables หรือโค้ดโดยเด็ดขาด'
     ],
     solutions: [
-      'พัฒนาฟอร์มด้วย React 19 และ Next.js 16 พร้อมระบบ Drag-and-Drop Form Builder โดยใช้ @dnd-kit และ Zod Validation',
-      'ออกแบบ Audit Trail และระบบ Digital Signature ตรวจสอบย้อนกลับได้ทุกการกดบันทึกหรืออนุมัติขั้นตอน',
-      'ใช้ AWS Cognito ร่วมกับ AWS RDS IAM Signer เพื่อให้การเชื่อมต่อฐานข้อมูล Aurora ปลอดภัยสูงสุดโดยไม่ต้องใช้รหัสผ่านฝังในโค้ด'
+      'พัฒนาฟอร์มด้วย React 19 (babel-plugin-react-compiler) และ Next.js 16 พร้อมระบบ Drag-and-Drop Form Builder (@dnd-kit), Zod 4 Validation และการสร้างเอกสาร PDF ความละเอียดสูงด้วย pdf-lib, pdfjs-dist และ @napi-rs/canvas',
+      'ออกแบบ Immutable Audit Trail และระบบ Digital Signature พร้อมชุดทดสอบอัตโนมัติ Playwright 1.61 E2E Test Suite ตรวจสอบทุก Flow การอนุมัติ',
+      'ใช้ AWS Cognito (PKCE OIDC) ร่วมกับ @aws-sdk/rds-signer เพื่อให้การเชื่อมต่อฐานข้อมูล Aurora PostgreSQL ผ่าน Prisma 7 ใช้โทเค็น IAM ชั่วคราวแบบไร้รหัสผ่าน 100%'
     ],
-    tech: ['Next.js 16', 'React 19', 'Bun 1.3', 'Prisma 7', 'PostgreSQL', 'Tailwind CSS 4', 'Radix UI', 'AWS ECS Fargate', 'AWS Cognito', 'Docker'],
+    tech: ['Next.js 16', 'React 19 Compiler', 'Bun 1.3', 'Prisma 7', '@aws-sdk/rds-signer', 'Playwright 1.61 E2E', 'pdf-lib', '@napi-rs/canvas', 'AWS ECS Fargate', 'AWS Cognito'],
     metrics: [
       'ลดระยะเวลาการรวบรวมและตรวจสอบเอกสาร Batch Record จากเดิม 3-5 วัน เหลือเพียงไม่กี่นาที',
-      'ขจัดความผิดพลาดจากการเขียนเอกสารด้วยมือ (Paperless 100%)',
-      'สอดคล้องตามมาตรฐานข้อกำหนดการผลิตยา GMP และข้อกำหนดด้านการตรวจสอบย้อนกลับ'
+      'ขจัดความผิดพลาดจากการเขียนเอกสารด้วยมือ (Paperless 100%) พร้อมความครอบคลุมการทดสอบด้วย Playwright E2E',
+      'สอดคล้องตามมาตรฐานข้อกำหนดการผลิตยา GMP และสถาปัตยกรรม Zero-Trust Passwordless Database'
     ]
   },
   manhour: {
@@ -957,7 +950,7 @@ const PROJECT_DETAILS = {
     solutions: [
       'สร้างสคริปต์ Node.js ESM เชื่อมต่อ MSSQL และ MySQL ทำงานผ่าน Cron Job เพื่อ Sync ข้อมูลแบบ Idempotent',
       'พัฒนา Backend API ด้วย Laravel 12 และ PHP 8.4 รองรับ Swagger OpenAPI, Queue Worker, และ Caching',
-      'ออกแบบหน้าจอ Shop Floor ด้วย Laravel Blade, Tailwind CSS 4, และ Vite 7 โหลดเร็วและรองรับหน้าจอสัมผัส'
+      'ออกแบบหน้าจอ Shop Floor ด้วย Laravel Blade, Tailwind CSS 4, และ Vite 7 โหลดเร็วและรองรับหน้าจอสัมผัส พร้อมระบบ IIS Artifact Watcher Deploy อัตโนมัติ'
     ],
     tech: ['PHP 8.4', 'Laravel 12', 'Blade', 'Vite 7', 'Tailwind CSS 4', 'MySQL', 'MSSQL (SAP)', 'Node.js', 'ASP.NET Core 8', 'Yajra DataTables', 'Sanctum'],
     metrics: [
@@ -1053,33 +1046,33 @@ const PROJECT_DETAILS = {
     ]
   },
   jarvis: {
-    title: 'JARVIS AI — Autonomous Engineering Assistant',
+    title: 'JARVIS AI — Multimodal Agentic OS & MCP Engine',
     category: 'Autonomous AI Agent & Developer Tools',
-    tagline: 'แดชบอร์ดผู้ช่วยวิศวกรสไตล์ Tony Stark ขับเคลื่อนด้วย Agentic AI รองรับคำสั่งเสียง/ข้อความ และรันคำสั่ง Shell อัตโนมัติ',
-    diagram: `[Voice / Natural Language Prompt (TH/EN)]
+    tagline: 'ระบบปฏิบัติการ AI Agent อัจฉริยะ ขับเคลื่อนด้วย Vercel AI SDK, MCP Protocol, MediaPipe Vision และ Three.js 3D Core',
+    diagram: `[Voice / Camera Gesture Input (MediaPipe Tasks Vision)]
         │
         ▼
-[JARVIS Agent Core Engine (Next.js + LLM Models)]
-        │  (Agentic Loop: Plan -> Tool Call -> Execute -> Verify)
-        ├──▶ [File Tool: Read / Edit / Refactor Code]
-        ├──▶ [CLI Tool: Bash / PowerShell Execution]
-        └──▶ [Knowledge Retrieval & Memory (Supabase / Prisma)]
+[JARVIS Agent Engine (Next.js 15 + Vercel AI SDK)]
+        │  (Hybrid LLM: Ollama qwen3.6:27b + Groq llama-3.3-70b)
+        ├──▶ [@modelcontextprotocol/sdk (MCP Tool Server)]
+        ├──▶ [Autonomous File / CLI / Web Search Execution]
+        └──▶ [Persistent Memory Store (Prisma + SQLite/Supabase)]
         │
         ▼
-[Cinematic Holographic HUD Interface (Orbitron & Cyber Glow)]`,
+[React Three Fiber (R3F) 3D Holographic Core & HUD]`,
     challenges: [
-      'AI Chatbot ทั่วไปมักทำได้แค่ตอบคำถาม แต่ไม่สามารถช่วยทำงานจริงกับระบบไฟล์และคำสั่งคอมมานด์ไลน์ได้',
-      'UI ส่วนใหญ่เป็นเพียงกล่องแชทธรรมดา ขาดความรู้สึกเป็นเครื่องมือวิศวกรที่ล้ำสมัยและแม่นยำ'
+      'AI Chatbot ทั่วไปไม่สามารถสลับใช้โมเดล Local LLM (เพื่อความเป็นส่วนตัว) และ Cloud LLM ความเร็วสูง หรือเรียกใช้เครื่องมือมาตรฐานผ่านโปรโตคอล MCP ได้',
+      'การสั่งงานด้วยท่าทางมือ (Hand Gesture) เสียงพูดสองภาษา และการแสดงผล 3D แบบ Real-time ในเบราว์เซอร์ต้องการสถาปัตยกรรมที่ซิงค์กันอย่างแม่นยำ'
     ],
     solutions: [
-      'ออกแบบสถาปัตยกรรม Agentic Tool Calling ให้ JARVIS อ่านไฟล์ แก้ไขโค้ด และสั่งรันคำสั่งในระบบได้อย่างปลอดภัย',
-      'สร้างอินเทอร์เฟซสไตล์ Sci-Fi HUD ในโทนสี Cyan & Gold Holographic ตามแรงบันดาลใจจาก Stark Industries',
-      'รองรับคำสั่งเสียงสองภาษา (Thai/English) พร้อมระบบสังเคราะห์เสียงตอบสนองแบบ Real-time'
+      'พัฒนาแกนประมวลผลด้วย Vercel AI SDK (@ai-sdk/openai) และ @modelcontextprotocol/sdk เชื่อมต่อทั้ง Local Ollama (qwen3.6:27b) และ Cloud Groq (llama-3.3-70b)',
+      'ผสานระบบตรวจจับใบหน้าและท่าทางมือด้วย @mediapipe/tasks-vision ร่วมกับระบบสั่งงานด้วยเสียง Web Speech API ภาษาไทยและอังกฤษ',
+      'สร้างแกนพลังงานโฮโลแกรม 3 มิติแบบ Interactive ด้วย Three.js, @react-three/fiber และ @react-three/drei'
     ],
-    tech: ['Next.js', 'Supabase', 'Prisma', 'LLM Agent Tools', 'Web Speech API', 'Cyberpunk CSS', 'Orbitron'],
+    tech: ['Next.js 15', 'React 19', 'Vercel AI SDK', '@modelcontextprotocol/sdk', 'Ollama (qwen3.6:27b)', 'Groq (llama-3.3-70b)', 'MediaPipe Vision', 'React Three Fiber', 'Three.js', 'Prisma'],
     metrics: [
-      'ช่วยเพิ่มความเร็วในการแก้บั๊กและการสำรวจโค้ดเบสขนาดใหญ่ขึ้นมากกว่า 50%',
-      'อินเทอร์เฟซระดับภาพยนตร์ที่ให้ประสบการณ์การเขียนโค้ดที่สนุกและตื่นตาตื่นใจ'
+      'รองรับการทำงานแบบ Hybrid AI สลับระหว่าง Local LLM (Offline/Private) และ Cloud LLM ความเร็วสูงได้อย่างไร้รอยต่อ',
+      'เพิ่มความเร็วในการวิเคราะห์โค้ดเบสและสั่งงานอัตโนมัติผ่าน MCP Tools มากกว่า 60%'
     ]
   },
   crossmatch: {
@@ -1112,57 +1105,57 @@ const PROJECT_DETAILS = {
     ]
   },
   corporate: {
-    title: 'TP Drug Corporate Website & Employee Intranet',
-    category: 'Corporate Web & Identity Management',
-    tagline: 'เว็บไซต์ทางการและระบบอินทราเน็ตพนักงาน ที.พี. ดรัก แลบบอราทอรี่ส์ (1969) จำกัด พร้อม SSO และ Headless CMS',
-    diagram: `[Public Visitor Web] ──▶ [Next.js 16 Bun SSR App] ──▶ [Prisma CMS & i18n]
-                                       │
-[Staff Intranet Login] ──(PKCE OIDC)───┼──▶ [AWS Cognito User Pool]
-                                       │
-                                 (IAM S3 Client)
-                                       ▼
-                            [AWS S3 Document Vault]`,
+    title: 'TP Drug Multi-App Intranet, Central SSO & SharePoint MCP',
+    category: 'Enterprise Identity, Portal & MCP Ecosystem',
+    tagline: 'ระบบนิเวศอินทราเน็ตและศูนย์กลางการยืนยันตัวตน 4 แอปพลิเคชัน (Employee, AppCenter, Connect, For Healthy Life) พร้อม SharePoint MCP',
+    diagram: `[Employee SSO IdP & Org Tree] ──(Cognito OIDC + jose JWT)──▶ [Cross-App RBAC Guard]
+                                                                      │
+        ┌──────────────────────┬──────────────────────────────────────┴───────────────────┐
+        ▼                      ▼                                                          ▼
+[AppCenter Ticket Portal]  [TP Drug Connect Intranet]                        [For Healthy Life CMS]
+                               │  (@modelcontextprotocol/sdk)
+                               ▼
+                   [SharePoint MCP Server & M365 Graph Calendar]`,
     challenges: [
-      'เว็บไซต์องค์กรต้องรองรับ 2 ภาษา (TH/EN) โหลดรวดเร็ว ติดอันดับ SEO และมีระบบจัดการเนื้อหา (CMS) ที่ปลอดภัย',
-      'ระบบอินทราเน็ตสำหรับพนักงานมีเอกสารลับขององค์กร ต้องมีระบบ Single Sign-On (SSO) ที่ไม่มี Token รั่วไหลไปที่ Browser'
+      'องค์กรมีหลายระบบงานภายใน (HR, IT Support Ticket, Intranet, Corporate CMS) หากแยกฐานข้อมูลผู้ใช้จะเกิดปัญหาล็อกอินซ้ำซ้อนและจัดการสิทธิ์ตามแผนกได้ยาก',
+      'การค้นหาเอกสารใน SharePoint และตารางการประชุม Microsoft 365 ต้องการการเข้าถึงที่รวดเร็วและปลอดภัยโดยไม่ให้ Token รั่วไหลไปยังฝั่ง Browser'
     ],
     solutions: [
-      'ใช้ Next.js 16 บน Bun Runtime สร้างเว็บไซต์ที่ Render แบบ Server-Side รวดเร็วและใช้ Tailwind CSS 4',
-      'ออกแบบระบบล็อกอินหลังบ้าน /cms ด้วย AWS Cognito PKCE OIDC Server-side Auth เก็บ Session ใน HttpOnly Cookie ปลอดภัยสูงสุด',
-      'เชื่อมต่อ AWS S3 สำหรับจัดเก็บเอกสารและแบบฟอร์มภายในของบริษัทอย่างเป็นหมวดหมู่'
+      'พัฒนา Employee Management System เป็นศูนย์กลาง Identity Provider (AWS Cognito OIDC + jose) พร้อมแผนผังองค์กร (Department Tree) และระบบ Cross-App RBAC ควบคุมสิทธิ์ข้ามแอปพลิเคชัน',
+      'พัฒนา TP Drug Connect ด้วย Next.js 16, React 19 และสร้าง SharePoint MCP Server (@modelcontextprotocol/sdk) เชื่อมต่อเอกสารองค์กรและปฏิทิน Microsoft 365',
+      'พัฒนา AppCenter Problem Ticket Portal และเว็บไซต์องค์กร For Healthy Life (2 ภาษา TH/EN + Headless CMS) โดยเชื่อมต่อฐานข้อมูลผ่าน Prisma 7 และ @aws-sdk/rds-signer'
     ],
-    tech: ['Next.js 16', 'React 19', 'Bun 1.3', 'Tailwind CSS 4', 'Prisma', 'AWS Cognito (PKCE OIDC)', 'AWS S3', 'Docker'],
+    tech: ['Next.js 16', 'React 19', 'Bun 1.3', 'Prisma 7', '@aws-sdk/rds-signer', 'AWS Cognito OIDC', '@modelcontextprotocol/sdk', 'SharePoint MCP', 'M365 Graph', 'TanStack Table'],
     metrics: [
-      'ความเร็วการเปิดหน้าเว็บระดับ Top-tier (Performance Score 95+)',
-      'ระบบล็อกอินและจัดการเอกสารมีความปลอดภัยสูงสุดตามมาตรฐานความปลอดภัยคลาวด์'
+      'รวมศูนย์การล็อกอินและสิทธิ์การใช้งานของ 4 ระบบหลักในองค์กรด้วย Single Sign-On (SSO) เพียงบัญชีเดียว',
+      'ยกระดับความเร็วการค้นหาเอกสารภายในผ่าน SharePoint MCP และการแจ้งซ่อม IT ผ่าน AppCenter อย่างเป็นระบบ'
     ]
   },
   aws: {
-    title: 'Enterprise AWS Cloud Infrastructure (IaC SAM)',
-    category: 'Cloud Architecture & DevOps Automation',
-    tagline: 'โครงสร้างพื้นฐาน Cloud สำหรับระบบทั้งหมดขององค์กร ออกแบบผ่าน SAM / CloudFormation พร้อม CI/CD OIDC',
-    diagram: `[GitHub Repo (Commit & Push)]
-        │  (GitHub Actions CI/CD via OIDC Role - No Stored Keys!)
+    title: 'Enterprise AWS CDK Infrastructure (7-Stack TypeScript IaC)',
+    category: 'Cloud Architecture & DevSecOps Automation',
+    tagline: 'โครงสร้างพื้นฐาน Cloud ระดับองค์กร 7 Stacks พัฒนาด้วย AWS CDK (TypeScript) พร้อม Passwordless RDS IAM Signer และ CI/CD OIDC',
+    diagram: `[GitHub Actions OIDC CI/CD (Selective Matrix Deploy)]
+        │  (Zero Long-Lived AWS Keys / Automated DNS Sync)
         ▼
-[AWS SAM / CloudFormation Engine]
-        ├──▶ [VPC, Public/Private Subnets, NAT Gateways]
-        ├──▶ [Application Load Balancer (ALB) & CloudFront CDN]
-        ├──▶ [Amazon ECS Fargate (Docker Container Tasks)]
-        ├──▶ [Amazon Aurora PostgreSQL Serverless (Multi-AZ)]
-        └──▶ [AWS Lambda (Python 3) for DB Bootstrap & Maintenance]`,
+[AWS CDK (TypeScript) 7-Stack CloudFormation Engine]
+        ├──▶ [CloudFront CDN + ACM SSL + Route53 Auto DNS]
+        ├──▶ [Multi-Tier VPC + ALB + ECS Fargate Spot/On-Demand]
+        ├──▶ [IAM Bootstrap / Infra / Apps Least-Privilege Stacks]
+        └──▶ [Aurora PostgreSQL Serverless + @aws-sdk/rds-signer]`,
     challenges: [
-      'การตั้งค่าระบบบน Cloud ด้วยการคลิกผ่าน Console มักเกิด Human Error และไม่สามารถทำซ้ำใน Environment Dev/UAT/Prod ได้เหมือนกัน',
-      'การเก็บ AWS Access Key ไว้ใน CI/CD มีความเสี่ยงต่อการถูกขโมยข้อมูลลับ'
+      'การดูแลหลายแอปพลิเคชันบน AWS ต้องการการแบ่งแยกสิทธิ์ IAM อย่างชัดเจน (Separation of Concerns) และต้องป้องกันความเสี่ยงจากการใช้รหัสผ่านฐานข้อมูลแบบคงที่',
+      'การ Deploy ทุกแอปพลิเคชันพร้อมกันทุกครั้งที่แก้โค้ดทำให้เสียเวลา CI/CD และเพิ่มความเสี่ยงในการกระทบระบบอื่น'
     ],
     solutions: [
-      'เขียน Infrastructure as Code (IaC) ทั้งหมดด้วย AWS SAM และ CloudFormation ควบคุมเวอร์ชันผ่าน Git',
-      'ใช้ GitHub Actions OIDC Authentication สำหรับการ Deploy ขึ้น AWS โดยไม่ต้องเก็บ Secret Key ถาวรใน Repository',
-      'วางระบบเครือข่าย Multi-tier VPC แยก Database และ Application Tasks ไว้ใน Private Subnet มีเพียง ALB และ CloudFront ที่รับ Traffic ภายนอก'
+      'ออกแบบสถาปัตยกรรม AWS CDK ด้วยภาษา TypeScript แยกเป็น 7 Stacks อิสระ (CloudFront+ACM, Network/ECS/Aurora Infra, IAM Bootstrap, IAM Infra, IAM Apps, App Stack, และ Status Page)',
+      'บังคับใช้นโยบาย Zero-Password Database Authentication โดยทุกคอนเทนเนอร์ต้องขอโทเค็นชั่วคราวผ่าน @aws-sdk/rds-signer ก่อนเชื่อมต่อ Aurora PostgreSQL',
+      'สร้าง GitHub Actions Selective Matrix Pipeline ที่ตรวจจับเฉพาะแอปที่มีการแก้ไข พร้อมสคริปต์ซิงค์ DNS อัตโนมัติและระบบ Health Status Page'
     ],
-    tech: ['AWS SAM', 'CloudFormation', 'AWS ECS Fargate', 'Amazon Aurora', 'AWS Cognito', 'CloudFront', 'Python 3 Lambda', 'GitHub Actions CI/CD'],
+    tech: ['AWS CDK (TypeScript)', 'CloudFormation', 'AWS ECS Fargate', 'Aurora PostgreSQL', '@aws-sdk/rds-signer', 'CloudFront & ACM', 'GitHub Actions OIDC', 'Docker Multi-Stage'],
     metrics: [
-      'สามารถ Deploy สภาพแวดล้อมใหม่ (Dev/UAT/Prod) ได้อย่างแม่นยำภายในเวลาไม่กี่นาที',
-      'ผ่านการประเมินความปลอดภัยตาม Best Practice สถาปัตยกรรม Well-Architected Framework'
+      'ขจัดความเสี่ยงรหัสผ่านฐานข้อมูลรั่วไหลเป็น 0% ด้วย IAM-Only Authentication ทั้งระบบ',
+      'ลดเวลาการ Deploy ใน CI/CD ลงกว่า 65% ด้วย Selective Matrix Pipeline และสามารถ Provision สภาพแวดล้อมใหม่ได้ภายในไม่กี่นาที'
     ]
   },
   ants: {
@@ -1237,6 +1230,64 @@ const PROJECT_DETAILS = {
     metrics: [
       'ขจัดปัญหาการทุจริตน้ำหนักรถบรรทุกและข้อผิดพลาดจากการจดบันทึกด้วยมือ',
       'กระบวนการชั่งน้ำหนักรถบรรทุกแต่ละคันใช้เวลาไม่เกิน 30 วินาที เพิ่มความเร็วการขนถ่ายสินค้าอย่างมีนัยสำคัญ'
+    ]
+  },
+  acousticar: {
+    title: 'AcoustiCar AI™ — Predictive Vehicle Acoustic Diagnostics',
+    category: 'Automotive DSP & Predictive Maintenance AI',
+    tagline: 'แพลตฟอร์มวิเคราะห์เสียงเครื่องยนต์และวินิจฉัยอาการเสียรถยนต์แบบ Real-Time ด้วย FFT Spectrogram และ Polar Radar 60fps',
+    diagram: `[Raw Vehicle Microphone / 8-Fault Acoustic Synthesizer]
+        │  (EchoCancellation & NoiseSuppression Disabled for Raw Signal)
+        ▼
+[Web Audio API DSP Engine (2048-bin FFT & Sub-band Extractor)]
+        │  (Harmonic Ratio, Crest Factor & Spectral Centroid Analysis)
+        ▼
+[60fps Multi-Mode Visualizer (FFT, Oscilloscope, Heatmap, Polar Radar)]
+        │
+        ▼
+[AI Diagnostic Engine (Severity Scoring, Repair Cost & PDF/JSON Export)]`,
+    challenges: [
+      'เบราว์เซอร์ทั่วไปมักเปิดระบบตัดเสียงรบกวน (Noise Suppression) อัตโนมัติ ทำให้ความถี่สำคัญของอาการเสียเครื่องยนต์ เช่น เสียงสายพานหอนหรือลูกปืนแตก ถูกกรองทิ้ง',
+      'การประมวลผลคลื่นความถี่เสียงและวาดกราฟ Spectrogram หลายโหมดพร้อมกันต้องทำงานที่ 60fps โดยไม่ทำให้หน้าเว็บกระตุก'
+    ],
+    solutions: [
+      'ออกแบบระบบดึงสัญญาณเสียง Raw Audio Stream โดยปิด Echo Cancellation, Noise Suppression และ Auto Gain Control เพื่อรักษาความแม่นยำของคลื่นความถี่กลไก 100%',
+      'สร้างเอนจินวิเคราะห์ความถี่ Web Audio API คำนวณพลังงานแยกย่านความถี่ (Sub-Band Energy), Spectral Centroid และ Crest Factor พร้อมโหมดจำลองเสียงอาการเสียรถยนต์ 8 รูปแบบ (8-Fault Synthesizer)',
+      'พัฒนา Canvas Visualizer 60fps 4 โหมด (FFT Spectrum, Time-Domain Waveform, Scrolling Waterfall Spectrogram และ 360° Polar Acoustic Radar) รองรับการทำงานแบบ Offline PWA'
+    ],
+    tech: ['Web Audio API (FFT DSP)', 'HTML5 Canvas 60fps', 'Acoustic Fault Synthesizer', 'Harmonic Signature AI', 'Progressive Web App (PWA)', 'Zero-Dependency JS'],
+    metrics: [
+      'จำแนกความถี่เสียงผิดปกติของเครื่องยนต์ สายพาน ลูกปืนล้อ และระบบเบรกแบบ Real-time ที่ความละเอียด 60 เฟรมต่อวินาที',
+      'ประเมินระดับความรุนแรงและประมาณการค่าซ่อมเบื้องต้นพร้อมส่งออกรายงานวินิจฉัยได้ทันทีบนมือถือและแท็บเล็ต'
+    ]
+  },
+  devtools: {
+    title: 'DevSecOps Quality Gates & Polyglot Docker DevContainer',
+    category: 'DevSecOps, Static Analysis & Container Engineering',
+    tagline: 'ระบบตรวจสอบคุณภาพและความปลอดภัยโค้ดด้วย SonarQube 26 SAST ร่วมกับสภาพแวดล้อมการพัฒนา Docker Multi-Database แบบคำสั่งเดียว',
+    diagram: `[Polyglot Developer Workspace (VS Code DevContainer)]
+        │  (1-Command Docker Compose: PHP 8.4, .NET 8, Node 20, Bun)
+        ▼
+[Unified Local Data Layer (MySQL 8, Postgres 15, MSSQL 2022, Redis 7)]
+        │  (Automated Unit & Playwright 1.61 E2E Test Execution)
+        ▼
+[SonarQube 26.10 SAST & Security Quality Gate Scanner]
+        │
+        ▼
+[Zero-Downtime CI/CD & IIS Artifact Watcher w/ Teams Webhook Alerts]`,
+    challenges: [
+      'การพัฒนาซอฟต์แวร์หลายภาษา (TypeScript, PHP 8.4, C# .NET 8) ร่วมกับฐานข้อมูลหลายชนิด (PostgreSQL, MySQL, SQL Server) มักเกิดปัญหาสภาพแวดล้อมเครื่องนักพัฒนาไม่ตรงกัน',
+      'การตรวจสอบช่องโหว่ความปลอดภัย (SAST) และ Code Smell ต้องทำอย่างต่อเนื่องก่อนนำโค้ดขึ้นระบบ Production'
+    ],
+    solutions: [
+      'ออกแบบ Polyglot Docker DevContainer ที่รวบรวม Runtime และฐานข้อมูลทั้งหมด (MySQL 8, PostgreSQL 15, SQL Server 2022, Redis 7, MailHog, Nginx) ให้พร้อมใช้งานด้วยคำสั่งเดียว',
+      'วางระบบตรวจสอบคุณภาพซอฟต์แวร์ด้วย SonarQube 26.10 (sonar-project.properties) สแกนหาช่องโหว่ความปลอดภัย, Security Hotspots, และความซับซ้อนของโค้ดในทุกโปรเจคหลัก',
+      'สร้างสคริปต์ PowerShell Automated Artifact Watcher สำหรับเซิร์ฟเวอร์ IIS ที่ทำการสำรองข้อมูล, สลับเวอร์ชัน, ทดสอบ Health Check, Rollback อัตโนมัติ และแจ้งเตือนผ่าน Microsoft Teams Webhook'
+    ],
+    tech: ['SonarQube 26 SAST', 'Docker Compose', 'VS Code DevContainers', 'Playwright E2E', 'MySQL 8 / Postgres 15 / MSSQL 2022', 'Redis 7', 'PowerShell Ops', 'Teams Webhook'],
+    metrics: [
+      'ลดเวลาการตั้งค่าเครื่องนักพัฒนาใหม่จากเดิม 1-2 วัน เหลือเพียงไม่กี่นาทีด้วย 1-Command Docker DevContainer',
+      'ยกระดับมาตรฐานความปลอดภัยโค้ดและลดอัตราการเกิด Downtime ขณะอัปเดตระบบด้วย Automated Rollback & Health Check'
     ]
   }
 };

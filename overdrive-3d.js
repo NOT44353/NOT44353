@@ -313,12 +313,13 @@
     ring3.rotation.z = Math.PI * 0.25;
     gimbalGroup.add(ring3);
 
-    // 1D. 5 Orbital Stack Satellites (L12, N16, .NET8, AWS, KT)
+    // 1D. 6 Orbital Stack Satellites (CDK, N16, MCP, L12, .NET8, KT)
     const satDefs = [
-      { label: 'L12', radius: 1.62, speed: 0.85, phase: 0.2, tiltX: 0.45, tiltZ: 0.2, isSignal: true },
+      { label: 'CDK', radius: 1.76, speed: -0.58, phase: 4.4, tiltX: -0.35, tiltZ: -0.3, isSignal: true },
       { label: 'N16', radius: 1.72, speed: -0.72, phase: 1.6, tiltX: -0.5, tiltZ: 0.35, isSignal: false },
+      { label: 'MCP', radius: 1.68, speed: 0.74, phase: 2.3, tiltX: -0.25, tiltZ: 0.5, isSignal: true },
+      { label: 'L12', radius: 1.62, speed: 0.85, phase: 0.2, tiltX: 0.45, tiltZ: 0.2, isSignal: false },
       { label: '.NET8', radius: 1.58, speed: 0.64, phase: 3.1, tiltX: 0.25, tiltZ: -0.55, isSignal: true },
-      { label: 'AWS', radius: 1.76, speed: -0.58, phase: 4.4, tiltX: -0.35, tiltZ: -0.3, isSignal: false },
       { label: 'KT', radius: 1.65, speed: 0.78, phase: 5.5, tiltX: 0.6, tiltZ: -0.15, isSignal: false }
     ];
 
