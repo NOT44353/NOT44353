@@ -1348,7 +1348,7 @@
   }
 
   /* ==========================================================================
-     3. FULL-VIEWPORT 3D SPATIAL BLUEPRINT HORIZON (#cad3d-bg-canvas)
+     3. FULL-VIEWPORT THREE.JS WEBGL 3D CYBER-ARCHITECTURAL WORLD (#cad3d-bg-canvas)
      ========================================================================== */
   function initSpatialBackgroundCanvas() {
     let canvas = document.getElementById('cad3d-bg-canvas');
@@ -1359,115 +1359,201 @@
       document.body.prepend(canvas);
     }
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    const THREE = window.THREE;
+    if (!THREE) return;
 
-    let width = window.innerWidth;
-    let height = window.innerHeight;
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let renderer;
+    try {
+      renderer = new THREE.WebGLRenderer({
+        canvas,
+        alpha: true,
+        antialias: true,
+        powerPreference: 'high-performance'
+      });
+    } catch (e) {
+      return;
+    }
+
+    let pal = getThemePalette();
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / Math.max(window.innerHeight, 1), 0.1, 140);
+    camera.position.set(0, 0, 18);
+
+    const ambient = new THREE.AmbientLight(0xffffff, 0.85);
+    scene.add(ambient);
+    const dirLight = new THREE.DirectionalLight(pal.signalHex, 0.9);
+    dirLight.position.set(8, 12, 10);
+    scene.add(dirLight);
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // 3A. Infinite-style Upper & Lower 3D Perspective Architectural Grid Horizons
+    const floorGrid = new THREE.GridHelper(90, 48, pal.signalHex, pal.gridHex);
+    floorGrid.position.y = -7.5;
+    floorGrid.material.transparent = true;
+    floorGrid.material.opacity = 0.36;
+    world.add(floorGrid);
+
+    const ceilingGrid = new THREE.GridHelper(90, 48, pal.validHex, pal.gridHex);
+    ceilingGrid.position.y = 7.5;
+    ceilingGrid.material.transparent = true;
+    ceilingGrid.material.opacity = 0.24;
+    world.add(ceilingGrid);
+
+    // 3B. 18 Floating 3D Architectural Polyhedra & TorusKnots Across Viewport
+    const polyGeos = [
+      new THREE.IcosahedronGeometry(1.15, 0),
+      new THREE.OctahedronGeometry(1.1, 0),
+      new THREE.TorusKnotGeometry(0.75, 0.16, 48, 8),
+      new THREE.TorusGeometry(1.05, 0.06, 8, 28),
+      new THREE.BoxGeometry(1.2, 1.2, 1.2)
+    ];
+
+    const floatingMonuments = [];
+    for (let i = 0; i < 18; i++) {
+      const side = i % 2 === 0 ? -1 : 1;
+      const geo = polyGeos[i % polyGeos.length];
+      const isSignal = i % 3 === 0;
+      const meshGroup = createCadMesh(
+        geo,
+        {
+          color: isSignal ? pal.signalHex : pal.surfaceHex,
+          emissive: isSignal ? pal.signalHex : pal.validHex,
+          emissiveIntensity: isSignal ? 0.22 : 0.08,
+          transparent: true,
+          opacity: 0.32
+        },
+        isSignal ? pal.signalHex : pal.inkHex,
+        0.55
+      );
+
+      // Place along outer corridors and deep Z space so they frame and shine through the sheets
+      const xSpread = (i % 3 === 2 ? (Math.random() - 0.5) * 14 : side * (8.2 + (i % 4) * 2.4));
+      const ySpread = 10 - i * 2.6;
+      const zSpread = -2 - (i % 5) * 3.8;
+      meshGroup.position.set(xSpread, ySpread, zSpread);
+      world.add(meshGroup);
+
+      floatingMonuments.push({
+        group: meshGroup,
+        baseX: xSpread,
+        baseY: ySpread,
+        baseZ: zSpread,
+        rotSpeedX: (0.25 + (i % 4) * 0.12) * (i % 2 === 0 ? 1 : -1),
+        rotSpeedY: (0.32 + (i % 3) * 0.14) * (side),
+        isSignal
+      });
+    }
+
+    // 3C. 240 3D Spatial Telemetry Particles
+    const particleCount = 240;
+    const pPositions = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount; i++) {
+      pPositions[i * 3] = (Math.random() - 0.5) * 44;
+      pPositions[i * 3 + 1] = (Math.random() - 0.5) * 36;
+      pPositions[i * 3 + 2] = (Math.random() - 0.5) * 28 - 4;
+    }
+    const pGeo = new THREE.BufferGeometry();
+    pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+    const pMat = new THREE.PointsMaterial({
+      color: pal.signalHex,
+      size: 0.16,
+      transparent: true,
+      opacity: 0.65
+    });
+    const particleSystem = new THREE.Points(pGeo, pMat);
+    world.add(particleSystem);
+
+    // 3D. Interactive 3D Shockwave Ring on Click / Card Hover
+    const waveGeo = new THREE.RingGeometry(0.8, 0.95, 48);
+    const waveMat = new THREE.MeshBasicMaterial({
+      color: pal.signalHex,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0
+    });
+    const shockwave = new THREE.Mesh(waveGeo, waveMat);
+    shockwave.position.z = 2;
+    scene.add(shockwave);
+    let waveScale = 0.1;
+    let waveAlpha = 0;
+
+    window.addEventListener(
+      'pointerdown',
+      () => {
+        waveScale = 0.2;
+        waveAlpha = 0.85;
+        shockwave.position.x = pointer.tx * 7;
+        shockwave.position.y = -pointer.ty * 4.5;
+      },
+      { passive: true }
+    );
+
+    onThemeChange((newPal) => {
+      pal = newPal;
+      dirLight.color.setHex(pal.signalHex);
+      pMat.color.setHex(pal.signalHex);
+      waveMat.color.setHex(pal.signalHex);
+      floatingMonuments.forEach((m) => {
+        const solidMat = m.group.userData.solid.material;
+        const wireMat = m.group.userData.wire.material;
+        solidMat.color.setHex(m.isSignal ? pal.signalHex : pal.surfaceHex);
+        wireMat.color.setHex(m.isSignal ? pal.signalHex : pal.inkHex);
+      });
+    });
 
     function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const w = window.innerWidth;
+      const h = Math.max(window.innerHeight, 1);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
     }
     resize();
     window.addEventListener('resize', resize);
 
-    // Margin 3D architectural wireframe solids
-    const solids = [
-      { side: -1, yRatio: 0.2, z: 140, radius: 38, speedX: 0.007, speedY: 0.011 },
-      { side: 1, yRatio: 0.35, z: 170, radius: 44, speedX: -0.008, speedY: 0.009 },
-      { side: -1, yRatio: 0.68, z: 150, radius: 34, speedX: 0.01, speedY: -0.007 },
-      { side: 1, yRatio: 0.82, z: 130, radius: 40, speedX: -0.006, speedY: -0.01 }
-    ];
-
-    const octaVerts = [
-      [0, 1, 0],
-      [0, -1, 0],
-      [1, 0, 0],
-      [-1, 0, 0],
-      [0, 0, 1],
-      [0, 0, -1]
-    ];
-    const octaEdges = [
-      [0, 2], [0, 3], [0, 4], [0, 5],
-      [1, 2], [1, 3], [1, 4], [1, 5],
-      [2, 4], [4, 3], [3, 5], [5, 2]
-    ];
-
     function renderBg(now) {
       const t = now * 0.001;
       const prevSmooth = smoothScroll;
-      smoothScroll += (scrollY - smoothScroll) * 0.09;
+      smoothScroll += (scrollY - smoothScroll) * 0.08;
       scrollVelocity = smoothScroll - prevSmooth;
       pointer.nx += (pointer.tx - pointer.nx) * 0.06;
       pointer.ny += (pointer.ty - pointer.ny) * 0.06;
 
-      ctx.clearRect(0, 0, width, height);
-      if (width < 1100) {
-        if (!prefersReducedMotion) requestAnimationFrame(renderBg);
-        return;
-      }
+      // Fly camera & grids with scroll and mouse parallax
+      camera.position.x = pointer.nx * 2.2;
+      camera.position.y = -pointer.ny * 1.4;
+      camera.rotation.z = -pointer.nx * 0.035;
+      camera.rotation.x = pointer.ny * 0.03 + Math.max(-0.12, Math.min(0.12, scrollVelocity * 0.0015));
 
-      const pal = getThemePalette();
-      const fov = 560;
-      const cx = width * 0.5 + pointer.nx * 24;
-      const cy = height * 0.5 + pointer.ny * 16;
+      const gridZOffset = (smoothScroll * 0.025) % 3.75;
+      floorGrid.position.z = gridZOffset;
+      ceilingGrid.position.z = gridZOffset;
 
-      // Render margin 3D drafting solids
-      solids.forEach((s, idx) => {
-        const marginX = s.side < 0 ? 64 : width - 64;
-        const sy = ((s.yRatio * height - smoothScroll * 0.14) % (height + 180));
-        const finalY = sy < -90 ? sy + height + 180 : sy;
-
-        const rx = t * s.speedX * 55 + smoothScroll * 0.003 + idx;
-        const ry = t * s.speedY * 55 + pointer.nx * 0.4;
-
-        const cosX = Math.cos(rx), sinX = Math.sin(rx);
-        const cosY = Math.cos(ry), sinY = Math.sin(ry);
-
-        const pts = octaVerts.map((v) => {
-          let x = v[0] * s.radius;
-          let y = v[1] * s.radius;
-          let z = v[2] * s.radius;
-
-          const y1 = y * cosX - z * sinX;
-          const z1 = y * sinX + z * cosX;
-          const x2 = x * cosY + z1 * sinY;
-          const z2 = -x * sinY + z1 * cosY + s.z;
-
-          const scale = fov / Math.max(fov + z2, 60);
-          return {
-            x: marginX + x2 * scale,
-            y: finalY + y1 * scale
-          };
-        });
-
-        ctx.strokeStyle = idx % 2 === 0 ? pal.inkMuted : pal.signalSoft;
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        octaEdges.forEach((e) => {
-          ctx.moveTo(pts[e[0]].x, pts[e[0]].y);
-          ctx.lineTo(pts[e[1]].x, pts[e[1]].y);
-        });
-        ctx.stroke();
-
-        // Dimension crosshair at center
-        ctx.fillStyle = pal.signal;
-        ctx.fillRect(marginX - 1.5, finalY - 1.5, 3, 3);
+      floatingMonuments.forEach((m, idx) => {
+        m.group.rotation.x = t * m.rotSpeedX + smoothScroll * 0.0018;
+        m.group.rotation.y = t * m.rotSpeedY + pointer.nx * 0.5;
+        const cyclicY = ((m.baseY + smoothScroll * 0.012 + 22) % 44) - 22;
+        m.group.position.y = cyclicY;
+        m.group.position.x = m.baseX + Math.sin(t * 0.8 + idx) * 0.45;
       });
 
-      // Subtle architectural coordinate tick marks along outer left/right rails
-      ctx.fillStyle = pal.inkFaint;
-      for (let y = 40; y < height; y += 64) {
-        const offset = (y - (smoothScroll * 0.25) % 64);
-        ctx.fillRect(12, offset, 8, 1);
-        ctx.fillRect(width - 20, offset, 8, 1);
+      particleSystem.rotation.y = t * 0.04 + pointer.nx * 0.12;
+      particleSystem.position.y = (smoothScroll * 0.008) % 12;
+
+      if (waveAlpha > 0.01) {
+        waveScale += 0.28;
+        waveAlpha *= 0.91;
+        shockwave.scale.setScalar(waveScale);
+        waveMat.opacity = waveAlpha;
+        shockwave.rotation.z = t * 2;
+      } else {
+        waveMat.opacity = 0;
       }
+
+      renderer.render(scene, camera);
 
       if (!prefersReducedMotion) {
         requestAnimationFrame(renderBg);
@@ -1478,7 +1564,7 @@
   }
 
   /* ==========================================================================
-     4. MULTI-PLANE 3D HOLOGRAPHIC CARD SPRING PHYSICS, CAD HUD & SCROLL 3D
+     4. LIVE 3D HOLOGRAM CANVASES + UNFLATTENED MULTI-PLANE 3D CARDS
      ========================================================================== */
   function initSpatialCardPhysics() {
     const selectors = [
@@ -1518,12 +1604,11 @@
             }
           });
         },
-        { threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+        { threshold: 0.06, rootMargin: '0px 0px -20px 0px' }
       );
 
       revealCards.forEach((c) => cardObserver.observe(c));
 
-      // Replay 3D unfold choreography when portfolio filter tabs are clicked
       const filterBtns = document.querySelectorAll('.portfolio-filter-btn');
       filterBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -1543,12 +1628,77 @@
       });
     }
 
-    if (prefersReducedMotion || isCoarsePointer) return;
+    // 3D Geometry definitions for the Live Rotating 3D Hologram Canvas inside each Box
+    const tesseractVerts = [];
+    for (let i = 0; i < 16; i++) {
+      const s = i < 8 ? 0.52 : 1.0;
+      tesseractVerts.push([
+        (i & 1 ? 1 : -1) * s,
+        (i & 2 ? 1 : -1) * s,
+        (i & 4 ? 1 : -1) * s
+      ]);
+    }
+    const tesseractEdges = [];
+    for (let i = 0; i < 16; i++) {
+      for (let j = i + 1; j < 16; j++) {
+        const diff = i ^ j;
+        if (diff === 1 || diff === 2 || diff === 4 || diff === 8) {
+          tesseractEdges.push([i, j]);
+        }
+      }
+    }
+
+    const phi = (1 + Math.sqrt(5)) / 2;
+    const icosaVerts = [
+      [-1, phi, 0], [1, phi, 0], [-1, -phi, 0], [1, -phi, 0],
+      [0, -1, phi], [0, 1, phi], [0, -1, -phi], [0, 1, -phi],
+      [phi, 0, -1], [phi, 0, 1], [-phi, 0, -1], [-phi, 0, 1]
+    ].map((v) => {
+      const len = Math.hypot(v[0], v[1], v[2]);
+      return [v[0] / len, v[1] / len, v[2] / len];
+    });
+    const icosaEdges = [];
+    for (let i = 0; i < icosaVerts.length; i++) {
+      for (let j = i + 1; j < icosaVerts.length; j++) {
+        const d = Math.hypot(
+          icosaVerts[i][0] - icosaVerts[j][0],
+          icosaVerts[i][1] - icosaVerts[j][1],
+          icosaVerts[i][2] - icosaVerts[j][2]
+        );
+        if (d < 1.25) icosaEdges.push([i, j]);
+      }
+    }
+
+    const activeHoloCards = [];
 
     cards.forEach((card, index) => {
       card.classList.add('spatial-3d-card');
 
-      // Inject CAD Corner Target Brackets & Live 3D Coordinate Readout HUD
+      // 1. Inject Dedicated .cad-box-surface (holds Laser Scanline + Live 3D Hologram Canvas)
+      let holoCanvas = null;
+      let holoCtx = null;
+      if (!card.querySelector('.cad-box-surface')) {
+        const surface = document.createElement('div');
+        surface.className = 'cad-box-surface';
+        surface.setAttribute('aria-hidden', 'true');
+
+        const laser = document.createElement('div');
+        laser.className = 'cad-laser-line';
+        surface.appendChild(laser);
+
+        if (!card.classList.contains('portrait-plate-wrap')) {
+          holoCanvas = document.createElement('canvas');
+          holoCanvas.className = 'cad-box-holo-canvas';
+          holoCanvas.width = 118;
+          holoCanvas.height = 118;
+          surface.appendChild(holoCanvas);
+          holoCtx = holoCanvas.getContext('2d');
+        }
+
+        card.prepend(surface);
+      }
+
+      // 2. Inject Floating CAD Corner Brackets & Live 3D Telemetry Badge at Z=48px
       let coordsBadge = null;
       if (!card.querySelector('.cad-box-hud')) {
         const hud = document.createElement('div');
@@ -1559,7 +1709,7 @@
           '<span class="cad-corner tr"></span>' +
           '<span class="cad-corner bl"></span>' +
           '<span class="cad-corner br"></span>' +
-          `<span class="cad-box-coords">3D // BOX-${String(index + 1).padStart(2, '0')}</span>`;
+          `<span class="cad-box-coords">3D // SYS-${String(index + 1).padStart(2, '0')}</span>`;
         card.appendChild(hud);
         coordsBadge = hud.querySelector('.cad-box-coords');
       }
@@ -1567,59 +1717,70 @@
       const isWideBox =
         card.classList.contains('timeline-item') || card.classList.contains('sheet-cell');
       const maxTilt = card.classList.contains('portrait-plate-wrap')
-        ? 11
+        ? 13
         : isWideBox
-        ? 4.5
-        : 8.5;
-      const liftTarget = isWideBox ? 12 : 18;
+        ? 6
+        : 11;
+      const liftTarget = isWideBox ? 16 : 26;
+
+      const cardState = {
+        card,
+        holoCtx,
+        shapeType: index % 3,
+        hovered: false,
+        inView: false,
+        currRX: 0,
+        currRY: 0,
+        currZ: 0,
+        phase: index * 0.7
+      };
+      activeHoloCards.push(cardState);
+
+      if (prefersReducedMotion || isCoarsePointer) return;
 
       let targetRX = 0;
       let targetRY = 0;
       let targetZ = 0;
       let targetScale = 1;
-      let currRX = 0;
-      let currRY = 0;
-      let currZ = 0;
       let currScale = 1;
       let velRX = 0;
       let velRY = 0;
       let velZ = 0;
       let velScale = 0;
       let rafId = 0;
-      let hovered = false;
 
       function stepSpring() {
-        const stiffness = 0.16;
-        const damping = 0.74;
+        const stiffness = 0.17;
+        const damping = 0.73;
 
-        velRX = (velRX + (targetRX - currRX) * stiffness) * damping;
-        velRY = (velRY + (targetRY - currRY) * stiffness) * damping;
-        velZ = (velZ + (targetZ - currZ) * stiffness) * damping;
+        velRX = (velRX + (targetRX - cardState.currRX) * stiffness) * damping;
+        velRY = (velRY + (targetRY - cardState.currRY) * stiffness) * damping;
+        velZ = (velZ + (targetZ - cardState.currZ) * stiffness) * damping;
         velScale = (velScale + (targetScale - currScale) * stiffness) * damping;
 
-        currRX += velRX;
-        currRY += velRY;
-        currZ += velZ;
+        cardState.currRX += velRX;
+        cardState.currRY += velRY;
+        cardState.currZ += velZ;
         currScale += velScale;
 
-        card.style.transform = `perspective(1050px) rotateX(${currRX.toFixed(2)}deg) rotateY(${currRY.toFixed(2)}deg) translateZ(${currZ.toFixed(1)}px) scale(${currScale.toFixed(3)})`;
-        card.style.setProperty('--bevel-x', `${(-currRY * 0.65).toFixed(1)}px`);
-        card.style.setProperty('--bevel-y', `${(4 + currRX * 0.65).toFixed(1)}px`);
-        card.style.setProperty('--shadow-x', `${(-currRY * 2.1).toFixed(1)}px`);
-        card.style.setProperty('--shadow-y', `${(14 + currRX * 1.8).toFixed(1)}px`);
+        card.style.transform = `perspective(780px) rotateX(${cardState.currRX.toFixed(2)}deg) rotateY(${cardState.currRY.toFixed(2)}deg) translateZ(${cardState.currZ.toFixed(1)}px) scale(${currScale.toFixed(3)})`;
+        card.style.setProperty('--bevel-x', `${(-cardState.currRY * 0.75).toFixed(1)}px`);
+        card.style.setProperty('--bevel-y', `${(5 + cardState.currRX * 0.75).toFixed(1)}px`);
+        card.style.setProperty('--shadow-x', `${(-cardState.currRY * 2.4).toFixed(1)}px`);
+        card.style.setProperty('--shadow-y', `${(18 + cardState.currRX * 2.0).toFixed(1)}px`);
 
-        if (coordsBadge && hovered) {
-          coordsBadge.textContent = `3D // X:${currRX >= 0 ? '+' : ''}${currRX.toFixed(1)}° Y:${currRY >= 0 ? '+' : ''}${currRY.toFixed(1)}° Z:${Math.round(currZ)}mm`;
+        if (coordsBadge && cardState.hovered) {
+          coordsBadge.textContent = `3D // X:${cardState.currRX >= 0 ? '+' : ''}${cardState.currRX.toFixed(1)}° Y:${cardState.currRY >= 0 ? '+' : ''}${cardState.currRY.toFixed(1)}° Z:${Math.round(cardState.currZ)}mm`;
         }
 
         const stillMoving =
           Math.abs(velRX) > 0.01 ||
           Math.abs(velRY) > 0.01 ||
-          Math.abs(targetRX - currRX) > 0.02 ||
-          Math.abs(targetRY - currRY) > 0.02 ||
-          Math.abs(targetZ - currZ) > 0.05;
+          Math.abs(targetRX - cardState.currRX) > 0.02 ||
+          Math.abs(targetRY - cardState.currRY) > 0.02 ||
+          Math.abs(targetZ - cardState.currZ) > 0.05;
 
-        if (hovered || stillMoving) {
+        if (cardState.hovered || stillMoving) {
           rafId = requestAnimationFrame(stepSpring);
         } else {
           card.style.transform = '';
@@ -1629,9 +1790,9 @@
       }
 
       card.addEventListener('pointerenter', () => {
-        hovered = true;
+        cardState.hovered = true;
         targetZ = liftTarget;
-        targetScale = isWideBox ? 1.006 : 1.016;
+        targetScale = isWideBox ? 1.008 : 1.022;
         card.classList.add('is-tilting');
         if (!rafId) rafId = requestAnimationFrame(stepSpring);
       });
@@ -1648,7 +1809,7 @@
       });
 
       card.addEventListener('pointerleave', () => {
-        hovered = false;
+        cardState.hovered = false;
         targetRX = 0;
         targetRY = 0;
         targetZ = 0;
@@ -1657,23 +1818,85 @@
       });
     });
 
-    // Subtle Scroll-Driven 3D Sheet Entrance Perspective
-    const sheets = document.querySelectorAll('.folio-sheet:not(.hero)');
-    sheets.forEach((sheet) => sheet.classList.add('sheet-3d-stage'));
-
-    function updateSheetPerspective() {
-      const vh = window.innerHeight;
-      sheets.forEach((sheet) => {
-        const rect = sheet.getBoundingClientRect();
-        if (rect.top > vh * 0.92) {
-          sheet.style.transform = 'perspective(1600px) rotateX(3.5deg) translateY(14px)';
-        } else {
-          sheet.style.transform = 'perspective(1600px) rotateX(0deg) translateY(0px)';
-        }
-      });
+    // Observe visible cards to animate their internal 3D Rotating Hologram Canvases at 60fps
+    if ('IntersectionObserver' in window) {
+      const holoObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            const st = activeHoloCards.find((item) => item.card === entry.target);
+            if (st) st.inView = entry.isIntersecting;
+          });
+        },
+        { threshold: 0.05 }
+      );
+      activeHoloCards.forEach((st) => holoObserver.observe(st.card));
     }
-    window.addEventListener('scroll', updateSheetPerspective, { passive: true });
-    updateSheetPerspective();
+
+    function renderCardHolograms(now) {
+      const t = now * 0.001;
+      const pal = getThemePalette();
+
+      activeHoloCards.forEach((st) => {
+        if (!st.holoCtx || (!st.inView && !st.hovered)) return;
+        const ctx = st.holoCtx;
+        ctx.clearRect(0, 0, 118, 118);
+
+        const speedMult = st.hovered ? 2.8 : 0.85;
+        const rx = t * 0.7 * speedMult + st.phase + st.currRX * 0.08;
+        const ry = t * 0.95 * speedMult + st.phase + st.currRY * 0.08;
+        const cosX = Math.cos(rx), sinX = Math.sin(rx);
+        const cosY = Math.cos(ry), sinY = Math.sin(ry);
+
+        const verts = st.shapeType === 0 ? tesseractVerts : icosaVerts;
+        const edges = st.shapeType === 0 ? tesseractEdges : icosaEdges;
+        const radius = st.hovered ? 35 : 29;
+
+        // Draw outer holographic radar ring when hovered
+        if (st.hovered) {
+          ctx.strokeStyle = pal.valid;
+          ctx.lineWidth = 1;
+          ctx.setLineDash([4, 4]);
+          ctx.beginPath();
+          ctx.arc(59, 59, 46, t * 2, t * 2 + Math.PI * 1.65);
+          ctx.stroke();
+          ctx.setLineDash([]);
+        }
+
+        const projected = verts.map((v) => {
+          const x = v[0] * radius;
+          const y = v[1] * radius;
+          const z = v[2] * radius;
+          const y1 = y * cosX - z * sinX;
+          const z1 = y * sinX + z * cosX;
+          const x2 = x * cosY + z1 * sinY;
+          const z2 = -x * sinY + z1 * cosY;
+          const scale = 160 / (160 + z2);
+          return { x: 59 + x2 * scale, y: 59 + y1 * scale };
+        });
+
+        ctx.strokeStyle = st.hovered ? pal.signal : pal.inkMuted;
+        ctx.lineWidth = st.hovered ? 1.35 : 1;
+        ctx.beginPath();
+        edges.forEach((e) => {
+          ctx.moveTo(projected[e[0]].x, projected[e[0]].y);
+          ctx.lineTo(projected[e[1]].x, projected[e[1]].y);
+        });
+        ctx.stroke();
+
+        // Glowing vertices
+        ctx.fillStyle = st.hovered ? pal.valid : pal.signal;
+        projected.forEach((p, idx) => {
+          if (idx % 2 === 0 || st.hovered) {
+            ctx.fillRect(p.x - 1.5, p.y - 1.5, 3, 3);
+          }
+        });
+      });
+
+      if (!prefersReducedMotion) {
+        requestAnimationFrame(renderCardHolograms);
+      }
+    }
+    requestAnimationFrame(renderCardHolograms);
   }
 
   /* ==========================================================================
