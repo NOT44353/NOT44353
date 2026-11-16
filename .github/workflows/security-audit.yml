@@ -1,0 +1,48 @@
+name: Security & Vulnerability Audit (Trivy & Audit)
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1' # Runs every Monday at 09:00 AM (Asia/Bangkok)
+  workflow_dispatch:
+
+jobs:
+  audit-dependencies:
+    name: Package Vulnerability Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install Dependencies
+        run: bun install || npm install
+
+      - name: Run Dependency Audit
+        run: |
+          echo "=== Auditing Package Vulnerabilities ==="
+          bun pm scan || npm audit --audit-level=high
+
+  trivy-scanner:
+    name: Aqua Trivy SCA & Secrets Scanner
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run Trivy Vulnerability & Secret Scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'table'
+          severity: 'CRITICAL,HIGH'
+          hide-progress: true
+          exit-code: '0'
